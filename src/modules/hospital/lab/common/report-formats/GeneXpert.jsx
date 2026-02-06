@@ -29,6 +29,24 @@ const xdr = [
 const notions = [
 	{ label: "R", value: "R" },
 	{ label: "S", value: "S" },
+	{ label: "I", value: "I" },
+];
+
+const sampleTypes = [
+	{ label: "Stool", value: "Stool" },
+	{ label: "CSF", value: "CSF" },
+	{ label: "Pleural Fluid", value: "Pleural Fluid" },
+	{ label: "Pus", value: "Pus" },
+	{ label: "Urine", value: "Urine" },
+	{ label: "Gastric Lavage", value: "Gastric Lavage" },
+	{ label: "Tissue", value: "Tissue" },
+	{ label: "Ascitic Acid", value: "Ascitic Acid" },
+	{ label: "Lipmphynode Tissue", value: "Lipmphynode Tissue" },
+	{ label: "Body Fluid", value: "Body Fluid" },
+	{ label: "FNAC Fluid", value: "FNAC Fluid" },
+	{ label: "Synovial Fluid", value: "Synovial Fluid" },
+	{ label: "Bronchoalvolar Lavage", value: "Bronchoalvolar Lavage" },
+	{ label: "Others", value: "Others" },
 ];
 
 // drug columns configuration - split into two rows
@@ -71,7 +89,8 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 	const form = useForm({
 		initialValues: {
 			gene_xpert_value: custom_report?.gene_xpert_value || 0,
-			sample_type: custom_report?.sample_type || 'Sputum',
+			sample_type: custom_report?.sample_type || 'Stool',
+			other_gene_xpert: custom_report?.other_gene_xpert || '',
 			sample_id: custom_report?.sample_id || '',
 			test_id: custom_report?.test_id || '',
 			test_date: custom_report?.test_date
@@ -167,14 +186,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 				<Stack gap="md">
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
-						<DatePickerForm
-							name="date_specimen_received"
-							id="date_specimen_received"
-							nextField="comment"
-							form={form}
-							label="Receive Date"
-							placeholder="Select receive date"
-						/>
+
 						<DatePickerForm
 							name="test_date"
 							id="test_date"
@@ -182,6 +194,14 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
+						/>
+						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Reporting Date"
+							placeholder="Select receive date"
 						/>
 						<InputNumberForm
 							name="sample_id"
@@ -203,11 +223,23 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 					</Group>
 					<Group grow>
 						{/* =============== lab no =============== */}
-						<InputForm
+						<SelectForm
 							name="sample_type"
 							id="sample_type"
 							form={form}
+							dropdownValue={sampleTypes}
+							placeholder="Select"
 							label="Sample Type"
+							clearable={true}
+							allowDeselect={true}
+							searchable={false}
+							withCheckIcon={false}
+						/>
+						<InputForm
+							name="other_gene_xpert"
+							id="other_gene_xpert"
+							form={form}
+							label="Other Sample Type"
 							placeholder="Enter sample type name"
 						/>
 					</Group>
@@ -322,7 +354,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							{/* =============== notation legend =============== */}
 							<Box my="xs">
 								<Text size="sm" fw={500}>
-									Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+									Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
 									Indeterminate/Non-interpretable; NA= Not Done)
 								</Text>
 							</Box>

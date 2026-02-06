@@ -23,7 +23,7 @@ const notions = [
 	{ label: "R", value: "R" },
 	{ label: "S", value: "S" },
 	{ label: "C", value: "C" },
-	{ label: "IN", value: "IN" },
+	{ label: "I", value: "I" },
 	{ label: "NA", value: "NA" },
 ];
 

@@ -10,6 +10,7 @@ import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import InputForm from "@components/form-builders/InputForm";
+import {useHotkeys} from "@mantine/hooks";
 
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
 const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
@@ -40,16 +41,38 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		requestAnimationFrame(printLabReport);
 	};
 
-	const isViewOnly =
-		diagnosticReport.process === "Done" ||
-		(diagnosticReport.process === "In-progress" && userRoles.some((role) => ALLOWED_LAB_USER_ROLES.includes(role)));
+	useHotkeys(
+		[
+			[
+				"alt+s",
+				() => {
+					const submitButton =
+						document.getElementById("handleSubmit");
+					if (submitButton) {
+						submitButton.click();
+					}
+				},
+			],
+			[
+				"alt+p",
+				() => {
+					const submitButton =
+						document.getElementById("handleSubmit");
+					if (submitButton) {
+						submitButton.click();
+					}
+				},
+			],
+		],
+		[]
+	);
 
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box px="md" bg="var(--theme-tertiary-color-2)">
 					<Grid columns={12}>
-						<Grid.Col span={6} className="animate-ease-out">
+						<Grid.Col span={5} className="animate-ease-out">
 							<Box w="100%">
 								<TextAreaForm
 									id="comment"
@@ -60,10 +83,10 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 								/>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						<Grid.Col span={7}>
 							<Box>
 								<Grid columns={12}>
-									<Grid.Col span={6} className="animate-ease-out">
+									<Grid.Col span={5} className="animate-ease-out" mt={'xs'}>
 										<InputForm
 											id="lab_no"
 											form={form}
@@ -72,56 +95,50 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 											name="lab_no"
 										/>
 									</Grid.Col>
-									<Grid.Col span={6} className="animate-ease-out">
+									<Grid.Col span={7} className="animate-ease-out" mt={'xs'}>
 										<Group justify="center">
 											{diagnosticReport?.process === "Done" && (
 												<Button
-													onClick={() => handleLabReport(reportId)}
-													size="md"
-													color="var(--theme-warn-color-5)"
-													type="button"
-													id="EntityFormSubmit"
-													rightSection={<IconPrinter size="18px" />}
+												onClick={() => handleLabReport(reportId)}
+												size="md"
+												color="var(--theme-warn-color-5)"
+												type="button"
+												id="EntityFormSubmit"
 												>
-													<Flex direction="column" gap={0}>
-														<Text fz={"xs"}>{t("Print")}</Text>
+												<Flex direction="column" gap={0}>
+												<Text fz="md">{t("Print")}</Text>
+													<Flex
+													direction="column"
+													align="center"
+													fz="2xs"
+													c="white">
+													alt+p
 													</Flex>
+												</Flex>
 												</Button>
 											)}
-											<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
+											<Button
+												size="md"
+												fz={"xs"}
+												bg="var(--theme-primary-color-6)"
+												type="submit"
+												id="handleSubmit"
+											>
 												<Flex direction="column" gap={0}>
 													<Text fz="md">{t("Save")}</Text>
+													<Flex
+														direction="column"
+														align="center"
+														fz="2xs"
+														c="white"
+													>
+														alt+s
+													</Flex>
 												</Flex>
 											</Button>
-
-											{/*{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
-								userRoles.some((role) =>
-									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
-								) && (
-									<Button
-										size="md"
-										fz={"xs"}
-										bg="var(--theme-primary-color-6)"
-										type="submit"
-										id="handleSubmit"
-									>
-										<Flex direction="column" gap={0}>
-											<Text fz="xs">{t("Confirm")}</Text>
-											<Flex
-												direction="column"
-												align="center"
-												fz="2xs"
-												c="white"
-											>
-												alt+s
-											</Flex>
-										</Flex>
-									</Button>
-								)}*/}
 										</Group>
 									</Grid.Col>
 								</Grid>
-
 							</Box>
 						</Grid.Col>
 					</Grid>

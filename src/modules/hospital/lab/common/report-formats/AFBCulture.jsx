@@ -29,6 +29,9 @@ const xdr = [
 const notions = [
 	{ label: "R", value: "R" },
 	{ label: "S", value: "S" },
+	{ label: "C", value: "C" },
+	{ label: "I", value: "I" },
+	{ label: "NA", value: "NA" },
 ];
 
 // drug columns configuration - split into two rows
@@ -361,7 +364,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 						{/* =============== notation legend =============== */}
 						<Box my="xs">
 							<Text size="sm" fw={500}>
-								Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+								Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
 								Indeterminate/Non-interpretable; NA= Not Done)
 							</Text>
 						</Box>
