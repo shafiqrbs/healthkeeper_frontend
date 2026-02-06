@@ -10,15 +10,15 @@ import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import InputForm from "@components/form-builders/InputForm";
-import {useHotkeys} from "@mantine/hooks";
+import { useHotkeys } from "@mantine/hooks";
 
-const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
-const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
+const ALLOWED_LAB_DOCTOR_ROLES = [ "doctor_lab" ];
+const ALLOWED_LAB_USER_ROLES = [ "lab_assistant" ];
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
-	const [labReportData, setLabReportData] = useState(null);
+	const [ labReportData, setLabReportData ] = useState(null);
 	const { reportId } = useParams();
 	const { userRoles } = useAppLocalStore();
 
@@ -31,7 +31,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 			form.setFieldValue("comment", diagnosticReport?.comment);
 			form.setFieldValue("lab_no", diagnosticReport?.lab_no);
 		}
-	}, [diagnosticReport?.comment]);
+	}, [ diagnosticReport?.comment ]);
 
 	const handleLabReport = async (id) => {
 		const res = await getDataWithoutStore({
@@ -57,14 +57,14 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 				"alt+p",
 				() => {
 					const submitButton =
-						document.getElementById("handleSubmit");
+						document.querySelector("#EntityFormSubmit.shortcut-helper");
 					if (submitButton) {
 						submitButton.click();
 					}
 				},
 			],
 		],
-		[]
+		[ "SELECT" ]
 	);
 
 	return (
@@ -99,22 +99,23 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										<Group justify="center">
 											{diagnosticReport?.process === "Done" && (
 												<Button
-												onClick={() => handleLabReport(reportId)}
-												size="md"
-												color="var(--theme-warn-color-5)"
-												type="button"
-												id="EntityFormSubmit"
+													onClick={() => handleLabReport(reportId)}
+													size="md"
+													color="var(--theme-warn-color-5)"
+													type="button"
+													id="EntityFormSubmit"
+													className="shortcut-helper"
 												>
-												<Flex direction="column" gap={0}>
-												<Text fz="md">{t("Print")}</Text>
-													<Flex
-													direction="column"
-													align="center"
-													fz="2xs"
-													c="white">
-													alt+p
+													<Flex direction="column" gap={0}>
+														<Text fz="md">{t("Print")}</Text>
+														<Flex
+															direction="column"
+															align="center"
+															fz="2xs"
+															c="white">
+															alt+p
+														</Flex>
 													</Flex>
-												</Flex>
 												</Button>
 											)}
 											<Button

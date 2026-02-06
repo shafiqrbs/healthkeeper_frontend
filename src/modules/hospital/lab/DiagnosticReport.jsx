@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useHotkeys } from "@mantine/hooks";
 import ReportRenderer from "./common/ReportRenderer";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
@@ -34,9 +33,6 @@ export default function DiagnosticReport({ refetchDiagnosticReport, refreshKey }
 			fetchLabReport();
 		}
 	}, [ id, reportId, fetchLabReport ]);
-
-	useHotkeys([ [ "alt+s", () => document.getElementById("EntityFormSubmit").click() ] ], []);
-
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h={mainAreaHeight - 96}>
