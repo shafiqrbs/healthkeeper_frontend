@@ -219,7 +219,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 					{/* =============== notation legend =============== */}
 					<Box my="xs">
 						<Text size="sm" fw={500}>
-							Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+							Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
 							Indeterminate/Non-interpretable; NA= Not Done)
 						</Text>
 					</Box>

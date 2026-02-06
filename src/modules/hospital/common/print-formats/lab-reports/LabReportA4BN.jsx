@@ -155,7 +155,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 													<Table.Td>
 														<Grid columns={18} gutter="sm">
 															<Grid.Col span={6} py={0}>
-																<Text size="xs">{t("Received on")}</Text>
+																<Text size="xs">{t("Created on")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
 																<Text size="xs">
@@ -164,7 +164,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	)}
 																</Text>
 															</Grid.Col>
-															<Grid.Col span={6} py={0}>
+															{/*<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("Collected on")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
@@ -174,7 +174,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																		""
 																	)}
 																</Text>
-															</Grid.Col>
+															</Grid.Col>*/}
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("Age")}</Text>
 															</Grid.Col>
@@ -246,6 +246,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																		<Text ta={'right'}>
 																			<strong>Sample Type: </strong>
 																			{reportData?.sample_type}
+																			{reportData?.other_gene_xpert}
 																		</Text>
 																	</Grid.Col>
 																</Grid>
@@ -537,7 +538,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-sputum" ? (
 										<Box>Gene Extra Sputum Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-pulmonary" ? (
-										<GeneXperExtraPulmonaryReport report={report} reportData={reportData} />
+										<GeneXpert report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "lpa" ? (
 										<Box>LPA Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ct-scan" ? (

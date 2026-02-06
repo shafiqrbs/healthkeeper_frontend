@@ -4,8 +4,11 @@ import "@/index.css";
 import { t } from "i18next";
 import { formatDate } from "@utils/index";
 import { IconCheck } from "@tabler/icons-react";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
+	const { user } = useAppLocalStore();
+
 	return (
 		<>
 			<Box h={500} mt={'80'}>
@@ -140,6 +143,10 @@ const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
 							</Text>
 						</Box>
 					</Grid.Col>
+				</Grid>
+				<Grid pt={'mt'}>
+					<Grid.Col span={6} ta="right"><strong>{t("PrintedBy")}:</strong> {user?.name}</Grid.Col>
+					<Grid.Col span={6} ta="left"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
 				</Grid>
 			</Box>
 		</>

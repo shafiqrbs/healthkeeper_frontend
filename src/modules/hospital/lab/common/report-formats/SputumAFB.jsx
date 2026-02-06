@@ -110,14 +110,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 				<Stack gap="md">
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
-						<DatePickerForm
-							name="date_specimen_received"
-							id="date_specimen_received"
-							nextField="comment"
-							form={form}
-							label="Receive Date"
-							placeholder="Select receive date"
-						/>
+
 						<DatePickerForm
 							name="test_date"
 							id="test_date"
@@ -125,6 +118,14 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
+						/>
+						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Reporting Date"
+							placeholder="Select receive date"
 						/>
 						<InputNumberForm
 							name="sample_id"

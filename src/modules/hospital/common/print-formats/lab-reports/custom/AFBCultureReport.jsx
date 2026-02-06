@@ -4,8 +4,12 @@ import "@/index.css";
 import { formatDate } from "@utils/index";
 import { IconCheck } from "@tabler/icons-react";
 import {t} from "i18next";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
+
+	const { user } = useAppLocalStore();
+
 	return (
 		<>
 		<Box h={600} mt={'40'}>
@@ -178,7 +182,7 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={'16'}><Box my="xs">
 									<Text size="sm" fw={500}>
-										Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+										Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
 										Indeterminate/Non-interpretable; NA= Not Done)
 									</Text>
 								</Box>
@@ -186,102 +190,102 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>MTB</Text>
+									<Text fz={'xs'}>MTB</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>INH</Text>
+									<Text fz={'xs'}>INH</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>RIF</Text>
+									<Text fz={'xs'}>RIF</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>FLQ</Text>
+									<Text fz={'xs'}>FLQ</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>LFX</Text>
+									<Text fz={'xs'}>LFX</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>MFX</Text>
+									<Text fz={'xs'}>MFX</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>RTH</Text>
+									<Text fz={'xs'}>RTH</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>BDQ</Text>
+									<Text fz={'xs'}>BDQ</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>DLM</Text>
+									<Text fz={'xs'}>DLM</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>PA</Text>
+									<Text fz={'xs'}>PA</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>LZD</Text>
+									<Text fz={'xs'}>LZD</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>CFZ</Text>
+									<Text fz={'xs'}>CFZ</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>AMK</Text>
+									<Text fz={'xs'}>AMK</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>KAN</Text>
+									<Text fz={'xs'}>KAN</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>CAP</Text>
+									<Text fz={'xs'}>CAP</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text>Others</Text>
+									<Text fz={'xs'}>Others</Text>
 								</Table.Th>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
+									<Text fz={'xs'} c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_inh === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_inh}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'blue.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_rif === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_rif}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_rif === 'R' ? 'red.8' : reportData?.dst_rif === 'S'? 'blue.8':'black.6'}>{reportData?.dst_rif || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_flq === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_flq}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_flq === 'R' ? 'red.8' : reportData?.dst_flq === 'S'? 'blue.8':'black.6'}>{reportData?.dst_flq || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_lfx === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_lfx}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_lfx === 'R' ? 'red.8' : reportData?.dst_lfx === 'S'? 'blue.8':'black.6'}>{reportData?.dst_lfx || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_mfx === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_mfx}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_mfx === 'R' ? 'red.8' : reportData?.dst_mfx === 'S'? 'blue.8':'black.6'}>{reportData?.dst_mfx || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_eth === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_eth}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_eth === 'R' ? 'red.8' : reportData?.dst_eth === 'S'? 'blue.8':'black.6'}>{reportData?.dst_eth || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_bdq === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_bdq}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_bdq === 'R' ? 'red.8' : reportData?.dst_bdq === 'S'? 'blue.8':'black.6'}>{reportData?.dst_bdq || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_dlm === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_dlm}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_dlm === 'R' ? 'red.8' : reportData?.dst_dlm === 'S'? 'blue.8':'black.6'} >{reportData?.dst_dlm || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_pa === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_pa}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_pa === 'R' ? 'red.8' : reportData?.dst_pa === 'S'? 'blue.8':'black.6'}>{reportData?.dst_pa || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_lzd === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_lzd}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_lzd === 'R' ? 'red.8' : reportData?.dst_lzd === 'S'? 'blue.8':'black.6'} >{reportData?.dst_lzd || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_cfz === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_cfz}</Text>
+									<Text fz={'xs'}  ta="center" c={reportData?.dst_cfz === 'R' ? 'red.8' : reportData?.dst_cfz === 'S'? 'blue.8':'black.6'} >{reportData?.dst_cfz || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_amk === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_amk}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_amk === 'R' ? 'red.8' : reportData?.dst_amk === 'S'? 'blue.8':'black.6'} >{reportData?.dst_amk || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_kan === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_kan}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_kan === 'R' ? 'red.8' : reportData?.dst_kan === 'S'? 'blue.8':'black.6'}>{reportData?.dst_kan || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_cap === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_cap}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_cap === 'R' ? 'red.8' : reportData?.dst_cap === 'S'? 'blue.8':'black.6'}>{reportData?.dst_cap || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
 								</Table.Th>
 							</Table.Tr>
 						</Table>
@@ -297,6 +301,7 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 						</Box>
 					)}
 				</Box>
+
 			</Box>
 			{/* =============== Doctor Information and Signature ================ */}
 		</Box>
@@ -317,6 +322,10 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 					</Text>
 				</Box>
 			</Grid.Col>
+		</Grid>
+		<Grid pt={'mt'}>
+			<Grid.Col span={6} ta="right"><strong>{t("PrintedBy")}:</strong> {user?.name}</Grid.Col>
+			<Grid.Col span={6} ta="left"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
 		</Grid>
 	</Box>
 		</>

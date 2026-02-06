@@ -29,7 +29,9 @@ const xdr = [
 const notions = [
 	{ label: "R", value: "R" },
 	{ label: "S", value: "S" },
+	{ label: "C", value: "C" },
 	{ label: "I", value: "I" },
+	{ label: "NA", value: "NA" },
 ];
 
 const sampleTypes = [
