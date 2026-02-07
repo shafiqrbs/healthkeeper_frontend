@@ -122,13 +122,13 @@ export default function AdminBoard() {
 				</Card>
 			</Modal>
 
-			<Modal size="85%" opened={dischargedOpen} onClose={closeDischarged} title="Discharged Patients" centered>
+			<Modal size="100%" opened={dischargedOpen} onClose={closeDischarged} title="Discharged Patients" centered>
 				<Card padding="lg" radius="sm" h="100%">
 					<DischargedTable />
 				</Card>
 			</Modal>
 
-			<Modal size="85%" opened={admissionOpen} onClose={closeAdmission} title="Admission Patients" centered>
+			<Modal size="100%" opened={admissionOpen} onClose={closeAdmission} title="Admission Patients" centered>
 				<Card padding="lg" radius="sm" h="100%">
 					<AdmissionTable module={module} />
 				</Card>
