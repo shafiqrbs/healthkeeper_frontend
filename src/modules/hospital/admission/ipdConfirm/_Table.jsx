@@ -406,7 +406,6 @@ export default function _Table({ module, height }) {
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}
-				mainAreaHeight={height}
 			/>
 			<ManageModal
 				opened={openedManage}

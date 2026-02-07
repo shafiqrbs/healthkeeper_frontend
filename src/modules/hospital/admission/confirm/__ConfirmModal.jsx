@@ -13,9 +13,11 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
 import { capitalizeWords } from "@/common/utils";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
-export default function ConfirmModal({ opened, close, form, selectedId, module, isReadmission = false, mainAreaHeight }) {
+export default function ConfirmModal({ opened, close, form, selectedId, module, isReadmission = false }) {
 	const dispatch = useDispatch();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 140;
 	const [ selectedRoom, setSelectedRoom ] = useState(null);
 	const { t } = useTranslation();

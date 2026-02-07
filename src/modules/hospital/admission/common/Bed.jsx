@@ -1,5 +1,4 @@
 import { Grid, ScrollArea, Text } from "@mantine/core";
-import { useOutletContext } from "react-router-dom";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +6,13 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useEffect } from "react";
 import DetailedRoomCard from "../../common/DetailedRoomCard";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 2000;
 
 export default function Bed({ selectedRoom, handleRoomClick }) {
 	const dispatch = useDispatch();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const listData = useSelector((state) => state.crud.bed?.data?.data);
 	const filterData = useSelector((state) => state.crud.bed?.filterData);
 	const height = mainAreaHeight - 320;
@@ -28,7 +28,7 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 		getParticularPaymentModes?.reduce((acc, paymentMode) => {
 			const filteredRooms =
 				listData?.filter((room) => room.payment_mode_name?.toLowerCase() === paymentMode.slug) || [];
-			acc[paymentMode.slug] = filteredRooms;
+			acc[ paymentMode.slug ] = filteredRooms;
 			return acc;
 		}, {}) || {};
 
@@ -40,14 +40,14 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 				params: { particular_type: "bed", term: filterData?.keywordSearch || "", page: 1, offset: PER_PAGE },
 			})
 		);
-	}, [dispatch, filterData?.keywordSearch]);
+	}, [ dispatch, filterData?.keywordSearch ]);
 
 	return (
 		<Grid columns={24} gutter="xs">
 			{getParticularPaymentModes?.map((paymentMode, index) => {
 				const isLastColumn = index === getParticularPaymentModes.length - 1;
 				const columnSpan = Math.floor(24 / getParticularPaymentModes.length);
-				const rooms = filteredRoomsByPaymentMode[paymentMode.slug] || [];
+				const rooms = filteredRoomsByPaymentMode[ paymentMode.slug ] || [];
 
 				return (
 					<Grid.Col key={paymentMode.slug} span={columnSpan}>

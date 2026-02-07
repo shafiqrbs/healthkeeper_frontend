@@ -15,7 +15,7 @@ const Layout = () => {
 	const location = useLocation();
 	const paramPath = location.pathname;
 
-	const { headerHeight, footerHeight } = useMainAreaHeight();
+	const { headerHeight, footerHeight, mainAreaHeight } = useMainAreaHeight();
 
 	// check authentication
 	if (!user?.id) {
@@ -30,7 +30,7 @@ const Layout = () => {
 			</AppShell.Header>
 			<AppShell.Main>
 				{paramPath !== "/" ? (
-					<Outlet context={{ isOnline: networkStatus.online }} />
+					<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight }} />
 				) : (
 					<HomeIndex />
 				)}

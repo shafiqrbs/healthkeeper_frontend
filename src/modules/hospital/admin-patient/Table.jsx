@@ -1,23 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
+import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
-	IconDotsVertical,
 	IconSelector,
 	IconX,
-	IconPrinter,
-	IconScript,
-	IconPencil,
-	IconRefresh,
-	IconAdjustmentsCog,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
@@ -26,24 +18,12 @@ import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import { showEntityData } from "@/app/store/core/crudThunk";
-import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import { modals } from "@mantine/modals";
-import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
-import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
-import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 import { setFilterData } from "@/app/store/core/crudSlice";
-import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "@modules/hospital/admission/helpers/request";
 
@@ -116,7 +96,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_ARCHIVE.INDEX,
@@ -282,7 +262,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 			<ConfirmModal
-				mainAreaHeight={height}
 				opened={openedConfirm}
 				close={handleConfirmClose}
 				form={confirmForm}

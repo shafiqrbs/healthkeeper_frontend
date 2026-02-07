@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getAdmissionFormInitialValues } from "../helpers/request";
-import { useOutletContext } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -27,9 +26,8 @@ export default function ConfirmIndex() {
 	const { t } = useTranslation();
 	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
-	const { mainAreaHeight } = useOutletContext();
-	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [ isOpenPatientInfo, setIsOpenPatientInfo ] = useState(true);
+	const [ isSubmitting, setIsSubmitting ] = useState(false);
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
@@ -85,7 +83,7 @@ export default function ConfirmIndex() {
 			) : (
 				<Box p="md">
 					<Flex w="100%" gap="sm">
-						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
+						<Navigation module="home" />
 						<Grid w="100%" columns={25}>
 							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
 								<Box px="sm" py="md" bg="var(--mantine-color-white)">
@@ -94,7 +92,7 @@ export default function ConfirmIndex() {
 									</Text>
 								</Box>
 								<TabsWithSearch
-									tabList={["list"]}
+									tabList={[ "list" ]}
 									tabPanels={[
 										{
 											tab: "list",

@@ -14,17 +14,17 @@ import {
 	Button,
 	LoadingOverlay,
 } from "@mantine/core";
-import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	const prescriptionFullRef = useRef(null);
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { t } = useTranslation();
 
 	const printPrescriptionFull = useReactToPrint({
@@ -75,7 +75,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 													| Gender:{" "}
 													{prescription?.gender
 														? prescription.gender.charAt(0).toUpperCase() +
-														  prescription.gender.slice(1)
+														prescription.gender.slice(1)
 														: "N/A"}
 												</Text>
 											</Group>
@@ -122,7 +122,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 											labelPosition="left"
 										/>
 										{patientExamination?.chief_complaints &&
-										patientExamination.chief_complaints.length > 0 ? (
+											patientExamination.chief_complaints.length > 0 ? (
 											<List size="sm" pl="sm" spacing="es">
 												{patientExamination.chief_complaints.map((complaint, index) => (
 													<List.Item key={index}>
@@ -145,7 +145,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 											labelPosition="left"
 										/>
 										{patientExamination?.investigation &&
-										patientExamination.investigation.length > 0 ? (
+											patientExamination.investigation.length > 0 ? (
 											<List
 												c="var(--theme-tertiary-color-9)"
 												type="ordered"
@@ -175,7 +175,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 											labelPosition="left"
 										/>
 										{patientExamination?.comorbidity &&
-										patientExamination.comorbidity.length > 0 ? (
+											patientExamination.comorbidity.length > 0 ? (
 											<List size="sm" pl="sm" spacing="es">
 												{patientExamination.comorbidity
 													.filter((item) => item.value)
@@ -198,7 +198,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 											labelPosition="left"
 										/>
 										{patientExamination?.ho_past_illness &&
-										patientExamination.ho_past_illness.length > 0 ? (
+											patientExamination.ho_past_illness.length > 0 ? (
 											<List size="sm" pl="sm" spacing="es">
 												{patientExamination.ho_past_illness
 													.filter((item) => item.value)
@@ -233,8 +233,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 																"Unknown Medicine"}
 															<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
 																{medicine.quantity &&
-																	`${medicine.quantity} ${
-																		medicine.duration || "days"
+																	`${medicine.quantity} ${medicine.duration || "days"
 																	}`}
 																{medicine.times && `, ${medicine.times} times`}
 																{medicine.by_meal && `, ${medicine.by_meal}`}

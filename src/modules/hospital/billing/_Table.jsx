@@ -1,6 +1,6 @@
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
+import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
@@ -9,16 +9,17 @@ import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
 import usePagination from "@hooks/usePagination";
 import PaginationBottomSection from "@components/tables/PaginationBottomSection";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const module = MODULES.BILLING;
 const PER_PAGE = 25;
 
-export default function _Table({ patient_mode }) {
+export default function _Table() {
 	const { id } = useParams();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const navigate = useNavigate();
-	const [selectedPatientId, setSelectedPatientId] = useState(id);
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [ selectedPatientId, setSelectedPatientId ] = useState(id);
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
@@ -34,7 +35,7 @@ export default function _Table({ patient_mode }) {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
-			patient_mode: ['ipd','emergency','opd'],
+			patient_mode: [ 'ipd', 'emergency', 'opd' ],
 			process_mode: "investigation",
 		},
 	});
@@ -103,7 +104,7 @@ export default function _Table({ patient_mode }) {
 								<Badge
 									size="xs"
 									radius="sm"
-									color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+									color={processColorMap[ item.process ] || "gray"}>{capitalizeWords(item.process)}
 								</Badge>
 							</Flex>
 						</Grid.Col>

@@ -12,6 +12,7 @@ import InvoiceDetails from "./InvoiceDetails";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const module = MODULES.BILLING;
 
@@ -19,12 +20,12 @@ export default function Index() {
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const { id } = useParams();
-	const { mainAreaHeight } = useOutletContext();
-	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [diagnosticReport, setDiagnosticReport] = useState([]);
-	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
-	const [type, setType] = useState("opd");
-	const [loading, setLoading] = useState(false);
+	const { mainAreaHeight } = useMainAreaHeight();
+	const [ isOpenPatientInfo, setIsOpenPatientInfo ] = useState(true);
+	const [ diagnosticReport, setDiagnosticReport ] = useState([]);
+	const [ refetchBillingKey, setRefetchBillingKey ] = useState(0);
+	const [ type, setType ] = useState("opd");
+	const [ loading, setLoading ] = useState(false);
 
 	useEffect(() => {
 		if (id) {
@@ -37,7 +38,7 @@ export default function Index() {
 				setLoading(false);
 			})();
 		}
-	}, [id, refetchBillingKey]);
+	}, [ id, refetchBillingKey ]);
 
 	const entity = diagnosticReport || {};
 	return (
@@ -62,7 +63,7 @@ export default function Index() {
 									</Text>
 								</Flex>
 								<TabsWithSearch
-									tabList={["list"]}
+									tabList={[ "list" ]}
 									module={module}
 									tabPanels={[
 										{

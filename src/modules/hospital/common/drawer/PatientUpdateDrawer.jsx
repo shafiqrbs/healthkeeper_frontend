@@ -3,7 +3,6 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useTranslation } from "react-i18next";
-import { useOutletContext } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -15,15 +14,15 @@ import { successNotification } from "@components/notification/successNotificatio
 import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { errorNotification } from "@components/notification/errorNotification";
-import {calculateAge, calculateDetailedAge, formatDOB} from "@utils/index";
-import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import { formatDOB } from "@utils/index";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const module = MODULES.VISIT;
 
 export default function PatientUpdateDrawer({ opened, close, type, data }) {
-	const [records, setRecords] = useState([]);
+	const [ records, setRecords ] = useState([]);
 	const dispatch = useDispatch();
 
 	const form = useForm({
@@ -71,11 +70,11 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	});
 
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 
 	useEffect(() => {
 		form.setFieldValue("name", data?.name || "");
-	//	form.setFieldValue("dob", data?.date_of_birth ? new Date(data.date_of_birth) : null);
+		//	form.setFieldValue("dob", data?.date_of_birth ? new Date(data.date_of_birth) : null);
 		form.setFieldValue("mobile", data?.mobile || "");
 		form.setFieldValue("nid", data?.nid || "");
 		form.setFieldValue("year", data?.year || "");
@@ -86,7 +85,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		if (type === "opd") {
 			form.setFieldValue("room_id", data?.room_id || "");
 		}
-	}, [data]);
+	}, [ data ]);
 
 	/*const handleDobChange = () => {
 		const type = form.values.ageType || "year";
@@ -110,7 +109,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		try {
 			const formattedDOB = formatDOB(form.values.dob);
 			const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-			const [day, month, year] = formattedDOB.split("-").map(Number);
+			const [ day, month, year ] = formattedDOB.split("-").map(Number);
 			const dateObj = new Date(year, month - 1, day);
 
 			const today = new Date();
@@ -126,7 +125,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 				return {};
 			}
 
-		//	const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
+			//	const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
 
 			const formValue = {
 				...form.values
@@ -144,7 +143,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+						errorObject[ key ] = fieldErrors[ key ][ 0 ]; // Assign the first error message for each field
 					});
 					// Display the errors using your form's `setErrors` function dynamically
 					form.setErrors(errorObject);
@@ -166,8 +165,8 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	const filteredAndSortedRecords = useMemo(() => {
 		if (!records || records.length === 0) return [];
 		// sort by invoice_count in ascending order
-		return [...records]?.sort((a, b) => (a?.invoice_count || 0) - (b?.invoice_count || 0));
-	}, [records]);
+		return [ ...records ]?.sort((a, b) => (a?.invoice_count || 0) - (b?.invoice_count || 0));
+	}, [ records ]);
 
 	const fetchData = async () => {
 		const value = {
@@ -248,7 +247,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 									/>
 								</Grid.Col>
 							</>
-						):(
+						) : (
 							<>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("Name")}</Text>
@@ -355,13 +354,13 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 									/>
 								</Grid.Col>
 							</>
-							)}
+						)}
 
 					</Grid>
 
 					<Flex gap="xs" justify="flex-end">
 
-						<Button type="button" variant={'outline'}  color="var(--theme-tertiary-color-6)" onClick={close}>
+						<Button type="button" variant={'outline'} color="var(--theme-tertiary-color-6)" onClick={close}>
 							{t("Cancel")}
 						</Button>
 						<Button type="submit" bg="var(--theme-primary-color-6)" color="white">

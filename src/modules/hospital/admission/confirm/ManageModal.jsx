@@ -1,5 +1,3 @@
-import { useOutletContext } from "react-router-dom";
-
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import {
 	Box,
@@ -27,27 +25,27 @@ import { modals } from "@mantine/modals";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 2000;
 
 export default function ManageModal({ opened, close, form, selectedId, module }) {
 	const dispatch = useDispatch();
-	const [updateKey, setUpdateKey] = useState(0);
-	const { mainAreaHeight } = useOutletContext();
+	const [ updateKey, setUpdateKey ] = useState(0);
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 140;
 	const { t } = useTranslation();
 
-	const [actionFormData, setActionFormData] = useState(null);
 	const cabinData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedData = useSelector((state) => state.crud.bed?.data?.data);
-	const [isLoading, setIsLoading] = useState(false);
+	const [ isLoading, setIsLoading ] = useState(false);
 
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
 
-	const [actionType, setActionType] = useState("change");
-	const [activeTab, setActiveTab] = useState("change");
+	const [ actionType, setActionType ] = useState("change");
+	const [ activeTab, setActiveTab ] = useState("change");
 
 	const fetchData = useCallback(() => {
 		dispatch(
@@ -64,11 +62,11 @@ export default function ManageModal({ opened, close, form, selectedId, module })
 				params: { particular_type: "bed", page: 1, offset: PER_PAGE },
 			})
 		);
-	}, [dispatch]);
+	}, [ dispatch ]);
 
 	useEffect(() => {
 		fetchData();
-	}, [fetchData]);
+	}, [ fetchData ]);
 
 	// =============== use action form data for requested information ================
 	const getAccommodationTypeLabel = (type) => {
@@ -79,14 +77,14 @@ export default function ManageModal({ opened, close, form, selectedId, module })
 			freeBed: t("FreeBed"),
 			freeCabin: t("FreeCabin"),
 		};
-		return typeMap[type] || type;
+		return typeMap[ type ] || type;
 	};
 
 	// =============== reset selected room when accommodation type changes ================
 	useEffect(() => {
 		form.setFieldValue("roomNumber", "");
 		setUpdateKey((prev) => prev + 1);
-	}, [form.values.accommodationType]);
+	}, [ form.values.accommodationType ]);
 
 	// =============== determine default tab based on action type ================
 	const defaultTab = ipdData?.data?.change_mode || "change";
@@ -94,7 +92,7 @@ export default function ManageModal({ opened, close, form, selectedId, module })
 	useEffect(() => {
 		setActiveTab(defaultTab);
 		setActionType(defaultTab);
-	}, [defaultTab]);
+	}, [ defaultTab ]);
 
 	const handleTabChange = (tabValue) => {
 		setActiveTab(tabValue);
@@ -135,7 +133,7 @@ export default function ManageModal({ opened, close, form, selectedId, module })
 
 				if (fieldErrors) {
 					const errorObject = Object.keys(fieldErrors).reduce((acc, key) => {
-						acc[key] = fieldErrors[key][0];
+						acc[ key ] = fieldErrors[ key ][ 0 ];
 						return acc;
 					}, {});
 					form.setErrors(errorObject);
@@ -250,9 +248,8 @@ export default function ManageModal({ opened, close, form, selectedId, module })
 									<Grid.Col span={10}>
 										<Text fz="sm" fw={500}>
 											{ipdData?.data?.year
-												? `${ipdData?.data?.year} Year, ${ipdData?.data?.month || 0} Month, ${
-														ipdData?.data?.day || 0
-												  } Day`
+												? `${ipdData?.data?.year} Year, ${ipdData?.data?.month || 0} Month, ${ipdData?.data?.day || 0
+												} Day`
 												: "-"}
 										</Text>
 									</Grid.Col>

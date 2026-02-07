@@ -8,8 +8,10 @@ import Navigation from "@components/layout/Navigation";
 import { Navigate, Outlet } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useState } from "react";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function AdminLayout() {
+	const { mainAreaHeight } = useMainAreaHeight()
 	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
@@ -60,6 +62,7 @@ export default function AdminLayout() {
 									context={{
 										isOnline: networkStatus.online,
 										setPageTitle,
+										mainAreaHeight,
 									}}
 								/>
 							</Grid.Col>

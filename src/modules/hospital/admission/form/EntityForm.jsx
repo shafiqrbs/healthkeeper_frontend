@@ -6,7 +6,7 @@ import { ActionIcon, Box, Flex, Grid, LoadingOverlay, ScrollArea, SegmentedContr
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "@hospital-components/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -26,6 +26,7 @@ import IpdActionButtons from "@hospital-components/_IpdActionButtons";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -81,17 +82,17 @@ export default function EntityForm({ form, module }) {
 	const { user } = useAppLocalStore();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [gender, setGender] = useState("male");
-	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
+	const [ gender, setGender ] = useState("male");
+	const [ openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom } ] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const [admissionData, setAdmissionData] = useState(USER_NID_DATA);
-	const [showUserData, setShowUserData] = useState({});
-	const { mainAreaHeight } = useOutletContext();
+	const [ admissionData, setAdmissionData ] = useState(USER_NID_DATA);
+	const [ showUserData, setShowUserData ] = useState({});
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 248;
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [ isSubmitting, setIsSubmitting ] = useState(false);
 	const { hospitalSettingData } = useHospitalSettingData();
-	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
+	const [ openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview } ] = useDisclosure(false);
 	const locations = useSelector((state) => state.crud.locations.data);
 
 	const { data: entity, isLoading } = useDataWithoutStore({
@@ -102,7 +103,7 @@ export default function EntityForm({ form, module }) {
 		if (entity?.data === "not_found") {
 			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
 		}
-	}, [entity]);
+	}, [ entity ]);
 
 	useEffect(() => {
 		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
@@ -192,16 +193,16 @@ export default function EntityForm({ form, module }) {
 	const entities = entity?.data?.invoice_particular;
 
 	useEffect(() => {
-		Object.entries(item || {})?.forEach(([key, value]) => {
+		Object.entries(item || {})?.forEach(([ key, value ]) => {
 			form.setFieldValue(key, value);
 		});
 
 		form.setFieldValue("identity", item?.nid);
-	}, [item]);
+	}, [ item ]);
 
 	useEffect(() => {
 		handleDobChange();
-	}, [JSON.stringify(form.values.dob)]);
+	}, [ JSON.stringify(form.values.dob) ]);
 
 	const handleDobChange = () => {
 		if (form.values.dob) {
@@ -314,7 +315,7 @@ export default function EntityForm({ form, module }) {
 												name="admit_unit_id"
 												id="admit_unit_id"
 												value={form.values.admit_unit_id?.toString()}
-												dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map(
+												dropdownValue={hospitalSettingData?.[ "unit-group" ]?.modes.map(
 													(mode) => ({
 														label: mode.name,
 														value: mode.id?.toString(),
@@ -564,10 +565,10 @@ export default function EntityForm({ form, module }) {
 												{form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
-													? t("BRID")
-													: form.values.identity_mode === "OTHER"
-													? t("OTHER")
-													: t("HID")}
+														? t("BRID")
+														: form.values.identity_mode === "OTHER"
+															? t("OTHER")
+															: t("HID")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={9}>

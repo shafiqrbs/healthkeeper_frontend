@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
@@ -11,12 +11,13 @@ import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function ConfirmModal({ opened, close, form }) {
 	const navigate = useNavigate();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 140;
-	const [selectedRoom, setSelectedRoom] = useState(null);
+	const [ selectedRoom, setSelectedRoom ] = useState(null);
 	const { t } = useTranslation();
 
 	const handleRoomClick = (room) => {
@@ -52,7 +53,7 @@ export default function ConfirmModal({ opened, close, form }) {
 								<Button miw={100}>Process</Button>
 							</Flex>
 							<TabsWithSearch
-								tabList={["Ward", "Cabin", "ICU"]}
+								tabList={[ "Ward", "Cabin", "ICU" ]}
 								searchbarContainerBg="var(--theme-primary-color-1)"
 								tabPanels={[
 									{

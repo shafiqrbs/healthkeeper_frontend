@@ -46,8 +46,8 @@ import { modals } from "@mantine/modals";
 import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { CSVLink } from "react-csv";
-import usePagination from "@hooks/usePagination";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 25;
 
@@ -79,7 +79,7 @@ export default function _Table({ module, height }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const [ openedActions, { open: openActions, close: closeActions } ] = useDisclosure(false);
 	const [ openedRoomBedTransfer, { open: openRoomBedTransfer, close: closeRoomBedTransfer } ] = useDisclosure(false);
 	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
@@ -548,7 +548,6 @@ export default function _Table({ module, height }) {
 					setSelectedId(null);
 					setActionFormData(null);
 				}}
-				mainAreaHeight={mainAreaHeight}
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}
