@@ -8,7 +8,7 @@ import {
     Chip,
     LoadingOverlay,
 } from "@mantine/core";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
     IconAlertCircle,
@@ -17,13 +17,13 @@ import {
     IconSelector,
     IconCheck,
 } from "@tabler/icons-react";
-import {DataTable} from "mantine-datatable";
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate, useOutletContext} from "react-router-dom";
-import {modals} from "@mantine/modals";
-import {notifications} from "@mantine/notifications";
-import {useOs, useHotkeys} from "@mantine/hooks";
-import {useCallback, useState} from "react";
+import { DataTable } from "mantine-datatable";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
+import { useOs, useHotkeys } from "@mantine/hooks";
+import { useCallback, useState } from "react";
 import axios from "axios";
 
 import KeywordSearch from "@modules/filter/KeywordSearch";
@@ -31,34 +31,35 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import ViewDrawer from "./__ViewDrawer";
 
-import {MASTER_DATA_ROUTES} from "@/constants/routes";
-import {ERROR_NOTIFICATION_COLOR} from "@/constants";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants";
 import tableCss from "@assets/css/TableAdmin.module.css";
 
-import {deleteEntityData} from "@/app/store/core/crudThunk";
-import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice";
-import {deleteNotification} from "@components/notification/deleteNotification";
+import { deleteEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
+import { deleteNotification } from "@components/notification/deleteNotification";
 
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {API_GATEWAY_URL} from "@/config";
-import {useAuthStore} from "@/store/useAuthStore";
+import { API_GATEWAY_URL } from "@/config";
+import { useAuthStore } from "@/store/useAuthStore";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 50;
 
-export default function _Table({module, open}) {
-    const {t} = useTranslation();
+export default function _Table({ module, open }) {
+    const { t } = useTranslation();
     const os = useOs();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {mainAreaHeight} = useOutletContext();
+    const { mainAreaHeight } = useMainAreaHeight();
 
     const height = mainAreaHeight - 78;
 
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-    const filterData = useSelector((state) => state.crud[module]?.filterData);
-    const listData = useSelector((state) => state.crud[module]?.data);
+    const filterData = useSelector((state) => state.crud[ module ]?.filterData);
+    const listData = useSelector((state) => state.crud[ module ]?.data);
 
-    const {token, user} = useAuthStore.getState();
+    const { token, user } = useAuthStore.getState();
 
     const {
         scrollRef,
@@ -79,17 +80,17 @@ export default function _Table({module, open}) {
         sortByKey: "name",
     });
 
-    const [viewDrawer, setViewDrawer] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [ viewDrawer, setViewDrawer ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
 
     /* ---------------- CREATE ---------------- */
 
     const handleCreateForm = useCallback(() => {
         open();
-        dispatch(setInsertType({insertType: "create", module}));
-    }, [open, dispatch, module]);
+        dispatch(setInsertType({ insertType: "create", module }));
+    }, [ open, dispatch, module ]);
 
-    useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", handleCreateForm]]);
+    useHotkeys([ [ os === "macos" ? "ctrl+n" : "alt+n", handleCreateForm ] ]);
 
     /* ---------------- DELETE ---------------- */
 
@@ -97,8 +98,8 @@ export default function _Table({module, open}) {
         modals.openConfirmModal({
             title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
             children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-delete-color)"},
+            labels: { confirm: "Confirm", cancel: "Cancel" },
+            confirmProps: { color: "var(--theme-delete-color)" },
             onConfirm: () => handleDeleteConfirm(id),
         });
     };
@@ -113,15 +114,15 @@ export default function _Table({module, open}) {
         );
 
         if (deleteEntityData.fulfilled.match(res)) {
-            dispatch(setRefetchData({module, refetching: true}));
+            dispatch(setRefetchData({ module, refetching: true }));
             deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
             navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.MANAGE_FILE);
-            dispatch(setInsertType({insertType: "create", module}));
+            dispatch(setInsertType({ insertType: "create", module }));
         } else {
             notifications.show({
                 color: ERROR_NOTIFICATION_COLOR,
                 title: t("Delete Failed"),
-                icon: <IconAlertCircle size={18}/>,
+                icon: <IconAlertCircle size={18} />,
             });
         }
     };
@@ -132,8 +133,8 @@ export default function _Table({module, open}) {
         modals.openConfirmModal({
             title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
             children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-primary-color-6)"},
+            labels: { confirm: "Confirm", cancel: "Cancel" },
+            confirmProps: { color: "var(--theme-primary-color-6)" },
             onConfirm: () => handleProcessConfirm(id),
         });
     };
@@ -163,7 +164,7 @@ export default function _Table({module, open}) {
                 notifications.show({
                     color: "teal",
                     title: `Processed ${res.data.row} rows successfully`,
-                    icon: <IconCheck size={18}/>,
+                    icon: <IconCheck size={18} />,
                     autoClose: 2000,
                 });
             }
@@ -173,7 +174,7 @@ export default function _Table({module, open}) {
             notifications.show({
                 color: "red",
                 title: error?.response?.data?.message || "Processing failed",
-                icon: <IconAlertCircle size={18}/>,
+                icon: <IconAlertCircle size={18} />,
             });
         } finally {
             setLoading(false);
@@ -184,12 +185,12 @@ export default function _Table({module, open}) {
 
     return (
         <>
-            <LoadingOverlay visible={loading} zIndex={1000} blur={2}/>
+            <LoadingOverlay visible={loading} zIndex={1000} blur={2} />
 
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
                 <Flex align="center" justify="space-between" gap={4}>
-                    <KeywordSearch module={module}/>
-                    <CreateButton handleModal={handleCreateForm} text="AddNew"/>
+                    <KeywordSearch module={module} />
+                    <CreateButton handleModal={handleCreateForm} text="AddNew" />
                 </Flex>
             </Box>
 
@@ -206,8 +207,8 @@ export default function _Table({module, open}) {
                     loaderSize="xs"
                     loaderColor="grape"
                     sortIcons={{
-                        sorted: <IconChevronUp size={14}/>,
-                        unsorted: <IconSelector size={14}/>,
+                        sorted: <IconChevronUp size={14} />,
+                        unsorted: <IconSelector size={14} />,
                     }}
                     columns={[
                         {
@@ -216,9 +217,9 @@ export default function _Table({module, open}) {
                             textAlign: "right",
                             render: (_, index) => index + 1,
                         },
-                        {accessor: "file_type", title: t("FileType")},
-                        {accessor: "original_name", title: t("FileName")},
-                        {accessor: "created", title: t("Created")},
+                        { accessor: "file_type", title: t("FileType") },
+                        { accessor: "original_name", title: t("FileName") },
+                        { accessor: "created", title: t("Created") },
                         {
                             accessor: "is_process",
                             title: t("Status"),
@@ -251,7 +252,7 @@ export default function _Table({module, open}) {
                                     <Group gap={4} justify="right">
                                         <Button
                                             size="compact-xs"
-                                            leftSection={<IconEye size={12}/>}
+                                            leftSection={<IconEye size={12} />}
                                             onClick={() => processUploadFile(row.id)}
                                         >
                                             {t("FileProcess")}
@@ -262,7 +263,7 @@ export default function _Table({module, open}) {
                                             color="red"
                                             onClick={() => handleDelete(row.id)}
                                         >
-                                            <IconTrashX size={14}/>
+                                            <IconTrashX size={14} />
                                         </ActionIcon>
                                     </Group>
                                 ),
@@ -271,7 +272,7 @@ export default function _Table({module, open}) {
                 />
             </Box>
 
-            <DataTableFooter indexData={listData} module={module}/>
+            <DataTableFooter indexData={listData} module={module} />
             <ViewDrawer
                 viewDrawer={viewDrawer}
                 setViewDrawer={setViewDrawer}

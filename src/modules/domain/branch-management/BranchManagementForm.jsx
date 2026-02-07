@@ -10,32 +10,31 @@ import {
 	LoadingOverlay,
 	Group,
 	Tooltip,
-	rem,
 	TextInput,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext } from "react-router-dom";
 import Shortcut from "../../shortcut/Shortcut.jsx";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconCurrencyDollar } from "@tabler/icons-react";
 import { getIndexEntityData, storeEntityData } from "../../../../store/core/crudSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { notifications } from "@mantine/notifications";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function BranchManagementForm() {
 	const { t } = useTranslation();
-	const { mainAreaHeight, isOnline } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 26;
 	const dispatch = useDispatch();
 
 	const configData = localStorage.getItem("config-data") ? JSON.parse(localStorage.getItem("config-data")) : [];
-	const [moduleChecked, setModuleChecked] = useState([]);
+	const [ moduleChecked, setModuleChecked ] = useState([]);
 
 	// Select data, error, and fetching state from Redux
 	const indexEntityData = useSelector((state) => state.crudSlice.indexEntityData);
 	const fetching = useSelector((state) => state.crudSlice.fetching);
-	const [reloadDomainData, setReloadDomainData] = useState(false);
+	const [ reloadDomainData, setReloadDomainData ] = useState(false);
 
 	// Filtered domainsData excluding the `configData.domain_id`
 	const domainsData = indexEntityData?.data
@@ -47,11 +46,11 @@ export default function BranchManagementForm() {
 		// Flatten all check_category arrays from all branches
 		const mergedCategories = domainsData.flatMap((branch) => branch?.check_category || []);
 		setModuleChecked(mergedCategories); // Set the merged values
-	}, [domainsData]);
+	}, [ domainsData ]);
 
-	const [checkedStates, setCheckedStates] = useState({});
-	const [customer, setCustomer] = useState({});
-	const [checkboxDisable, setCheckboxDisable] = useState({}); // Track loading for each checkbox
+	const [ checkedStates, setCheckedStates ] = useState({});
+	const [ customer, setCustomer ] = useState({});
+	const [ checkboxDisable, setCheckboxDisable ] = useState({}); // Track loading for each checkbox
 
 	// Fetch domains on component mount and when `reloadDomainData` changes
 	useEffect(() => {
@@ -65,35 +64,35 @@ export default function BranchManagementForm() {
 		};
 		dispatch(getIndexEntityData(value)); // Dispatch thunk
 		setReloadDomainData(false);
-	}, [dispatch, reloadDomainData]);
+	}, [ dispatch, reloadDomainData ]);
 
 	// Initialize checked states based on `domainsData`
 	useEffect(() => {
 		if (domainsData?.length > 0) {
 			const newState = domainsData.reduce((state, item) => {
 				if (item?.is_sub_domain) {
-					state[item.id] = true;
+					state[ item.id ] = true;
 				}
 				return state;
 			}, {});
 			setCheckedStates(newState);
 		}
-	}, [domainsData]);
+	}, [ domainsData ]);
 
 	const handleCheckboxChange = async (branch_id, isChecked) => {
-		const previousState = checkedStates[branch_id];
+		const previousState = checkedStates[ branch_id ];
 
 		// Set the checkbox to loading (disabled)
 		setCheckboxDisable((prevStates) => ({
 			...prevStates,
-			[branch_id]: true,
+			[ branch_id ]: true,
 		}));
 
 		if (!isChecked) {
 			// Optimistically update the checked state
 			setCheckedStates((prevStates) => ({
 				...prevStates,
-				[branch_id]: isChecked,
+				[ branch_id ]: isChecked,
 			}));
 			// return
 		} // Exit early if unchecked
@@ -116,7 +115,7 @@ export default function BranchManagementForm() {
 				// Revert the optimistic update if the API call fails
 				setCheckedStates((prevStates) => ({
 					...prevStates,
-					[branch_id]: previousState,
+					[ branch_id ]: previousState,
 				}));
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				setCustomer(resultAction.payload.data.data);
@@ -136,21 +135,21 @@ export default function BranchManagementForm() {
 			// Revert the change in case of unexpected errors
 			setCheckedStates((prevStates) => ({
 				...prevStates,
-				[branch_id]: previousState,
+				[ branch_id ]: previousState,
 			}));
 		} finally {
 			// Clear the loading state regardless of success or failure
 			setCheckboxDisable((prevStates) => ({
 				...prevStates,
-				[branch_id]: false,
+				[ branch_id ]: false,
 			}));
 		}
 	};
 
-	const [amounts, setAmounts] = useState({}); // Dynamic state object for tracking all amounts
+	const [ amounts, setAmounts ] = useState({}); // Dynamic state object for tracking all amounts
 	const handlePriceData = async (fieldId, value, index, customer_id) => {
-		const fieldNames = ["discount_percent", "bonus_percent", "monthly_target_amount"];
-		const fieldName = fieldNames[index] || "discount_percent"; // Optionally handle out-of-bounds indices
+		const fieldNames = [ "discount_percent", "bonus_percent", "monthly_target_amount" ];
+		const fieldName = fieldNames[ index ] || "discount_percent"; // Optionally handle out-of-bounds indices
 
 		if (!value || value <= 0) return; // Exit early if unchecked
 
@@ -171,11 +170,11 @@ export default function BranchManagementForm() {
 		}
 	};
 
-	const [shadowOverlay, setShadowOverlay] = useState({});
+	const [ shadowOverlay, setShadowOverlay ] = useState({});
 	const handleCategoryData = async (value, slug, isChecked, customerId) => {
 		setShadowOverlay((prevStates) => ({
 			...prevStates,
-			[slug]: slug,
+			[ slug ]: slug,
 		}));
 		const data = {
 			url: "domain/manage/branch/category/update",
@@ -320,10 +319,10 @@ export default function BranchManagementForm() {
 												>
 													<Checkbox
 														pr="xs"
-														checked={!!checkedStates[branch.id]}
+														checked={!!checkedStates[ branch.id ]}
 														color="var(--theme-primary-color-6)"
 														form={form}
-														disabled={!!checkboxDisable[branch.id]} // Disable if loading
+														disabled={!!checkboxDisable[ branch.id ]} // Disable if loading
 														onChange={(event) =>
 															handleCheckboxChange(branch.id, event.currentTarget.checked)
 														}
@@ -365,7 +364,7 @@ export default function BranchManagementForm() {
 												scrollbars="y"
 												type="never"
 											>
-												{!checkedStates[branch.id] && (
+												{!checkedStates[ branch.id ] && (
 													<Overlay color="#ffe3e3" backgroundOpacity={0.8} zIndex={1} />
 												)}
 
@@ -375,7 +374,7 @@ export default function BranchManagementForm() {
 													const nextFieldId =
 														priceIndex < branch?.prices.length - 1
 															? `branches.${index}.prices.${priceIndex + 1}.price`
-															: `branch-${index}-setting-${branch?.categories[0]?.id}`;
+															: `branch-${index}-setting-${branch?.categories[ 0 ]?.id}`;
 
 													return (
 														<Box key={`price-${priceIndex}-${index}`}>
@@ -400,18 +399,18 @@ export default function BranchManagementForm() {
 																				placeholder={price.label}
 																				autoComplete="off"
 																				value={
-																					amounts[`${index}-${priceIndex}`] ||
+																					amounts[ `${index}-${priceIndex}` ] ||
 																					(priceIndex == 0
 																						? price.discount_percent
 																						: priceIndex == 1
-																						? price.bonus_percent
-																						: price.monthly_target_amount)
+																							? price.bonus_percent
+																							: price.monthly_target_amount)
 																				} // Ensure value is derived dynamically
 																				onChange={(e) => {
 																					// Dynamically update the specific field state
 																					setAmounts((prev) => ({
 																						...prev,
-																						[`${index}-${priceIndex}`]:
+																						[ `${index}-${priceIndex}` ]:
 																							e.target.value,
 																					}));
 																				}}
@@ -460,7 +459,7 @@ export default function BranchManagementForm() {
 												type="hover"
 												scrollbarSize={10}
 											>
-												{(!checkedStates[branch.id] || shadowOverlay[branch.id]) && (
+												{(!checkedStates[ branch.id ] || shadowOverlay[ branch.id ]) && (
 													<Overlay color="#ffe3e3" backgroundOpacity={0.8} zIndex={1} />
 												)}
 

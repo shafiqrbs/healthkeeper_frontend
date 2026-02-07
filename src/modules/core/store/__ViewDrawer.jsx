@@ -2,13 +2,13 @@ import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function __ViewDrawer({ viewDrawer, setViewDrawer, module }) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight; //TabList height 104
-	const entityObject = useSelector((state) => state.crud[module].editData);
+	const entityObject = useSelector((state) => state.crud[ module ].editData);
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};

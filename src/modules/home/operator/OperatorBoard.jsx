@@ -1,19 +1,16 @@
-import { ActionIcon, Box, Card, Flex, Grid, Stack, Text, rem } from "@mantine/core";
-import { IconFileTypePdf, IconMicroscope, IconStethoscope, IconWallet } from "@tabler/icons-react";
+import { Box, Card, Flex, Grid, Stack, Text } from "@mantine/core";
+import { IconMicroscope, IconStethoscope, IconWallet } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CONFIGURATION_ROUTES, HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import DailyOverview from "@modules/home/common/DailyOverview";
-import { useReactToPrint } from "react-to-print";
-import { useEffect, useRef } from "react";
-import Home from "@hospital-components/print-formats/operator/Home";
+import { useEffect } from "react";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
-import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
+import { useDispatch } from "react-redux";
 import DashboardDailySummary from "@modules/hospital/reports/items/DashboardDailySummary";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const quickBrowseCardData = [
 	{
@@ -22,7 +19,7 @@ const quickBrowseCardData = [
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--theme-secondary-color-9)",
 		backgroundColor: "var(--theme-secondary-color-0)",
-		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
+		allowedRoles: [ "admin_administrator", "operator_opd", "operator_manager" ],
 	},
 	{
 		label: "Emergency",
@@ -30,7 +27,7 @@ const quickBrowseCardData = [
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 		color: "var(--mantine-color-cyan-8)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: ["admin_administrator", "operator_ipd", "operator_manager"],
+		allowedRoles: [ "admin_administrator", "operator_ipd", "operator_manager" ],
 	},
 	{
 		label: "IPD",
@@ -38,7 +35,7 @@ const quickBrowseCardData = [
 		route: "/payment",
 		color: "var(--mantine-color-cyan-7)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: ["admin_administrator", "operator_ipd", "operator_manager"],
+		allowedRoles: [ "admin_administrator", "operator_ipd", "operator_manager" ],
 	},
 
 	/*{
@@ -55,7 +52,7 @@ const quickBrowseCardData = [
 		route: "/hospital/visit",
 		color: "var(--mantine-color-yellow-7)",
 		backgroundColor: "var(--mantine-color-yellow-0)",
-		allowedRoles: ["doctor", "nurse", "admin"],
+		allowedRoles: [ "doctor", "nurse", "admin" ],
 	},
 	/*{
 		label: "manageStock",
@@ -68,20 +65,15 @@ const quickBrowseCardData = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function OperatorBoard({ height }) {
+export default function OperatorBoard() {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { user, userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const summaryReportsRef = useRef(null);
 	const dispatch = useDispatch();
-	const records = useSelector((state) => state.crud[module].data);
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
 		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
-
-	const handleHomeOverviewPrint = useReactToPrint({
-		content: () => summaryReportsRef.current,
-	});
 
 	useEffect(() => {
 		dispatch(
@@ -97,9 +89,9 @@ export default function OperatorBoard({ height }) {
 	}, []);
 
 	return (
-		<Grid columns={40} h={height} gutter={{ base: "xs" }}>
+		<Grid columns={40} h={mainAreaHeight} gutter={{ base: "xs" }}>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm" h={height - 8}>
+				<Card padding="lg" radius="sm" h={mainAreaHeight - 8}>
 					<Card.Section
 						h={32}
 						withBorder
@@ -150,7 +142,7 @@ export default function OperatorBoard({ height }) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={20}>
-				<DashboardDailySummary height={height} />
+				<DashboardDailySummary />
 			</Grid.Col>
 		</Grid>
 	);

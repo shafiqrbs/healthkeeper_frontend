@@ -1,23 +1,20 @@
 import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	const { data: getEmployeeGroups } = useGlobalDropdownData({
@@ -41,13 +38,13 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		} else {
 			form.reset();
 		}
-	}, [data, type]);
+	}, [ data, type ]);
 
 	useHotkeys(
 		[
-			["alt+n", () => document.getElementById("patient_mode_id").focus()],
-			["alt+r", () => form.reset()],
-			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
+			[ "alt+n", () => document.getElementById("patient_mode_id").focus() ],
+			[ "alt+r", () => form.reset() ],
+			[ "alt+s", () => document.getElementById("EntityFormSubmit").click() ],
 		],
 		[]
 	);

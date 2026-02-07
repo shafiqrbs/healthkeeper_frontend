@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
@@ -10,10 +9,11 @@ import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	useEffect(() => {
@@ -36,13 +36,13 @@ function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerD
 		} else {
 			form.reset();
 		}
-	}, [data, type]);
+	}, [ data, type ]);
 
 	useHotkeys(
 		[
-			["alt+n", () => document.getElementById("company_name").focus()],
-			["alt+r", () => form.reset()],
-			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
+			[ "alt+n", () => document.getElementById("company_name").focus() ],
+			[ "alt+r", () => form.reset() ],
+			[ "alt+s", () => document.getElementById("EntityFormSubmit").click() ],
 		],
 		[]
 	);

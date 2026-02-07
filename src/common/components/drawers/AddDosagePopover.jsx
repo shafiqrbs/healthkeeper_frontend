@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Popover, Text, Tooltip, ScrollArea } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
 import { IconPlus, IconRefreshDot, IconUserCircle, IconX } from "@tabler/icons-react";
 import InputForm from "@components/form-builders/InputForm";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
-import { useOutletContext } from "react-router-dom";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
@@ -20,16 +19,14 @@ const module = MODULES_CORE.DOSAGE;
 
 export default function AddDosagePopover({ form, bd = "auto" }) {
 	const { dosages } = useAppLocalStore();
-	const [key, setKey] = useState(0);
-	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight;
+	const [ key, setKey ] = useState(0);
 
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 
 	// =============== form state management ================
-	const [advanceSearchFormOpened, setAdvanceSearchFormOpened] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const [ advanceSearchFormOpened, setAdvanceSearchFormOpened ] = useState(false);
+	const [ isLoading, setIsLoading ] = useState(false);
 
 	const advanceSearchForm = useForm({
 		initialValues: {
@@ -67,7 +64,7 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					advanceSearchForm.setErrors(errorObject);
 				}
@@ -80,7 +77,7 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 
-				updateNestedState("hospitalConfig.dosages", [...dosages, resultAction.payload?.data?.data]);
+				updateNestedState("hospitalConfig.dosages", [ ...dosages, resultAction.payload?.data?.data ]);
 
 				setTimeout(() => {
 					form.setFieldValue("medicine_dosage_id", resultAction.payload?.data?.data?.id?.toString());
@@ -221,7 +218,7 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 						</Box>
 						<Box className="" p="les">
 							<Grid columns={20} gutter={{ base: "3xs" }}>
-								<Grid.Col span={6}/>
+								<Grid.Col span={6} />
 								<Grid.Col span={14}>
 									<Flex gap="es" align="left" justify="left">
 										<Flex gap="es" align="center">

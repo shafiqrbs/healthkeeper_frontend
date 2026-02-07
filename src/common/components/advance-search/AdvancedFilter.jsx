@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ActionIcon, Box, Button, Flex, Grid, Popover, Text, Tooltip, ScrollArea } from "@mantine/core";
 import {
 	IconDeviceMobile,
@@ -15,6 +15,7 @@ import { useForm } from "@mantine/form";
 import SelectForm from "@components/form-builders/SelectForm";
 import { ADVANCED_FILTER_SEARCH_OPERATOR } from "@/constants";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAMETER).map(([ key, value ], index) => ({
 	id: index,
@@ -22,9 +23,9 @@ const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAM
 	value: value,
 }));
 
-export default function AdvancedFilter({ mainAreaHeight, setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
+export default function AdvancedFilter({ bd = "auto" }) {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const [ key, setKey ] = useState(0);
-	const height = mainAreaHeight;
 
 	const { t } = useTranslation();
 
@@ -134,7 +135,7 @@ export default function AdvancedFilter({ mainAreaHeight, setRefreshCustomerDropd
 								</Text>
 							</Box>
 							<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
-								<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
+								<ScrollArea h={mainAreaHeight / 3} scrollbarSize={2} scrollbars="y" type="never">
 									<Box p="xs">
 										<Grid columns={15} gutter={{ base: "3xs" }}>
 											<Grid.Col span={3}>

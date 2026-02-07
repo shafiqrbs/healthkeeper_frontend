@@ -15,15 +15,17 @@ import { storeEntityData } from "@/app/store/core/crudThunk.js";
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import SwitchForm from "@components/form-builders/SwitchForm";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 function SettingsForm(props) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { isOnline } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 100; //TabList height 104
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
 	const effectRan = useRef(true);
-	const [settingTypeData, setSettingTypeData] = useState(null);
+	const [ settingTypeData, setSettingTypeData ] = useState(null);
 
 	const { saveId, settingTypeDropdown, setGroupDrawer } = props;
 
@@ -33,7 +35,7 @@ function SettingsForm(props) {
 			(setTimeout(() => {
 				document.getElementById("setting_type").click();
 			}, 100),
-			(effectRan.current = false));
+				(effectRan.current = false));
 	});
 
 	const settingsForm = useForm({

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
@@ -24,42 +24,43 @@ import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
 import { CORE_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 const PER_PAGE = 50;
 
 function _VendorTable({ open }) {
 	const isMounted = useMounted();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const height = mainAreaHeight - 78; //TabList height 104
 	const scrollViewportRef = useRef(null);
 	const os = useOs();
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
+	const [ page, setPage ] = useState(1);
+	const [ hasMore, setHasMore ] = useState(true);
 
-	const [fetching, setFetching] = useState(false);
+	const [ fetching, setFetching ] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const refetchData = useSelector((state) => state.crud.vendor.refetching);
 	const vendorListData = useSelector((state) => state.crud.vendor.data);
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
 
-	const [vendorObject, setVendorObject] = useState({});
+	const [ vendorObject, setVendorObject ] = useState({});
 	const navigate = useNavigate();
-	const [viewDrawer, setViewDrawer] = useState(false);
+	const [ viewDrawer, setViewDrawer ] = useState(false);
 
-	const [sortStatus, setSortStatus] = useState({
+	const [ sortStatus, setSortStatus ] = useState({
 		columnAccessor: "name",
 		direction: "asc",
 	});
 
-	const [records, setRecords] = useState(sortBy(vendorListData.data, "name"));
+	const [ records, setRecords ] = useState(sortBy(vendorListData.data, "name"));
 
 	useEffect(() => {
 		const data = sortBy(vendorListData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, vendorListData.data]);
+	}, [ sortStatus, vendorListData.data ]);
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
@@ -95,7 +96,7 @@ function _VendorTable({ open }) {
 							module: "vendor",
 							data: {
 								...vendorListData,
-								data: [...vendorListData.data, ...newData],
+								data: [ ...vendorListData.data, ...newData ],
 								total: total,
 							},
 						})
@@ -117,7 +118,7 @@ function _VendorTable({ open }) {
 		} else if (!hasMore) {
 			console.info("No more records");
 		}
-	}, [hasMore, fetching, page]);
+	}, [ hasMore, fetching, page ]);
 
 	// =============== combined logic for data fetching and scroll reset ================
 	useEffect(() => {
@@ -128,7 +129,7 @@ function _VendorTable({ open }) {
 			// reset scroll position when data is refreshed
 			scrollViewportRef.current?.scrollTo(0, 0);
 		}
-	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id]);
+	}, [ dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id ]);
 
 	const handleVendorEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
@@ -207,7 +208,7 @@ function _VendorTable({ open }) {
 		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX);
 	};
 
-	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateVendor()]]);
+	useHotkeys([ [ os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateVendor() ] ]);
 
 	return (
 		<>

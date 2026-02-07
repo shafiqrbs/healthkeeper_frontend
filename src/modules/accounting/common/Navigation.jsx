@@ -1,14 +1,5 @@
-import React from "react";
 import {
-	IconDeviceFloppy,
-	IconPlus,
 	IconDashboard,
-	IconReportMoney,
-	IconReportAnalytics,
-	IconBuildingCottage,
-	IconArmchair2,
-	IconCellSignal4,
-	IconSettings,
 	IconIcons,
 	IconCategory,
 	IconCopyCheck,
@@ -18,15 +9,13 @@ import {
 } from "@tabler/icons-react";
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import getConfigData from "../../../global-hook/config-data/getConfigData.js";
+import { useNavigate } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
-export default function Navigation(props) {
-	const { module, id } = props;
-	const { t, i18n } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+export default function Navigation() {
+	const { t } = useTranslation();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 28;
-	const { configData } = getConfigData();
 	const navigate = useNavigate();
 	return (
 		<>
@@ -51,7 +40,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/voucher-entry");
 								}}
 							>
@@ -97,7 +86,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/ledger");
 								}}
 							>
@@ -143,7 +132,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/transaction-mode");
 								}}
 							>
@@ -189,7 +178,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/head-group");
 								}}
 							>
@@ -235,7 +224,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={"black"}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/head-subgroup");
 								}}
 							>
@@ -279,7 +268,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/voucher-create");
 								}}
 							>
@@ -325,7 +314,7 @@ export default function Navigation(props) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/accounting/config");
 								}}
 							>

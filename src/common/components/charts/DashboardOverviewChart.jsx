@@ -2,6 +2,7 @@ import { BarChart } from "@mantine/charts";
 import { Box, Card, Flex, Stack, Text } from "@mantine/core";
 import { useMemo } from "react";
 import { format, parseISO } from "date-fns";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 // =============== transforms a single section's list of { date, total } into BarChart format ===============
 function transformSectionDataToChartData(records) {
@@ -22,7 +23,9 @@ function transformSectionDataToChartData(records) {
  * Single-section bar chart. Pass the section's data (array of { date, total }),
  * sectionLabel for the title, and color for the bars.
  */
-export default function DashboardOverviewChart({ data, sectionLabel, mainAreaHeight, color = "blue.6" }) {
+export default function DashboardOverviewChart({ data, sectionLabel, color = "blue.6" }) {
+    const { mainAreaHeight } = useMainAreaHeight();
+
     const seriesName = sectionLabel ?? "Total";
     const seriesConfig = [ { name: seriesName, color } ];
     const chartRows = useMemo(

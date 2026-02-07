@@ -1,10 +1,10 @@
-import { useOutletContext } from "react-router-dom";
 import { ActionIcon, Grid, Box, Drawer, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconX } from "@tabler/icons-react";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function __ViewDrawer({ viewDrawer, setViewDrawer, userObject }) {
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { t } = useTranslation();
 	const height = mainAreaHeight; //TabList height 104
 

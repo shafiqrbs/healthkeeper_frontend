@@ -1,14 +1,15 @@
-import React from "react";
 import { IconDashboard, IconIcons, IconCategory, IconShoppingBag, IconShoppingCart } from "@tabler/icons-react";
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
-export default function Navigation({ module, id }) {
+export default function Navigation() {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 20;
 	const navigate = useNavigate();
+
 	return (
 		<>
 			<ScrollArea h={height - 8} bg="var(--mantine-color-white)" type="never" className="border-radius">
@@ -32,7 +33,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/customer");
 								}}
 							>
@@ -75,7 +76,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/vendor");
 								}}
 							>
@@ -121,7 +122,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/user");
 								}}
 							>
@@ -167,7 +168,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/warehouse");
 								}}
 							>
@@ -213,7 +214,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={`black`}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/marketing-executive");
 								}}
 							>
@@ -259,7 +260,7 @@ export default function Navigation({ module, id }) {
 								variant={"light"}
 								color={"black"}
 								radius="xl"
-								onClick={(e) => {
+								onClick={() => {
 									navigate("/core/setting");
 								}}
 							>

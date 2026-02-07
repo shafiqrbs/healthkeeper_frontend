@@ -1,6 +1,6 @@
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useMediaQuery, useNetwork, useViewportSize } from "@mantine/hooks";
+import { useMediaQuery, useNetwork } from "@mantine/hooks";
 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
@@ -16,20 +16,14 @@ export default function AdminLayout() {
 	const matches = useMediaQuery("(max-width: 64em)");
 
 	const networkStatus = useNetwork();
-	const { height } = useViewportSize();
 
-	const [pageTitle, setPageTitle] = useState(() => t("ManageCustomer"));
+	const [ pageTitle, setPageTitle ] = useState(() => t("ManageCustomer"));
 
 	// check authentication
 	if (!user?.id) {
 		console.info("Not logged in, redirecting to login page.");
 		return <Navigate replace to="/login" />;
 	}
-
-	const headerHeight = 42;
-	const footerHeight = 58;
-	const padding = 0;
-	const mainAreaHeight = height - headerHeight - footerHeight - padding;
 
 	return (
 		<>
@@ -58,7 +52,6 @@ export default function AdminLayout() {
 									<Navigation
 										menu="base"
 										subMenu={"baseSubmenu"}
-										mainAreaHeight={mainAreaHeight}
 									/>
 								</Grid.Col>
 							)}
@@ -66,7 +59,6 @@ export default function AdminLayout() {
 								<Outlet
 									context={{
 										isOnline: networkStatus.online,
-										mainAreaHeight,
 										setPageTitle,
 									}}
 								/>

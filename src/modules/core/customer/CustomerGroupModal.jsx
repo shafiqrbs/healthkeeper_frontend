@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Button, Group, Text, Tooltip, ScrollArea, TextInput, Switch, Modal, LoadingOverlay } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -14,10 +14,10 @@ import { hasLength, useForm } from "@mantine/form";
 
 function CustomerGroupModel(props) {
 	const { openedModel, open, close } = props;
-	const { t, i18n } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { t } = useTranslation();
+	const { isOnline } = useOutletContext();
 
-	const [modelSubmit, setModelSubmit] = useState(false);
+	const [ modelSubmit, setModelSubmit ] = useState(false);
 
 	const formModal = useForm({
 		initialValues: {
@@ -66,7 +66,7 @@ function CustomerGroupModel(props) {
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",
-								(e) => {
+								() => {
 									document.getElementById("CustomerGroupStatus").focus();
 								},
 							],
@@ -138,7 +138,7 @@ function CustomerGroupModel(props) {
 									onCancel: () => console.info("Cancel"),
 									onConfirm: () => {
 										setModelSubmit(true);
-										setTimeout((e) => {
+										setTimeout(() => {
 											setModelSubmit(false);
 										}, 2000000);
 									},

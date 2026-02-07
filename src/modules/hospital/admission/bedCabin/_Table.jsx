@@ -18,7 +18,7 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import {IconChevronUp, IconDotsVertical, IconPencil, IconRepeatOff, IconSelector} from "@tabler/icons-react";
+import { IconChevronUp, IconDotsVertical, IconPencil, IconRepeatOff, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -52,10 +52,10 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 const PER_PAGE = 25;
 
 const tabs = [
-	{ label: "Bed/Cabin", value:"all" },
+	{ label: "Bed/Cabin", value: "all" },
 	{ label: "Empty", value: "empty" },
 	{ label: "Occupied", value: "occupied" },
-	{ label: "Non-paying", value:"non-paying" },
+	{ label: "Non-paying", value: "non-paying" },
 	{ label: "Paying", value: "paying" },
 	{ label: "Bed", value: "bed" },
 	{ label: "Cabin", value: "cabin" },
@@ -71,37 +71,37 @@ const CSV_HEADERS = [
 	{ label: "IPD", key: "ipd" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "operator_emergency", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator" ];
 
-export default function _Table({ module,height }) {
+export default function _Table({ module, height }) {
 	const csvLinkRef = useRef(null);
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
-	const [openedActions, { open: openActions, close: closeActions }] = useDisclosure(false);
-	const [openedRoomBedTransfer, { open: openRoomBedTransfer, close: closeRoomBedTransfer }] = useDisclosure(false);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [rootRef, setRootRef] = useState(null);
-	const [controlsRefs, setControlsRefs] = useState({});
-	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("all");
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [printData, setPrintData] = useState(null);
+	const [ openedActions, { open: openActions, close: closeActions } ] = useDisclosure(false);
+	const [ openedRoomBedTransfer, { open: openRoomBedTransfer, close: closeRoomBedTransfer } ] = useDisclosure(false);
+	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ controlsRefs, setControlsRefs ] = useState({});
+	const [ selectedId, setSelectedId ] = useState(null);
+	const [ processTab, setProcessTab ] = useState("all");
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const [ printData, setPrintData ] = useState(null);
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
-	const [billingPrintData, setBillingPrintData] = useState(null);
-	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [actionType, setActionType] = useState("change");
-	const [actionFormData, setActionFormData] = useState(null);
-	const [drawerPatientId, setDrawerPatientId] = useState(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
-	const [singlePatientData, setSinglePatientData] = useState({});
-	const [selectedRoom, setSelectedRoom] = useState({});
-	const listData = useSelector((state) => state.crud[module].data);
+	const [ billingPrintData, setBillingPrintData ] = useState(null);
+	const [ admissionFormPrintData, setAdmissionFormPrintData ] = useState(null);
+	const [ isLoading, setIsLoading ] = useState(false);
+	const [ actionType, setActionType ] = useState("change");
+	const [ actionFormData, setActionFormData ] = useState(null);
+	const [ drawerPatientId, setDrawerPatientId ] = useState(null);
+	const [ openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate } ] = useDisclosure(false);
+	const [ singlePatientData, setSinglePatientData ] = useState({});
+	const [ selectedRoom, setSelectedRoom ] = useState({});
+	const listData = useSelector((state) => state.crud[ module ].data);
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -127,7 +127,7 @@ export default function _Table({ module,height }) {
 	});
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -206,7 +206,7 @@ export default function _Table({ module,height }) {
 
 				if (fieldErrors) {
 					const errorObject = Object.keys(fieldErrors).reduce((acc, key) => {
-						acc[key] = fieldErrors[key][0];
+						acc[ key ] = fieldErrors[ key ][ 0 ];
 						return acc;
 					}, {});
 					form.setErrors(errorObject);
@@ -313,7 +313,7 @@ export default function _Table({ module,height }) {
 		}
 	};
 
-	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , refund: "orange" , empty: "blue" };
+	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue", refund: "orange", empty: "blue" };
 	const statusColorMap = { Occupied: "Red", Empty: "blue" };
 
 	return (
@@ -336,7 +336,7 @@ export default function _Table({ module,height }) {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -385,7 +385,7 @@ export default function _Table({ module,height }) {
 							title: t("Status"),
 							textAlignment: "right",
 							render: (item) => {
-								const color = statusColorMap[item.is_booked === 1 ? "Occupied" : "Empty"] || ""; // fallback for unknown status
+								const color = statusColorMap[ item.is_booked === 1 ? "Occupied" : "Empty" ] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.is_booked === 1 ? "Occupied" : "Empty"}
@@ -403,16 +403,16 @@ export default function _Table({ module,height }) {
 						},
 						{ accessor: "invoice", title: t("IPD") },
 						{ accessor: "customer_name", title: t("Name") },
-						{ accessor: "admission_day", title: t("Admission Day"),cellsClassName: tableCss.admissionBackground },
-						{ accessor: "consume_day", title: t("Payment"),cellsClassName: tableCss.paymentBackground },
-						{ accessor: "remaining_day", title: t("Remaining"),cellsClassName: tableCss.remainingBackground},
+						{ accessor: "admission_day", title: t("Admission Day"), cellsClassName: tableCss.admissionBackground },
+						{ accessor: "consume_day", title: t("Payment"), cellsClassName: tableCss.paymentBackground },
+						{ accessor: "remaining_day", title: t("Remaining"), cellsClassName: tableCss.remainingBackground },
 
 						{
 							accessor: "process",
 							textAlign: "center",
 							title: t("Process"),
 							render: (item) => {
-								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								const color = processColorMap[ item.process ] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process || 'empty'}
@@ -499,26 +499,26 @@ export default function _Table({ module,height }) {
 													</>
 												)}
 											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-											(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
-												<>
-													<Menu.Item
-														bg={'yellow'}
-														c='white'
-														leftSection={
-															<IconRepeatOff
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-														onClick={(e) =>
-															handlePatientCancel(e, item?.admission_id)
-														}>
-														{t("Cancel")}
-													</Menu.Item>
-												</>
-											)}
+												(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
+													<>
+														<Menu.Item
+															bg={'yellow'}
+															c='white'
+															leftSection={
+																<IconRepeatOff
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={(e) =>
+																handlePatientCancel(e, item?.admission_id)
+															}>
+															{t("Cancel")}
+														</Menu.Item>
+													</>
+												)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
@@ -548,6 +548,7 @@ export default function _Table({ module,height }) {
 					setSelectedId(null);
 					setActionFormData(null);
 				}}
+				mainAreaHeight={mainAreaHeight}
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}

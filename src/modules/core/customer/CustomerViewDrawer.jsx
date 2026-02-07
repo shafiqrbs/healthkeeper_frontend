@@ -1,5 +1,3 @@
-import React from "react";
-import { useOutletContext } from "react-router-dom";
 import {
     ActionIcon,
     Grid, Box, Drawer,
@@ -9,19 +7,12 @@ import { useTranslation } from 'react-i18next';
 import {
     IconX,
 } from "@tabler/icons-react";
-import { useSelector } from "react-redux";
-
-
-
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 function CustomerViewDrawer(props) {
-
-    const entityEditData = useSelector((state => state.crudSlice.entityEditData))
-
-
     const { viewDrawer, setViewDrawer, customerObject } = props
-    const { isOnline, mainAreaHeight } = useOutletContext();
-    const { t, i18n } = useTranslation();
+    const { mainAreaHeight } = useMainAreaHeight();
+    const { t } = useTranslation();
     const height = mainAreaHeight; //TabList height 104
     const closeDrawer = () => {
         setViewDrawer(false)

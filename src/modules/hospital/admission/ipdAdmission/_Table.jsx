@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import {
 	ActionIcon, Badge,
 	Box,
@@ -34,17 +33,13 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import ConfirmModal from "../confirm/__ConfirmModal";
-import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { capitalizeWords, formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
-import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
@@ -55,6 +50,7 @@ import { modals } from "@mantine/modals";
 import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import usePagination from "@hooks/usePagination";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 20;
 
@@ -65,37 +61,29 @@ const tabs = [
 	{ label: "Revised", value: "revised" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "operator_emergency", "admin_administrator" ];
 
 export default function _Table({ module }) {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
-	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
-	const [openedActions, { open: openActions, close: closeActions }] = useDisclosure(false);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [rootRef, setRootRef] = useState(null);
-	const [controlsRefs, setControlsRefs] = useState({});
-	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module]?.data);
+	const [ openedActions, { open: openActions, close: closeActions } ] = useDisclosure(false);
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ controlsRefs, setControlsRefs ] = useState({});
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 	const navigate = useNavigate();
-	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("admission");
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [printData, setPrintData] = useState(null);
+	const [ processTab, setProcessTab ] = useState("admission");
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
 	const admissionFormRef = useRef(null);
-	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
-	const [billingPrintData, setBillingPrintData] = useState(null);
-	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [actionType, setActionType] = useState("change");
-	const [actionFormData, setActionFormData] = useState(null);
-	const [drawerPatientId, setDrawerPatientId] = useState(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
-	const [singlePatientData, setSinglePatientData] = useState({});
+	const [ billingPrintData, setBillingPrintData ] = useState(null);
+	const [ admissionFormPrintData, setAdmissionFormPrintData ] = useState(null);
+	const [ actionType, setActionType ] = useState("change");
+	const [ drawerPatientId, setDrawerPatientId ] = useState(null);
+	const [ openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate } ] = useDisclosure(false);
+	const [ singlePatientData, setSinglePatientData ] = useState({});
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -114,7 +102,7 @@ export default function _Table({ module }) {
 	});
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -189,7 +177,6 @@ export default function _Table({ module }) {
 	};
 
 	async function handleConfirmModal() {
-		setIsLoading(true);
 		try {
 			const actionData = {
 				change_mode: actionType ?? "change",
@@ -210,7 +197,7 @@ export default function _Table({ module }) {
 
 				if (fieldErrors) {
 					const errorObject = Object.keys(fieldErrors).reduce((acc, key) => {
-						acc[key] = fieldErrors[key][0];
+						acc[ key ] = fieldErrors[ key ][ 0 ];
 						return acc;
 					}, {});
 					form.setErrors(errorObject);
@@ -226,7 +213,6 @@ export default function _Table({ module }) {
 		} finally {
 			setDrawerPatientId(null);
 			closeActions();
-			setIsLoading(false);
 		}
 	}
 
@@ -269,7 +255,7 @@ export default function _Table({ module }) {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -341,7 +327,7 @@ export default function _Table({ module }) {
 							textAlign: "center",
 							title: t("Process"),
 							render: (item) => {
-								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								const color = processColorMap[ item.process ] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process || 'empty'}
@@ -512,19 +498,6 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<ConfirmModal
-				opened={openedConfirm}
-				close={() => {
-					closeConfirm();
-					setSelectedId(null);
-					setActionFormData(null);
-				}}
-				form={confirmForm}
-				selectedId={selectedId}
-				module={module}
-				actionFormData={actionFormData}
-			/>
-
 			<GlobalDrawer opened={openedActions} close={handleCloseActions} title={t("Actions")} size="25%">
 				<Box mt="sm">
 					<Box component="form" onSubmit={actionForm.onSubmit(handleActionSubmit)} noValidate>
@@ -570,7 +543,8 @@ export default function _Table({ module }) {
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
 			)}
-			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
+			{/* exp */}
+			{/* {printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />} */}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
 		</Box>

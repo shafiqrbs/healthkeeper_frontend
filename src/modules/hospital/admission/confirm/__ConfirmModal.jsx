@@ -1,5 +1,3 @@
-import { useOutletContext } from "react-router-dom";
-
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Button, Flex, Grid, ScrollArea, Stack, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
@@ -16,18 +14,17 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { useDispatch } from "react-redux";
 import { capitalizeWords } from "@/common/utils";
 
-export default function ConfirmModal({ opened, close, form, selectedId, module,isReadmission = false }) {
+export default function ConfirmModal({ opened, close, form, selectedId, module, isReadmission = false, mainAreaHeight }) {
 	const dispatch = useDispatch();
-	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 140;
-	const [selectedRoom, setSelectedRoom] = useState(null);
+	const [ selectedRoom, setSelectedRoom ] = useState(null);
 	const { t } = useTranslation();
+
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
 
 	// =============== use action form data for requested information ================
-
 	const handleRoomClick = (room) => {
 		form.setFieldValue("room_id", room?.id?.toString());
 		setSelectedRoom(room);
@@ -47,7 +44,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module,i
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					form.setErrors(errorObject);
 				}
@@ -158,9 +155,8 @@ export default function ConfirmModal({ opened, close, form, selectedId, module,i
 										<Grid.Col span={10}>
 											<Text fz="sm" fw={500}>
 												{ipdData?.data?.year
-													? `${ipdData?.data?.year} Year, ${
-															ipdData?.data?.month || 0
-													  } Month, ${ipdData?.data?.day || 0} Day`
+													? `${ipdData?.data?.year} Year, ${ipdData?.data?.month || 0
+													} Month, ${ipdData?.data?.day || 0} Day`
 													: "-"}
 											</Text>
 										</Grid.Col>
@@ -274,7 +270,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module,i
 							</Flex> */}
 							<TabsWithSearch
 								moduleMap={{ Cabin: "cabin", Bed: "bed" }}
-								tabList={["Cabin", "Bed"]}
+								tabList={[ "Cabin", "Bed" ]}
 								searchbarContainerBg="var(--theme-primary-color-1)"
 								tabWidth="48%"
 								showDatePicker={false}

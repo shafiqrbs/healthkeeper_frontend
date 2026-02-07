@@ -1,11 +1,12 @@
 import { IconDashboard, IconUsers } from "@tabler/icons-react";
 import { Button, Flex, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function _Navigation(props) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 30;
 	const navigate = useNavigate();
 	return (

@@ -1,14 +1,14 @@
-import { useOutletContext } from "react-router-dom";
 import { ActionIcon, Box, ScrollArea, Drawer, Flex } from "@mantine/core";
 
 import { IconX } from "@tabler/icons-react";
 import SettingsForm from "../settings/SettingsForm.jsx";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 function CustomerGroupDrawer(props) {
 	const { groupDrawer, setGroupDrawer, saveId } = props;
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight; //TabList height 104
 
 	const { data: settingTypeDropdown } = useGlobalDropdownData({

@@ -1,5 +1,5 @@
-import { ActionIcon, Flex, Select, TextInput } from "@mantine/core";
-import { IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX } from "@tabler/icons-react";
+import { ActionIcon, Flex, Select } from "@mantine/core";
+import { IconFile, IconFileTypeXls, IconRestore, IconSearch } from "@tabler/icons-react";
 import AdvancedFilter from "@components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
@@ -11,7 +11,6 @@ import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { ERROR_NOTIFICATION_COLOR, MODULES_CORE } from "@/constants";
 import { useAuthStore } from "@/store/useAuthStore.js";
-import { notifications } from "@mantine/notifications";
 import { errorNotification } from "@components/notification/errorNotification.jsx";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
@@ -27,8 +26,6 @@ export default function ReportFilterSearch({
 	module,
 	onSearch,
 	onReset,
-	placeholder = "Keyword Search",
-	tooltip = "Search by patient name, mobile, email, etc.",
 	showDatePicker = true,
 	showAdvancedFilter = true,
 	showReset = true,
@@ -41,7 +38,6 @@ export default function ReportFilterSearch({
 	showWarehouse = false,
 	showInvoiceMode = false,
 	downloadOpeningTemplate = false,
-	mainAreaHeight,
 }) {
 	const dispatch = useDispatch();
 	const [ fetching, setFetching ] = useState(false);
@@ -83,25 +79,6 @@ export default function ReportFilterSearch({
 		fetchStockItemData()
 		setWarehouse(userWarehouse)
 	}, []);
-
-
-
-	const fetchUserData = async () => {
-		setFetching(true);
-		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT_MASTERDATA.REPORT_USERS,
-			module: roomModule,
-		};
-		try {
-			const result = await dispatch(getIndexEntityData(value)).unwrap();
-			const roomData = result?.data?.data || [];
-			setRecords(roomData);
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		} finally {
-			setFetching(false);
-		}
-	};
 
 	const fetchData = async () => {
 		setFetching(true);
@@ -170,19 +147,6 @@ export default function ReportFilterSearch({
 		if (onSearch) {
 			onSearch(data);
 		}
-	};
-
-	// =============== handle keyword change ================
-	const handleKeywordChange = (value) => {
-		setKeywordSearch(value);
-		debouncedSetKeywordInForm(value);
-	};
-
-	// =============== handle date change ================
-	const handleDateChange = (value) => {
-		//	form.setFieldValue("created", value ? formatDate(value) : "");
-		setDate(value);
-		//	handleSearch({ keywordSearch, created: value ? formatDate(value) : "", room_id: form.values.room_id });
 	};
 
 	// =============== handle reset functionality ================
@@ -316,7 +280,7 @@ export default function ReportFilterSearch({
 					</ActionIcon>
 				)}
 
-				{showAdvancedFilter && <AdvancedFilter mainAreaHeight={mainAreaHeight} />}
+				{showAdvancedFilter && <AdvancedFilter />}
 
 				<ActionIcon
 					c="var(--theme-success-color-3)"

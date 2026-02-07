@@ -48,7 +48,7 @@ const tabs = [
 
 const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd_confirm", "admin_administrator" ];
 
-export default function _Table({ module,height }) {
+export default function _Table({ module, height }) {
 	const dispatch = useDispatch();
 	const { userRoles } = useAppLocalStore();
 	const admissionFormRef = useRef(null);
@@ -406,6 +406,7 @@ export default function _Table({ module,height }) {
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}
+				mainAreaHeight={height}
 			/>
 			<ManageModal
 				opened={openedManage}

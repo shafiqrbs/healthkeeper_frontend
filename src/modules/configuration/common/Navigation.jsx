@@ -9,13 +9,14 @@ import {
 } from "@tabler/icons-react";
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function Navigation({ module }) {
 	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 30;
 	const navigate = useNavigate();
 
@@ -25,14 +26,14 @@ export default function Navigation({ module }) {
 				module === "opening-approve-stock"
 					? height
 					: module === "config" || module === "purchase-invoice"
-					? height
-					: module === "purchase" || module === "sales"
-					? height - 52
-					: module === "opening-stock"
-					? height + 4
-					: module
-					? height - 63
-					: height
+						? height
+						: module === "purchase" || module === "sales"
+							? height - 52
+							: module === "opening-stock"
+								? height + 4
+								: module
+									? height - 63
+									: height
 			}
 			bg="var(--mantine-color-white)"
 			type="never"

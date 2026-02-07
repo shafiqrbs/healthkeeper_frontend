@@ -1,74 +1,33 @@
-import { useEffect, useRef, useState } from "react";
-import { CSVLink } from "react-csv";
+import { useRef } from "react";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import {
 	ActionIcon,
 	Box,
 	Card,
 	Flex,
-	FloatingIndicator,
 	Grid,
 	rem,
 	ScrollArea,
 	Table,
-	Tabs,
 	Text,
 } from "@mantine/core";
 import {
-	IconBed,
-	IconChevronUp,
 	IconCoinTaka,
 	IconFileTypePdf,
-	IconSelector,
 } from "@tabler/icons-react";
-import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import tableCss from "@assets/css/Table.module.css";
-import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "@hospital-components/KeywordSearch";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useSelector } from "react-redux";
 import { capitalizeWords, formatDate } from "@/common/utils";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import { MODULES, MODULES_CORE } from "@/constants";
-import { useOutletContext } from "react-router-dom";
-import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
-import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import DailyOverview from "@modules/home/common/DailyOverview";
-import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
-import { t } from "i18next";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
-import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
-const PER_PAGE = 200;
-
-const CSV_HEADERS = [
-	{ label: "S/N", key: "sn" },
-	{ label: "Created", key: "created" },
-	{ label: "RoomNo", key: "visiting_room" },
-	{ label: "InvoiceID", key: "invoice" },
-	{ label: "PatientID", key: "patient_id" },
-	{ label: "Name", key: "name" },
-	{ label: "Mobile", key: "mobile" },
-	{ label: "Patient", key: "patient_payment_mode_name" },
-	{ label: "Total", key: "total" },
-	{ label: "CreatedBy", key: "created_by" },
-];
-
-const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
-
-export default function DashboardDailySummary({ height: mainAreaHeight }) {
-
-	//	const { mainAreaHeight } = useOutletContext();
-	const csvLinkRef = useRef(null);
+export default function DashboardDailySummary() {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state.crud[ module ].data);
 	const height = mainAreaHeight - 98;
 	const form = useForm({
 		initialValues: {
@@ -77,8 +36,7 @@ export default function DashboardDailySummary({ height: mainAreaHeight }) {
 		},
 	});
 
-	const [ controlsRefs, setControlsRefs ] = useState({});
-	const { data: records, isLoading } = useDataWithoutStore({
+	const { data: records } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 		params: {
 			start_date: form.values.start_date,
@@ -89,8 +47,6 @@ export default function DashboardDailySummary({ height: mainAreaHeight }) {
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
 	const userCollectionData = records?.data?.userBase || [];
-	const serviceGroups = records?.data?.serviceGroups || [];
-	const serviceData = records?.data?.services || [];
 	const patientServiceModeData = records?.data?.patientServiceMode || [];
 	const summaryReportsRef = useRef(null);
 	const handleHomeOverviewPrint = useReactToPrint({
@@ -117,20 +73,7 @@ export default function DashboardDailySummary({ height: mainAreaHeight }) {
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10), 0);
 
-
-	const totalUserCount = userCollectionData?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-
-	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10), 0);
-	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-
-	const totalServieGroupCount = serviceGroups?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10), 0);
-	const totalServiceGroupAmount = serviceGroups?.reduce(
-		(sum, item) => sum + (item.total ?? 0),
-		0
-	);
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">

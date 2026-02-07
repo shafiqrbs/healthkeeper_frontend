@@ -1,11 +1,10 @@
-import React from "react";
-import { useOutletContext } from "react-router-dom";
-import { ActionIcon, Grid, Box, Drawer, Text, Flex } from "@mantine/core";
+import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconArrowLeft, IconX } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { t } = useTranslation();
 	const height = mainAreaHeight; //TabList height 104
 	const closeDrawer = () => {

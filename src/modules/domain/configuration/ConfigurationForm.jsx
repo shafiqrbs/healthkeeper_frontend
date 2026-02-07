@@ -18,16 +18,17 @@ import InputNumberForm from "@components/form-builders/InputNumberForm.jsx";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function ConfigurationForm() {
 	const { id } = useParams();
-	const [configData, setConfigData] = useState(null);
-	const [formLoad, setFormLoad] = useState(true);
+	const [ configData, setConfigData ] = useState(null);
+	const [ formLoad, setFormLoad ] = useState(true);
 	const dispatch = useDispatch();
-	const [countryId, setCountryId] = useState(configData?.country_id?.toString() || "");
-	const [businessModelId, setBusinessModelId] = useState(configData?.business_model_id?.toString() || "");
-	const [posInvoiceModeId, setPosInvoiceModeId] = useState(configData?.pos_invoice_mode_id?.toString() || "");
-	const [currencyId, setCurrencyId] = useState(configData?.currency_id?.toString() || "");
+	const [ countryId, setCountryId ] = useState(configData?.country_id?.toString() || "");
+	const [ businessModelId, setBusinessModelId ] = useState(configData?.business_model_id?.toString() || "");
+	const [ posInvoiceModeId, setPosInvoiceModeId ] = useState(configData?.pos_invoice_mode_id?.toString() || "");
+	const [ currencyId, setCurrencyId ] = useState(configData?.currency_id?.toString() || "");
 	const posInvoiceModeDropdown = useGlobalDropdownData("pos_invoice_mode");
 
 	useEffect(() => {
@@ -55,20 +56,21 @@ export default function ConfigurationForm() {
 		};
 
 		fetchData();
-	}, [dispatch, id]);
+	}, [ dispatch, id ]);
 
 	const { t } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { isOnline } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight()
 	const height = mainAreaHeight - 100; //TabList height 104
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
 
 	const businessModelDropdown = useGlobalDropdownData("business_model");
 	const countryDropdown = useGlobalDropdownData("country");
 	const currencyDropdown = useGlobalDropdownData("currency");
-	const [configFetching, setConfigFetching] = useState(true);
-	const [setFormData, setFormDataForUpdate] = useState(false);
+	const [ configFetching, setConfigFetching ] = useState(true);
+	const [ setFormData, setFormDataForUpdate ] = useState(false);
 
-	const [files, setFiles] = useState([]);
+	const [ files, setFiles ] = useState([]);
 
 	// Form initialization
 	const form = useForm({
@@ -141,7 +143,7 @@ export default function ConfigurationForm() {
 	useEffect(() => {
 		setFormLoad(true);
 		setFormDataForUpdate(true);
-	}, [dispatch]);
+	}, [ dispatch ]);
 
 	useHotkeys(
 		[
@@ -184,10 +186,10 @@ export default function ConfigurationForm() {
 		try {
 			setSaveCreateLoading(true);
 
-			!posInvoiceModeId && (form.values["pos_invoice_mode_id"] = null);
+			!posInvoiceModeId && (form.values[ "pos_invoice_mode_id" ] = null);
 
 			if (files) {
-				form.values["logo"] = files[0];
+				form.values[ "logo" ] = files[ 0 ];
 			}
 
 			const booleanFields = [
@@ -233,7 +235,7 @@ export default function ConfigurationForm() {
 
 			// Convert Boolean values to 1 or 0 dynamically
 			booleanFields.forEach((field) => {
-				form.values[field] = values[field] === true || values[field] == 1 ? 1 : 0;
+				form.values[ field ] = values[ field ] === true || values[ field ] == 1 ? 1 : 0;
 			});
 
 			const value = {
@@ -1115,7 +1117,7 @@ export default function ConfigurationForm() {
 																				dispatch(
 																					showEntityData(
 																						"domain/restore/" +
-																							configData.domain_id
+																						configData.domain_id
 																					)
 																				);
 																				setConfigFetching(true);

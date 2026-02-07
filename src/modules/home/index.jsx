@@ -5,9 +5,9 @@ import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
-import { MODULES } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useNavigate } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator" ];
 const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency" ];
@@ -16,9 +16,9 @@ const ALLOWED_IPD_DOCTOR_ROLES = [ "doctor_ipd" ];
 const ALLOWED_RS_RP_DOCTOR_ROLES = [ "admin_doctor" ];
 const ALLOWED_LAB_ROLES = [ "lab_operator", "lab_assistant", "doctor_lab" ];
 const ALLOWED_EMERGENCY_ROLES = [ "doctor_emergency", "operator_emergency" ];
-const module = MODULES.VISIT;
 
-export default function Index({ height }) {
+export default function Index() {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { userRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
 	const navigate = useNavigate();
@@ -46,18 +46,18 @@ export default function Index({ height }) {
 	return (
 		<>
 			{progress !== 100 ? (
-				<HomeSkeleton height={height} />
+				<HomeSkeleton />
 			) : (
 				<Box p="md">
 					<Flex w="100%" gap="sm">
-						<Navigation module="home" mainAreaHeight={height} />
+						<Navigation module="home" />
 						{/* ================= carousel part ================== */}
-						<Box w="100%" mainAreaHeight={height}>
+						<Box w="100%" h={mainAreaHeight}>
 							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && (
-								<OperatorBoard height={height} />
+								<OperatorBoard />
 							)}
 							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
-								<AdminBoard height={height} />
+								<AdminBoard />
 							)}
 						</Box>
 					</Flex>

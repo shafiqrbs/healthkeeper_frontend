@@ -9,12 +9,13 @@ import Table from "./_Table";
 import EntityForm from "../form/EntityForm";
 import { MODULES } from "@/constants";
 
+const module = MODULES.ADMISSION;
+
 export default function Index() {
 	const { id } = useParams();
 	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const module = MODULES.ADMISSION;
 	return (
 		<>
 			{progress !== 100 ? (
@@ -28,7 +29,7 @@ export default function Index() {
 								<EntityForm form={form} module={module} />
 							</Box>
 						) : (
-							<Table module={module} />
+							<Table module={module} mainAreaHeight={mainAreaHeight} />
 						)}
 					</Flex>
 				</Box>

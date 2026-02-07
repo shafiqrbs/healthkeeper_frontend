@@ -8,6 +8,9 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { useDisclosure } from "@mantine/hooks";
 import DashboardOverviewChart from "@components/charts/DashboardOverviewChart";
 import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
+import AdmissionTable from "@modules/hospital/admission/ipdAdmission/_Table";
+import DischargedTable from "@modules/hospital/discharge/_Table";
+import { MODULES } from "@/constants";
 
 const OVERVIEW_CHART_SECTION = [
 	{ key: "monthlyOpd", label: "OPD", color: "yellow.7" },
@@ -16,24 +19,28 @@ const OVERVIEW_CHART_SECTION = [
 	{ key: "monthlyDischarged", label: "Discharged", color: "teal.7" },
 ];
 
-export default function AdminBoard({ height }) {
+const formatMoney = (value) =>
+	new Intl.NumberFormat("en-BD", {
+		minimumFractionDigits: 0,
+	}).format(value);
+
+const module = MODULES.ADMISSION;
+
+export default function AdminBoard() {
 	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ dischargedOpen, { open: openDischarged, close: closeDischarged } ] = useDisclosure(false);
+	const [ admissionOpen, { open: openAdmission, close: closeAdmission } ] = useDisclosure(false);
 	const { data: records } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
 	});
-	const monthlyOverview = records?.data?.monthlyOverview ?? records?.monthlyOverview ?? null;
 
+	const monthlyOverview = records?.data?.monthlyOverview ?? records?.monthlyOverview ?? null;
 
 	const patientStatus = records?.data?.patientStatus;
 
 	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const refundTotal = records?.data?.refundTotal || 0;
 	const waiverTotal = records?.data?.waiver_amount || 0;
-
-	const formatMoney = (value) =>
-		new Intl.NumberFormat("en-BD", {
-			minimumFractionDigits: 0,
-		}).format(value);
 
 	return (
 		<>
@@ -76,21 +83,21 @@ export default function AdminBoard({ height }) {
 					<Grid.Col span={20}>
 						<Grid gutter={{ base: "md" }}>
 							<Grid.Col span={4}>
-								<Card radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
+								<Card className="cursor-pointer" onClick={openAdmission} radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
 									<Text size="sm" c="green" fw={600} ta="center">ADMISSION</Text>
-									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_admission}</Text>
+									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_admission ?? 0}</Text>
 								</Card>
 							</Grid.Col>
 							<Grid.Col span={4}>
-								<Card radius="xs" bg="var(--mantine-color-red-0)" shadow="sm" withBorder >
+								<Card className="cursor-pointer" onClick={openDischarged} radius="xs" bg="var(--mantine-color-red-0)" shadow="sm" withBorder >
 									<Text size="sm" c="red" fw={600} ta="center">DISCHARGED</Text>
-									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_discharged}</Text>
+									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_discharged ?? 0}</Text>
 								</Card>
 							</Grid.Col>
 							<Grid.Col span={4}>
-								<Card radius="xs" bg="var(--mantine-color-blue-0)" shadow="sm" withBorder>
+								<Card className="cursor-pointer" radius="xs" bg="var(--mantine-color-blue-0)" shadow="sm" withBorder>
 									<Text size="sm" c="blue" fw={600} ta="center">ACTIVE PATIENT</Text>
-									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_total}</Text>
+									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_total ?? 0}</Text>
 								</Card>
 							</Grid.Col>
 						</Grid>
@@ -104,7 +111,6 @@ export default function AdminBoard({ height }) {
 							data={monthlyOverview?.[ section.key ] ?? []}
 							sectionLabel={section.label}
 							color={section.color}
-							mainAreaHeight={height}
 						/>
 					</Grid.Col>
 				))}
@@ -112,7 +118,19 @@ export default function AdminBoard({ height }) {
 
 			<Modal size="85%" opened={opened} onClose={close} title="Collection Overview" centered>
 				<Card padding="lg" radius="sm" h="100%">
-					<InvoiceSummary mainAreaHeight={height} />
+					<InvoiceSummary />
+				</Card>
+			</Modal>
+
+			<Modal size="85%" opened={dischargedOpen} onClose={closeDischarged} title="Discharged Patients" centered>
+				<Card padding="lg" radius="sm" h="100%">
+					<DischargedTable />
+				</Card>
+			</Modal>
+
+			<Modal size="85%" opened={admissionOpen} onClose={closeAdmission} title="Admission Patients" centered>
+				<Card padding="lg" radius="sm" h="100%">
+					<AdmissionTable module={module} />
 				</Card>
 			</Modal>
 		</>

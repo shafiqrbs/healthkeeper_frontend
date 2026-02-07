@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
@@ -42,10 +42,10 @@ import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
 import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
-import {setFilterData} from "@/app/store/core/crudSlice";
+import { setFilterData } from "@/app/store/core/crudSlice";
 import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
-import {getAdmissionConfirmFormInitialValues} from "@modules/hospital/admission/helpers/request";
+import { getAdmissionConfirmFormInitialValues } from "@modules/hospital/admission/helpers/request";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -55,26 +55,22 @@ const tabs = [
 ];
 
 const PER_PAGE = 100;
-const ALLOWED_ADMIN_DOCTOR_ROLES = ["admin_administrator", "role_domain"];
+const ALLOWED_ADMIN_DOCTOR_ROLES = [ "admin_administrator", "role_domain" ];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
-	const { mainAreaHeight } = useOutletContext();
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const listData = useSelector((state) => state.crud[module].data);
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const listData = useSelector((state) => state.crud[ module ].data);
 	const prescriptionRef = useRef(null);
-	const [opened, { open, close }] = useDisclosure(false);
+	const [ opened, { open, close } ] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
-	const userId = hospitalConfig?.employee_id;
-	const [selectedId, setSelectedId] = useState(null);
+	const [ selectedId, setSelectedId ] = useState(null);
 
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
-	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -95,15 +91,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		content: () => prescriptionRef.current,
 	});
 
-	const [rootRef, setRootRef] = useState(null);
-	const [processTab, setProcessTab] = useState("all");
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ processTab, setProcessTab ] = useState("all");
+	const [ controlsRefs, setControlsRefs ] = useState({});
 
-	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
+	const [ printData, setPrintData ] = useState({});
+	const [ type, setType ] = useState(null);
 
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -113,10 +109,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		} else if (type === "prescription") {
 			handlePrescriptionOption();
 		}
-	}, [printData, type]);
+	}, [ printData, type ]);
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -126,7 +122,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_ARCHIVE.INDEX,
 			filterParams: {
 				name: filterData?.name,
-				patient_mode:processTab,
+				patient_mode: processTab,
 				term: form.values.keywordSearch,
 				created: form.values.created,
 			},
@@ -167,7 +163,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -248,13 +244,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && values.process === "Paid"  && (
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && values.process === "Paid" && (
 											<Button
 												variant="filled"
 												bg="red"
 												c="white"
 												size="compact-xs"
-												onClick={() =>handleReadmission(values.uid)}
+												onClick={() => handleReadmission(values.uid)}
 												radius="es"
 												fw={400}
 												rightSection={<IconArrowRight size={18} />}
@@ -286,6 +282,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 			<ConfirmModal
+				mainAreaHeight={height}
 				opened={openedConfirm}
 				close={handleConfirmClose}
 				form={confirmForm}

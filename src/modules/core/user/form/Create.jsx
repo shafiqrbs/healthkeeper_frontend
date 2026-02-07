@@ -23,11 +23,13 @@ import { getUserFormValues } from "../helpers/request.js";
 import { useForm } from "@mantine/form";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function Create({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { isOnline } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 100; //TabList height 104
 	const form = useForm(getUserFormValues(t));
 	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);

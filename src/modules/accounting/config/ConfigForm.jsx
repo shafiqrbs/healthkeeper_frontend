@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
 import {
 	Button,
 	rem,
@@ -7,69 +6,44 @@ import {
 	Grid,
 	Box,
 	ScrollArea,
-	Group,
 	Text,
 	Title,
-	Alert,
-	List,
 	Stack,
-	SimpleGrid,
-	Image,
-	Tooltip,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconCheck, IconDeviceFloppy, IconInfoCircle, IconPlus } from "@tabler/icons-react";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
-import { useDispatch, useSelector } from "react-redux";
+import { IconCheck, IconDeviceFloppy } from "@tabler/icons-react";
+import { useHotkeys } from "@mantine/hooks";
+import { useDispatch } from "react-redux";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
-	setEntityNewData,
 	setFetching,
 	setValidationData,
-	storeEntityData,
 	storeEntityDataWithFile,
 } from "../../../../store/accounting/crudSlice.js";
 
 import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
-import TextAreaForm from "../../../form-builders/TextAreaForm";
-import InputNumberForm from "../../../form-builders/InputNumberForm";
 import SelectForm from "../../../form-builders/SelectForm.jsx";
 import getTransactionMethodDropdownData from "../../../global-hook/dropdown/getTransactionMethodDropdownData.js";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import getSettingAccountTypeDropdownData from "../../../global-hook/dropdown/getSettingAccountTypeDropdownData.js";
-import getSettingAuthorizedTypeDropdownData from "../../../global-hook/dropdown/getSettingAuthorizedTypeDropdownData.js";
 import SwitchForm from "../../../form-builders/SwitchForm";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
-function ConfigForm(props) {
-	const { t, i18n } = useTranslation();
+function ConfigForm() {
+	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 130; //TabList height 104
-	const [opened, { open, close }] = useDisclosure(false);
 
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-	const [authorisedData, setAuthorisedData] = useState(null);
-	const [methodData, setMethodData] = useState(null);
-	const [accountTypeData, setAccountTypeData] = useState(null);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
+	const [ authorisedData, setAuthorisedData ] = useState(null);
+	const [ methodData, setMethodData ] = useState(null);
+	const [ accountTypeData, setAccountTypeData ] = useState(null);
 
-	const validationMessage = useSelector((state) => state.crudSlice.validationMessage);
-	const validation = useSelector((state) => state.crudSlice.validation);
-	const entityNewData = useSelector((state) => state.crudSlice.entityNewData);
-	const authorisedTypeDropdownData = useSelector((state) => state.utilityUtilitySlice.settingDropdown);
-	const accountTypeDropdownData = useSelector((state) => state.utilityUtilitySlice.settingDropdown);
 
-	const authorizedDropdown = getSettingAuthorizedTypeDropdownData();
-	const accountDropdown = getSettingAccountTypeDropdownData();
 
-	const [files, setFiles] = useState([]);
-
-	const previews = files.map((file, index) => {
-		const imageUrl = URL.createObjectURL(file);
-		return <Image key={index} src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />;
-	});
+	const [ files, setFiles ] = useState([]);
 
 	const form = useForm({
 		initialValues: {
@@ -123,7 +97,7 @@ function ConfigForm(props) {
 								onCancel: () => console.info("Cancel"),
 								onConfirm: () => {
 									const formValue = { ...form.values };
-									formValue["path"] = files[0];
+									formValue[ "path" ] = files[ 0 ];
 
 									const data = {
 										url: "accounting/account-head",

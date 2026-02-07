@@ -1,5 +1,3 @@
-import React from "react";
-import { useOutletContext } from "react-router-dom";
 import {
     ActionIcon,
     Grid, Box, Drawer,
@@ -9,15 +7,12 @@ import { useTranslation } from 'react-i18next';
 import {
     IconX,
 } from "@tabler/icons-react";
-import { useSelector } from "react-redux";
-
-
-
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function _WarehouseViewDrawer(props) {
 
     const { viewDrawer, setViewDrawer, warehouseObject } = props
-    const { isOnline, mainAreaHeight } = useOutletContext();
+    const { mainAreaHeight } = useMainAreaHeight();
     const { t, i18n } = useTranslation();
     const height = mainAreaHeight; //TabList height 104
     const closeDrawer = () => {

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Group, Box, Button, LoadingOverlay, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 
@@ -12,18 +12,19 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function DomainUserTable() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 120;
 
 	const perPage = 50;
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [indexData, setIndexData] = useState([]);
+	const [ page, setPage ] = useState(1);
+	const [ loading, setLoading ] = useState(true);
+	const [ indexData, setIndexData ] = useState([]);
 
 	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
 
@@ -91,11 +92,11 @@ export default function DomainUserTable() {
 		} finally {
 			setLoading(false);
 		}
-	}, [dispatch, searchKeyword, page, perPage, t]);
+	}, [ dispatch, searchKeyword, page, perPage, t ]);
 
 	useEffect(() => {
 		fetchData();
-	}, [fetchData]);
+	}, [ fetchData ]);
 
 	return (
 		<Box style={{ position: "relative" }}>

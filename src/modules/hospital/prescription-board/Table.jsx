@@ -59,25 +59,25 @@ const tabs = [
 ];
 
 const PER_PAGE = 25;
-const ALLOWED_OPD_ROLES = ["doctor_opd", "doctor_ipd", "admin_administrator"];
-const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_rs_rp_confirm", "admin_doctor", "admin_administrator"];
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm","doctor_rs_rp_confirm", "admin_administrator"];
+const ALLOWED_OPD_ROLES = [ "doctor_opd", "doctor_ipd", "admin_administrator" ];
+const ALLOWED_ADMIN_DOCTOR_ROLES = [ "doctor_rs_rp_confirm", "admin_doctor", "admin_administrator" ];
+const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd_confirm", "doctor_rs_rp_confirm", "admin_administrator" ];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
+	const [ openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom } ] = useDisclosure(false);
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const listData = useSelector((state) => state.crud[module].data);
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
+	const listData = useSelector((state) => state.crud[ module ].data);
 	const prescriptionRef = useRef(null);
-	const [opened, { open, close }] = useDisclosure(false);
+	const [ opened, { open, close } ] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
 	const userId = hospitalConfig?.employee_id;
-	const [selectedId, setSelectedId] = useState(null);
+	const [ selectedId, setSelectedId ] = useState(null);
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 
 	const form = useForm({
@@ -99,18 +99,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		content: () => prescriptionRef.current,
 	});
 
-	const [rootRef, setRootRef] = useState(null);
-	const [processTab, setProcessTab] = useState("all");
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ processTab, setProcessTab ] = useState("all");
+	const [ controlsRefs, setControlsRefs ] = useState({});
 
-	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
+	const [ printData, setPrintData ] = useState({});
+	const [ type, setType ] = useState(null);
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
-	const [singlePatientData, setSinglePatientData] = useState({});
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [ openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate } ] = useDisclosure(false);
+	const [ singlePatientData, setSinglePatientData ] = useState({});
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -120,10 +120,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		} else if (type === "prescription") {
 			handlePrescriptionOption();
 		}
-	}, [printData, type]);
+	}, [ printData, type ]);
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -143,7 +143,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: ["opd", "emergency"],
+			patient_mode: [ "opd", "emergency" ],
 			term: form.values.keywordSearch,
 			prescription_mode: processTab,
 			created: form.values.created,
@@ -234,7 +234,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -308,7 +308,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
-												userId === values?.prescription_created_by_id ? (
+													userId === values?.prescription_created_by_id ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
@@ -323,7 +323,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														{t("Prescription")}
 													</Button>
 												) : values?.prescription_id &&
-												  (values.referred_mode === "room" ||
+													(values.referred_mode === "room" ||
 														userRoles.some((role) =>
 															ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)
 														)) ? (
@@ -341,10 +341,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														{t("Prescription")}
 													</Button>
 												) : !values?.prescription_id ||
-												  values.referred_mode === "room" ||
-												  userRoles.some((role) =>
+													values.referred_mode === "room" ||
+													userRoles.some((role) =>
 														ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)
-												  ) ? (
+													) ? (
 													<Button
 														fw={400}
 														variant="filled"
@@ -415,18 +415,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											</ActionIcon>
 										)}
 										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
-											 <Button
-												 variant="filled"
-												 bg="var(--theme-primary-color-6)"
-												 c="white"
-												 size="compact-xs"
-												 onClick={() => handleConfirm(values.uid || values.id)}
-												 radius="es"
-												 fw={400}
-												 rightSection={<IconArrowRight size={18} />}
-											 >
-												 {t("Admission")}
-											 </Button>
+											<Button
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleConfirm(values.uid || values.id)}
+												radius="es"
+												fw={400}
+												rightSection={<IconArrowRight size={18} />}
+											>
+												{t("Admission")}
+											</Button>
 										)}
 										<Menu
 											position="bottom-end"
@@ -506,6 +506,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				data={singlePatientData}
 			/>
 			<ConfirmModal
+				mainAreaHeight={mainAreaHeight}
 				opened={openedConfirm}
 				close={handleConfirmClose}
 				form={confirmForm}

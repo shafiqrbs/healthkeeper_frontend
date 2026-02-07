@@ -1,14 +1,12 @@
-import { Grid, Box, Button, Stack, Center, Tooltip, Title, Text, Container, Flex } from '@mantine/core'
+import useMainAreaHeight from '@hooks/useMainAreaHeight';
+import { Grid, Box, Button, Stack, Center, Tooltip, Title, Container, Flex } from '@mantine/core'
 import { IconCreditCardPay, IconCreditCardRefund, IconDeviceFloppy } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux';
-import { useOutletContext } from 'react-router-dom';
 
 export default function VoucherDetailSection(props) {
 
-    const { t, i18n } = useTranslation();
-    const dispatch = useDispatch();
-    const { isOnline, mainAreaHeight } = useOutletContext();
+    const { t } = useTranslation();
+    const { mainAreaHeight } = useMainAreaHeight();
     const height = mainAreaHeight - 184;
 
     return (
@@ -57,7 +55,7 @@ export default function VoucherDetailSection(props) {
                                         variant={'light'}
                                         color={`red.5`}
                                         radius="xl"
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             props.inputType === 'select' ?
                                                 document.getElementById(props.Name).click() :
                                                 document.getElementById(props.Name).focus()
@@ -97,7 +95,7 @@ export default function VoucherDetailSection(props) {
                                         variant={'light'}
                                         color={`red.5`}
                                         radius="xl"
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             props.form.reset()
                                         }}
                                     >
@@ -135,7 +133,7 @@ export default function VoucherDetailSection(props) {
                                         variant={'light'}
                                         color={`red.5`}
                                         radius="xl"
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             document.getElementById(props.FormSubmit).click()
                                         }}
                                     >
@@ -173,7 +171,7 @@ export default function VoucherDetailSection(props) {
                                         variant={'light'}
                                         color={`red.5`}
                                         radius="xl"
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             document.getElementById(props.FormSubmit).click()
                                         }}
                                     >
@@ -211,7 +209,7 @@ export default function VoucherDetailSection(props) {
                                         variant={'light'}
                                         color={`red.5`}
                                         radius="xl"
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             document.getElementById(props.FormSubmit).click()
                                         }}
                                     >

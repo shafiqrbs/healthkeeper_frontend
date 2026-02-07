@@ -1,10 +1,8 @@
 import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import { ActionIcon, Box, ScrollArea, Drawer, Text, Flex, Grid, Button, Title, Stack, Card } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 
 import { IconX, IconDeviceFloppy } from "@tabler/icons-react";
-import _SettingsForm from "../form/_SettingsForm.jsx";
 import SalesForm from "../inventory-configuration/SalesForm.js";
 import PurchaseForm from "../inventory-configuration/PurchaseForm.js";
 import RequisitionForm from "../inventory-configuration/RequisitionForm.js";
@@ -13,13 +11,14 @@ import { coreSettingDropdown } from "../../../../store/core/utilitySlice.js";
 import { setDropdownLoad } from "../../../../store/core/crudSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import PosForm from "../inventory-configuration/PosForm.js";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 function SettingDrawer(props) {
-	const { domainConfigData, settingDrawer, setSettingDrawer, module, config_purchase, config_requisition, id } =
+	const { domainConfigData, settingDrawer, setSettingDrawer, module, config_requisition, id } =
 		props;
 
-	const { isOnline, mainAreaHeight } = useOutletContext();
-	const { t, i18n } = useTranslation();
+	const { isOnline, mainAreaHeight } = useMainAreaHeight();
+	const { t } = useTranslation();
 	const height = mainAreaHeight - 100; //TabList height 104
 	const closeDrawer = () => {
 		setSettingDrawer(false);
@@ -33,8 +32,8 @@ function SettingDrawer(props) {
 	let groupDropdownData =
 		dropdownData && dropdownData.length > 0
 			? dropdownData.map((type, index) => {
-					return { label: type.name, value: String(type.id) };
-			  })
+				return { label: type.name, value: String(type.id) };
+			})
 			: [];
 	useEffect(() => {
 		const value = {
@@ -43,13 +42,13 @@ function SettingDrawer(props) {
 		};
 		dispatch(coreSettingDropdown(value));
 		dispatch(setDropdownLoad(false));
-	}, [dropdownLoad]);
+	}, [ dropdownLoad ]);
 
 	let groupVendorDropdownData =
 		vendorDropdownData && vendorDropdownData.length > 0
 			? vendorDropdownData.map((type, index) => {
-					return { label: type.name, value: String(type.id) };
-			  })
+				return { label: type.name, value: String(type.id) };
+			})
 			: [];
 	useEffect(() => {
 		const value = {
@@ -58,7 +57,7 @@ function SettingDrawer(props) {
 		};
 		dispatch(coreSettingDropdown(value));
 		dispatch(setDropdownLoad(false));
-	}, [dropdownLoad]);
+	}, [ dropdownLoad ]);
 	// console.log(groupVendorDropdownData)
 	const renderForm = () => {
 		switch (module) {

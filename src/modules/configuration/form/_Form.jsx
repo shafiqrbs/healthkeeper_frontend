@@ -16,14 +16,16 @@ import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import HealthShareForm from "./__HealthShareForm.jsx";
 import { API_GATEWAY_URL } from '../../../config.js';
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
-const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product", "HealthShare"];
+const NAV_ITEMS = [ "Domain", "Accounting", "Hospital", "Inventory", "Product", "HealthShare" ];
 
 export default function _Form({ module }) {
 	const { t } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
+	const { isOnline } = useOutletContext();
 	const height = mainAreaHeight - 104; //TabList height 104
-	const [activeTab, setActiveTab] = useState("Hospital");
+	const [ activeTab, setActiveTab ] = useState("Hospital");
 	const { domainConfig } = useDomainConfig();
 
 	const id = domainConfig?.id;
@@ -111,7 +113,7 @@ export default function _Form({ module }) {
 													borderRadius: 4,
 													cursor: "pointer",
 												}}
-												className={`${classes["pressable-card"]} border-radius`}
+												className={`${classes[ "pressable-card" ]} border-radius`}
 												mih={40}
 												mt="es"
 												variant="default"

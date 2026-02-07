@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
 	Button,
 	Grid,
@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import PasswordInputForm from "@components/form-builders/PasswordInputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -38,29 +37,30 @@ import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import dayjs from "dayjs";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function Update({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 100;
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-	const [setFormData, setFormDataForUpdate] = useState(false);
-	const [formLoad, setFormLoad] = useState(true);
-	const entityEditData = useSelector((state) => state.crud[module].editData);
-	const formLoading = useSelector((state) => state.crud[module].isLoading);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
+	const [ setFormData, setFormDataForUpdate ] = useState(false);
+	const [ formLoad, setFormLoad ] = useState(true);
+	const entityEditData = useSelector((state) => state.crud[ module ].editData);
+	const formLoading = useSelector((state) => state.crud[ module ].isLoading);
 	const navigate = useNavigate();
 
-	const [employeeGroupData, setEmployeeGroupData] = useState(null);
-	const [departmentData, setDepartmentData] = useState(null);
-	const [designationData, setDesignationData] = useState(null);
+	const [ employeeGroupData, setEmployeeGroupData ] = useState(null);
+	const [ departmentData, setDepartmentData ] = useState(null);
+	const [ designationData, setDesignationData ] = useState(null);
 
 	const form = useForm(getUserEditFormData(entityEditData, t));
 
 	useEffect(() => {
 		setFormLoad(true);
 		setFormDataForUpdate(true);
-	}, [dispatch, formLoading]);
+	}, [ dispatch, formLoading ]);
 
 	const handleFormReset = () => {
 		if (entityEditData) {
@@ -99,7 +99,7 @@ export default function Update({ module }) {
 			setFormLoad(false);
 			setFormDataForUpdate(false);
 		}, 500);
-	}, [dispatch, entityEditData]);
+	}, [ dispatch, entityEditData ]);
 
 	useHotkeys(
 		[
@@ -126,9 +126,9 @@ export default function Update({ module }) {
 	);
 
 	// Access control role management - FIXED VERSION
-	const [accessControlRole, setAccessControlRole] = useState([]);
+	const [ accessControlRole, setAccessControlRole ] = useState([]);
 
-	const [defaultGroupData] = useState([
+	const [ defaultGroupData ] = useState([
 		{ Group: "Operator", actions: [] },
 		{ Group: "Doctor", actions: [] },
 		{ Group: "Nurse", actions: [] },
@@ -139,12 +139,12 @@ export default function Update({ module }) {
 		{ Group: "Accounting", actions: [] },
 	]);
 
-	const [selectedAccessControlRoleData, setSelectedAccessControlRoleData] = useState([...defaultGroupData]);
+	const [ selectedAccessControlRoleData, setSelectedAccessControlRoleData ] = useState([ ...defaultGroupData ]);
 
 	// Initialize access control roles when component mounts
 	useEffect(() => {
 		if (accessControlRoleStaticData && accessControlRoleStaticData.length > 0) {
-			setAccessControlRole([...accessControlRoleStaticData]);
+			setAccessControlRole([ ...accessControlRoleStaticData ]);
 		}
 	}, []);
 
@@ -153,24 +153,24 @@ export default function Update({ module }) {
 		if (entityEditData?.access_control_roles && Array.isArray(entityEditData.access_control_roles)) {
 			if (entityEditData.access_control_roles.length > 0) {
 				// Set the selected data from entityEditData
-				setSelectedAccessControlRoleData([...entityEditData.access_control_roles]);
+				setSelectedAccessControlRoleData([ ...entityEditData.access_control_roles ]);
 			} else {
 				// Reset to default if no roles are assigned
-				setSelectedAccessControlRoleData([...defaultGroupData]);
+				setSelectedAccessControlRoleData([ ...defaultGroupData ]);
 			}
 		} else {
 			// Initialize with default empty structure if no data
-			setSelectedAccessControlRoleData([...defaultGroupData]);
+			setSelectedAccessControlRoleData([ ...defaultGroupData ]);
 		}
-	}, [entityEditData?.access_control_roles]);
+	}, [ entityEditData?.access_control_roles ]);
 
 	// Remove matching actions from available list when selected data changes
 	useEffect(() => {
 		if (selectedAccessControlRoleData.length > 0 && accessControlRoleStaticData) {
-			const result = removeMatchingActions([...accessControlRoleStaticData], selectedAccessControlRoleData);
+			const result = removeMatchingActions([ ...accessControlRoleStaticData ], selectedAccessControlRoleData);
 			setAccessControlRole(result);
 		}
-	}, [selectedAccessControlRoleData]);
+	}, [ selectedAccessControlRoleData ]);
 
 	// Fixed removeMatchingActions function
 	const removeMatchingActions = (sourceData, selectedData) => {
@@ -210,7 +210,7 @@ export default function Update({ module }) {
 				if (g.Group === group.Group) {
 					return {
 						...g,
-						actions: [...g.actions, action],
+						actions: [ ...g.actions, action ],
 					};
 				}
 				return g;
@@ -239,7 +239,7 @@ export default function Update({ module }) {
 				if (g.Group === group.Group) {
 					return {
 						...g,
-						actions: [...g.actions, action],
+						actions: [ ...g.actions, action ],
 					};
 				}
 				return g;
@@ -248,12 +248,12 @@ export default function Update({ module }) {
 	};
 
 	// Image handling
-	const [profileImage, setProfileImage] = useState([]);
-	const [digitalSignature, setDigitalSignature] = useState([]);
+	const [ profileImage, setProfileImage ] = useState([]);
+	const [ digitalSignature, setDigitalSignature ] = useState([]);
 
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
-			const imageUrl = URL.createObjectURL(imageArray[0]);
+			const imageUrl = URL.createObjectURL(imageArray[ 0 ]);
 			return (
 				<Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
 					<Image h={150} w={150} fit="cover" src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />
@@ -322,8 +322,8 @@ export default function Update({ module }) {
 					if (fieldErrors) {
 						const errorObject = {};
 						Object.keys(fieldErrors).forEach((key) => {
-							console.log(errorObject[key])
-							errorObject[key] = fieldErrors[key][0];
+							console.log(errorObject[ key ])
+							errorObject[ key ] = fieldErrors[ key ][ 0 ];
 						});
 						form.setErrors(errorObject);
 					}
@@ -346,7 +346,7 @@ export default function Update({ module }) {
 			const value = {
 				url: `core/user/image-inline/${entityEditData.id}`,
 				data: {
-					profile_image: files[0],
+					profile_image: files[ 0 ],
 				},
 				module,
 			};
@@ -360,7 +360,7 @@ export default function Update({ module }) {
 			const value = {
 				url: `core/user/image-inline/${entityEditData.id}`,
 				data: {
-					digital_signature: files[0],
+					digital_signature: files[ 0 ],
 				},
 				module,
 			};
@@ -423,9 +423,9 @@ export default function Update({ module }) {
 																		employeeGroupData
 																			? employeeGroupData
 																			: String(
-																					entityEditData?.employee_group_id ||
-																						""
-																			  )
+																				entityEditData?.employee_group_id ||
+																				""
+																			)
 																	}
 																	changeValue={setEmployeeGroupData}
 																/>
@@ -915,7 +915,7 @@ export default function Update({ module }) {
 												<Tooltip
 													label={t("ChooseImage")}
 													opened={
-														"profile_image" in form.errors && !!form.errors["profile_image"]
+														"profile_image" in form.errors && !!form.errors[ "profile_image" ]
 													}
 													px={16}
 													py={2}
@@ -936,9 +936,9 @@ export default function Update({ module }) {
 													>
 														<Text ta="center">
 															{profileImage &&
-															profileImage.length > 0 &&
-															profileImage[0].name ? (
-																profileImage[0].name
+																profileImage.length > 0 &&
+																profileImage[ 0 ].name ? (
+																profileImage[ 0 ].name
 															) : (
 																<span>{t("DropProfileImageHere")} (150 * 150)</span>
 															)}
@@ -955,7 +955,7 @@ export default function Update({ module }) {
 													label={t("ChooseImage")}
 													opened={
 														"digital_signature" in form.errors &&
-														!!form.errors["digital_signature"]
+														!!form.errors[ "digital_signature" ]
 													}
 													px={16}
 													py={2}
@@ -976,9 +976,9 @@ export default function Update({ module }) {
 													>
 														<Text ta="center">
 															{digitalSignature &&
-															digitalSignature.length > 0 &&
-															digitalSignature[0].name ? (
-																digitalSignature[0].name
+																digitalSignature.length > 0 &&
+																digitalSignature[ 0 ].name ? (
+																digitalSignature[ 0 ].name
 															) : (
 																<span>{t("DropDigitalSignatureHere")} (150 * 150)</span>
 															)}

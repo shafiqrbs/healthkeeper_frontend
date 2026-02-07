@@ -5,28 +5,30 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 import classes from "@assets/css/Navigation.module.css";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
-export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
+export default function Navigation({ menu = "base", subMenu = "" }) {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const links = useMemo(() => {
-		const menuLinks = sideNavigationLinks[menu] || [];
+		const menuLinks = sideNavigationLinks[ menu ] || [];
 		return menuLinks.filter(
 			(link) =>
 				link.allowedRoles && link.allowedRoles?.some((role) => userRoles.includes(role))
 		);
-	}, [menu, userRoles]);
+	}, [ menu, userRoles ]);
 
 	const subLinks = useMemo(() => {
-		const subMenuLinks = sideNavigationLinks[subMenu] || [];
+		const subMenuLinks = sideNavigationLinks[ subMenu ] || [];
 		return subMenuLinks.filter(
 			(link) =>
 				link.allowedRoles && link.allowedRoles?.some((role) => userRoles.includes(role))
 		);
-	}, [subMenu, userRoles]);
+	}, [ subMenu, userRoles ]);
 
 	return (
 		<Box>
@@ -99,17 +101,17 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 															{subItem.allowedRoles?.some((role) =>
 																userRoles.includes(role)
 															) && (
-																<Menu.Item
-																	onClick={() =>
-																		navigate(subItem.path)
-																	}
-																	leftSection={
-																		<subItem.icon size={14} />
-																	}
-																>
-																	{t(subItem.label)}
-																</Menu.Item>
-															)}
+																	<Menu.Item
+																		onClick={() =>
+																			navigate(subItem.path)
+																		}
+																		leftSection={
+																			<subItem.icon size={14} />
+																		}
+																	>
+																		{t(subItem.label)}
+																	</Menu.Item>
+																)}
 														</Fragment>
 													))}
 												</Menu.Dropdown>
@@ -150,11 +152,10 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 								{subLinks.map((item, index) => (
 									<Box
 										key={index}
-										className={`cursor-pointer ${classes["pressable-card"]}  ${
-											location.pathname === item.path
-												? classes["active-link"]
-												: ""
-										}`}
+										className={`cursor-pointer ${classes[ "pressable-card" ]}  ${location.pathname === item.path
+											? classes[ "active-link" ]
+											: ""
+											}`}
 										variant="default"
 										onClick={() => navigate(item.path)}
 										bg={location.pathname === item.path ? "gray.1" : "#ffffff"}

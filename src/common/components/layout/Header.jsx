@@ -50,10 +50,11 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useAuthStore } from "@/store/useAuthStore.js";
 import ChangePassword from "@modules/auth/ChangePassword";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const languages = [
 	{ label: "EN", value: "en", flag: flagGB },
@@ -133,48 +134,6 @@ const Logo = ({ configData, navigate }) => {
 		</Flex>
 	);
 };
-
-// Search Button Component
-const SearchButton = ({ t, onClick, matches2 }) => (
-	<Button
-		ml="auto"
-		leftSection={
-			<>
-				<IconSearch size={16} c={"white"} />
-				{!matches2 && (
-					<Text fz={`xs`} pl={"xs"} c={"gray.8"}>
-						{t("SearchMenu")}
-					</Text>
-				)}
-			</>
-		}
-		fullWidth={!matches2}
-		maw={matches2 ? 40 : "100%"}
-		variant="transparent"
-		rightSection={
-			<>
-				{!matches2 && (
-					<>
-						<Kbd h={"24"} c={"gray.8"} fz={"12"}>
-							Alt{" "}
-						</Kbd>{" "}
-						+{" "}
-						<Kbd c={"gray.8"} h={"24"} fz={"12"}>
-							{" "}
-							K
-						</Kbd>
-					</>
-				)}
-			</>
-		}
-		justify="space-between"
-		style={{ border: "1px solid #49362366" }}
-		color={"black"}
-		bg="var(--mantine-color-white)"
-		onClick={onClick}
-		className="no-focus-outline"
-	/>
-);
 
 // Search Input Component
 const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
@@ -277,7 +236,7 @@ const HeaderActions = ({ height, isOnline, fullscreen, toggle, loginUser, onLogo
 	const { t } = useTranslation();
 	const { colorScheme, setColorScheme } = useMantineColorScheme({ keepTransitions: true });
 	const storageKey = "mantine-color-scheme";
-	const [resetPasswordOpened, { open: openResetPassword, close: closeResetPassword }] = useDisclosure(false);
+	const [ resetPasswordOpened, { open: openResetPassword, close: closeResetPassword } ] = useDisclosure(false);
 
 	function getNextScheme(currentScheme) {
 		if (currentScheme === "auto") return "light";
@@ -364,32 +323,33 @@ const HeaderActions = ({ height, isOnline, fullscreen, toggle, loginUser, onLogo
 	);
 };
 
-export default function Header({ isOnline, configData, mainAreaHeight }) {
+export default function Header({ isOnline, configData }) {
 	const { user, userRoles } = useAppLocalStore();
-	const [opened, { close }] = useDisclosure(false);
+	const [ opened, { close } ] = useDisclosure(false);
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
-	const [languageSelected, setLanguageSelected] = useState(languages.find((item) => item.value === i18n.language));
-	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
-	const [value, setValue] = useState("");
-	const [filteredItems, setFilteredItems] = useState([]);
-	const [selectedIndex, setSelectedIndex] = useState(-1);
+	const [ languageSelected, setLanguageSelected ] = useState(languages.find((item) => item.value === i18n.language));
+	const [ shortcutModalOpen, setShortcutModalOpen ] = useState(false);
+	const [ value, setValue ] = useState("");
+	const [ filteredItems, setFilteredItems ] = useState([]);
+	const [ selectedIndex, setSelectedIndex ] = useState(-1);
 
 	useHotkeys(
 		[
-			["alt+k", () => setShortcutModalOpen(true)],
-			["alt+x", () => setShortcutModalOpen(false)],
-			["alt+l", handleLogout],
-			["alt+c", clearSearch],
+			[ "alt+k", () => setShortcutModalOpen(true) ],
+			[ "alt+x", () => setShortcutModalOpen(false) ],
+			[ "alt+l", handleLogout ],
+			[ "alt+c", clearSearch ],
 		],
 		[]
 	);
 
 	useEffect(() => {
 		if (selectedIndex >= 0 && filteredItems.length > 0) {
-			const selectedElement = document.getElementById(`item-${filteredItems[selectedIndex].index}`);
+			const selectedElement = document.getElementById(`item-${filteredItems[ selectedIndex ].index}`);
 			if (selectedElement) {
 				selectedElement.scrollIntoView({
 					behavior: "smooth",
@@ -397,12 +357,12 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				});
 			}
 		}
-	}, [selectedIndex, filteredItems]);
+	}, [ selectedIndex, filteredItems ]);
 
 	useEffect(() => {
-		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+		const allActions = getActions().reduce((acc, group) => [ ...acc, ...group.actions ], []);
 		setFilteredItems(allActions);
-	}, [shortcutModalOpen === true]);
+	}, [ shortcutModalOpen === true ]);
 
 	function getActions() {
 		const actions = shortcutDropdownData(t, configData);
@@ -449,7 +409,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 		const updatedList = getActions().reduce((acc, group) => {
 			if (hasAccessToGroup(group.group)) {
 				const filteredActions = group.actions.filter((action) => action.label.toLowerCase().includes(searchValue.toLowerCase()));
-				return [...acc, ...filteredActions];
+				return [ ...acc, ...filteredActions ];
 			}
 			return acc;
 		}, []);
@@ -460,7 +420,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 
 	function clearSearch() {
 		setValue("");
-		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+		const allActions = getActions().reduce((acc, group) => [ ...acc, ...group.actions ], []);
 		setFilteredItems(allActions);
 		setSelectedIndex(0);
 	}
@@ -475,7 +435,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 			event.preventDefault();
 			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
 		} else if (event.key === "Enter" && selectedIndex >= 0) {
-			handleActionSelect(filteredItems[selectedIndex]);
+			handleActionSelect(filteredItems[ selectedIndex ]);
 		}
 	}
 
@@ -583,7 +543,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 									} else {
 										groups.push({
 											group: item.group,
-											items: [item],
+											items: [ item ],
 										});
 									}
 									return groups;

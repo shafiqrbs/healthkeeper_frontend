@@ -13,17 +13,15 @@ import {
 	IconCategory,
 	IconUsers,
 } from "@tabler/icons-react";
-import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
+import { Button, Flex, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import getConfigData from "../../../global-hook/config-data/getConfigData";
+import { useNavigate } from "react-router-dom";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 export default function _Shortcut(props) {
-	const { module, id } = props;
 	const { t, i18n } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 30;
-	const { configData } = getConfigData();
 	const navigate = useNavigate();
 	return (
 		<>

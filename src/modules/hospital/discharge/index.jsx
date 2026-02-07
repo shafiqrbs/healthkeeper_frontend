@@ -18,18 +18,18 @@ import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 const module = MODULES.ADMISSION;
 
 export default function Index() {
-	const [showHistory, setShowHistory] = useState(false);
-	const [fetching, setFetching] = useState(false);
-	const [records, setRecords] = useState([]);
-	const [customerId, setCustomerId] = useState("");
+	const [ showHistory, setShowHistory ] = useState(false);
+	const [ fetching, setFetching ] = useState(false);
+	const [ records, setRecords ] = useState([]);
+	const [ customerId, setCustomerId ] = useState("");
 	const { dischargeId } = useParams();
-	const [dischargeMode, setDischargeMode] = useState("current");
+	const [ dischargeMode, setDischargeMode ] = useState("current");
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const [ openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview } ] =
 		useDisclosure(false);
 
 	const fetchData = async () => {
@@ -50,7 +50,7 @@ export default function Index() {
 		if (customerId) {
 			fetchData();
 		}
-	}, [customerId]);
+	}, [ customerId ]);
 
 	const hasRecords = records && records.length > 0;
 
@@ -65,6 +65,7 @@ export default function Index() {
 						<Grid w="100%" columns={24} gutter="xs">
 							<Grid.Col span={24} pos="relative" className="animate-ease-out">
 								<Table
+									mainAreaHeight={mainAreaHeight}
 									ipdMode={dischargeMode}
 									selectedPrescriptionId={selectedPrescriptionId}
 									setSelectedPrescriptionId={setSelectedPrescriptionId}

@@ -34,49 +34,48 @@ import {
 	setFormLoading,
 	setValidationData,
 	getShowEntityData,
-	updateEntityData,
 } from "../../../../store/inventory/crudSlice.js";
 import getSettingBusinessModelDropdownData from "../../../global-hook/dropdown/getSettingBusinessModelDropdownData.js";
 import SwitchForm from "../../../form-builders/SwitchForm.jsx";
 import ImageUploadDropzone from "../../../form-builders/ImageUploadDropzone.jsx";
-import InputNumberForm from "../../../form-builders/InputNumberForm.jsx";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 function ConfigurationForm() {
 	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { isOnline } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight()
 	const height = mainAreaHeight - 132; //TabList height 104
 
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-	const [businessModelData, setBusinessModelData] = useState(null);
-	const [testModelOpend, setTestModelOpend] = useState(false);
-	const [opened, { open, close }] = useDisclosure(false);
-	const [customerGroupData, setCustomerGroupData] = useState(null);
-	const [locationData, setLocationData] = useState(null);
-	const [marketingExeData, setMarketingExeData] = useState(null);
-	const [checked, setChecked] = useState(false);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
+	const [ businessModelData, setBusinessModelData ] = useState(null);
+	const [ testModelOpend, setTestModelOpend ] = useState(false);
+	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ customerGroupData, setCustomerGroupData ] = useState(null);
+	const [ locationData, setLocationData ] = useState(null);
+	const [ marketingExeData, setMarketingExeData ] = useState(null);
+	const [ checked, setChecked ] = useState(false);
 	const showEntityData = useSelector((state) => state.inventoryCrudSlice.showEntityData);
 
 	const validationMessage = useSelector((state) => state.inventoryCrudSlice.validationMessage);
 	const validation = useSelector((state) => state.inventoryCrudSlice.validation);
 
-	const [setFormData, setFormDataForUpdate] = useState(false);
-	const [formLoad, setFormLoad] = useState(true);
+	const [ setFormData, setFormDataForUpdate ] = useState(false);
+	const [ formLoad, setFormLoad ] = useState(true);
 	const executiveDropdownData = useSelector((state) => state.utilitySlice.executiveDropdownData);
 	let businessModelDropdown = getSettingBusinessModelDropdownData();
 	const locationDropdownData = useSelector((state) => state.utilitySlice.locationDropdownData);
 	let locationDropdown =
 		locationDropdownData && locationDropdownData.length > 0
 			? locationDropdownData.map((type, index) => {
-					return { label: type.name, value: String(type.id) };
-			  })
+				return { label: type.name, value: String(type.id) };
+			})
 			: [];
 	let executiveDropdown =
 		executiveDropdownData && executiveDropdownData.length > 0
 			? executiveDropdownData.map((type, index) => {
-					return { label: type.name, value: String(type.id) };
-			  })
+				return { label: type.name, value: String(type.id) };
+			})
 			: [];
 	useEffect(() => {
 		dispatch(getShowEntityData("inventory/config"));
@@ -140,12 +139,12 @@ function ConfigurationForm() {
 				// setSaveCreateLoading(false)
 			}, 700);
 		}
-	}, [validation, validationMessage]);
+	}, [ validation, validationMessage ]);
 
 	useEffect(() => {
 		setFormLoad(true);
 		setFormDataForUpdate(true);
-	}, [dispatch]);
+	}, [ dispatch ]);
 
 	useEffect(() => {
 		form.setValues({
@@ -161,7 +160,7 @@ function ConfigurationForm() {
 			setFormLoad(false);
 			setFormDataForUpdate(false);
 		}, 500);
-	}, [dispatch, setFormData]);
+	}, [ dispatch, setFormData ]);
 
 	// console.log(form.values)
 
@@ -560,7 +559,7 @@ function ConfigurationForm() {
 														nextField={"bodyBorderColor"}
 														name={"body_font_size"}
 														form={form}
-														dropdownValue={["Family", "Local"]}
+														dropdownValue={[ "Family", "Local" ]}
 														mt={8}
 														id={"BodyFontSize"}
 														searchable={false}

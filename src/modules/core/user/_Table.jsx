@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, rem, Menu } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconDotsVertical, IconTrashX } from "@tabler/icons-react";
@@ -7,7 +7,6 @@ import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
-// import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import __ViewDrawer from "./__ViewDrawer.jsx";
 import { getIndexEntityData, editEntityData, deleteEntityData } from "@/app/store/core/crudThunk.js";
@@ -16,6 +15,7 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { formatDate } from "@utils/index.js";
+import useMainAreaHeight from "@hooks/useMainAreaHeight.js";
 
 export default function _Table({ module }) {
 	const searchForm = useForm({
@@ -26,21 +26,21 @@ export default function _Table({ module }) {
 	});
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 98; //TabList height 104
-	const [fetching, setFetching] = useState(true);
+	const [ fetching, setFetching ] = useState(true);
 
-	const userFilterData = useSelector((state) => state.crud[module].filterData);
-	const fetchingReload = useSelector((state) => state.crud[module].refetching);
+	const userFilterData = useSelector((state) => state.crud[ module ].filterData);
+	const fetchingReload = useSelector((state) => state.crud[ module ].refetching);
 
 	const perPage = 50;
-	const [page, setPage] = useState(1);
+	const [ page, setPage ] = useState(1);
 	const navigate = useNavigate();
-	const [viewDrawer, setViewDrawer] = useState(false);
+	const [ viewDrawer, setViewDrawer ] = useState(false);
 
-	const [userObject, setUserObject] = useState(null);
+	const [ userObject, setUserObject ] = useState(null);
 
-	const [indexData, setIndexData] = useState([]);
+	const [ indexData, setIndexData ] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -73,7 +73,7 @@ export default function _Table({ module }) {
 		};
 
 		fetchData();
-	}, [searchForm.values?.keywordSearch, userFilterData, page, fetchingReload]);
+	}, [ searchForm.values?.keywordSearch, userFilterData, page, fetchingReload ]);
 
 	const handleEdit = (id) => {
 		dispatch(

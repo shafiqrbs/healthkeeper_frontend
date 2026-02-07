@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -18,6 +18,7 @@ import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useState } from "react";
 import usePagination from "@hooks/usePagination";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const PER_PAGE = 25;
 
@@ -25,11 +26,11 @@ export default function _Table({ module, open }) {
 	const { t } = useTranslation();
 	const os = useOs();
 	const dispatch = useDispatch();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 
 	// for infinity table data scroll, call the hook
 	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
@@ -43,7 +44,7 @@ export default function _Table({ module, open }) {
 		sortByKey: "name",
 	});
 
-	const [viewDrawer, setViewDrawer] = useState(false);
+	const [ viewDrawer, setViewDrawer ] = useState(false);
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -106,7 +107,7 @@ export default function _Table({ module, open }) {
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.SETTING.INDEX);
 	};
 
-	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
+	useHotkeys([ [ os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm() ] ]);
 
 	return (
 		<>

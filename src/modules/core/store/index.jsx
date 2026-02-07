@@ -9,7 +9,6 @@ import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import { MODULES } from "@/constants";
 
@@ -20,8 +19,8 @@ export default function Index({ mode = "create" }) {
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
-	const [opened, { open, close }] = useDisclosure(false);
-	const { mainAreaHeight } = useOutletContext();
+	const [ opened, { open, close } ] = useDisclosure(false);
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -46,7 +45,7 @@ export default function Index({ mode = "create" }) {
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={6}>
-									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
+									<Navigation menu="base" subMenu={"baseSubmenu"} />
 								</Grid.Col>
 							)}
 							<Grid.Col span={matches ? 30 : 30}>

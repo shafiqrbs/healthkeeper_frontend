@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
 	Group,
 	rem,
@@ -28,10 +28,11 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import classes from "../../../assets/css/FeaturesCards.module.css";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 function Sitemap() {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight - 80; //TabList height 104
 	const theme = useMantineTheme();
 	const navigate = useNavigate();
@@ -55,7 +56,7 @@ function Sitemap() {
 									<IconBuildingStore
 										style={{ width: rem(42), height: rem(42) }}
 										stroke={2}
-										color={theme.colors.teal[6]}
+										color={theme.colors.teal[ 6 ]}
 									/>
 								</Grid.Col>
 								<Grid.Col span={10}>
@@ -147,7 +148,7 @@ function Sitemap() {
 									<IconMoneybag
 										style={{ width: rem(42), height: rem(42) }}
 										stroke={2}
-										color={theme.colors.blue[6]}
+										color={theme.colors.blue[ 6 ]}
 									/>
 								</Grid.Col>
 								<Grid.Col span={10}>
@@ -239,7 +240,7 @@ function Sitemap() {
 									<IconMoneybag
 										style={{ width: rem(42), height: rem(42) }}
 										stroke={2}
-										color={theme.colors.orange[6]}
+										color={theme.colors.orange[ 6 ]}
 									/>
 								</Grid.Col>
 								<Grid.Col span={10}>
@@ -313,7 +314,7 @@ function Sitemap() {
 									<IconMoneybag
 										style={{ width: rem(42), height: rem(42) }}
 										stroke={2}
-										color={theme.colors.cyan[6]}
+										color={theme.colors.cyan[ 6 ]}
 									/>
 								</Grid.Col>
 								<Grid.Col span={10}>
@@ -387,7 +388,7 @@ function Sitemap() {
 									<IconFileTypePdf
 										style={{ width: rem(42), height: rem(42) }}
 										stroke={2}
-										color={theme.colors.teal[6]}
+										color={theme.colors.teal[ 6 ]}
 									/>
 								</Grid.Col>
 								<Grid.Col span={10}>

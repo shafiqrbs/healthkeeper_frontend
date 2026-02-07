@@ -1,5 +1,4 @@
-import React from "react";
-import { Box, Grid, Progress } from "@mantine/core";
+import { Box, Grid } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -9,10 +8,8 @@ import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
-import Shortcut from "@/modules/shortcut/Shortcut";
 import Form from "./form/__Form";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { useOutletContext } from "react-router-dom";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 
 function VendorIndex({ mode = "create" }) {
@@ -20,8 +17,7 @@ function VendorIndex({ mode = "create" }) {
 	const form = useForm(getVendorFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
-	const [opened, { open, close }] = useDisclosure(false);
-	const { mainAreaHeight } = useOutletContext();
+	const [ opened, { open, close } ] = useDisclosure(false);
 
 	return (
 		<>
@@ -40,7 +36,7 @@ function VendorIndex({ mode = "create" }) {
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={2}>
-									<Navigation module="base" mainAreaHeight={mainAreaHeight} />
+									<Navigation module="base" />
 								</Grid.Col>
 							)}
 

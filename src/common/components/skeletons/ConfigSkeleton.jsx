@@ -1,8 +1,8 @@
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 import { Box, Grid, Skeleton } from "@mantine/core";
-import { useOutletContext } from "react-router-dom";
 
 export default function ConfigSkeleton() {
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 
 	return (
 		<Box p="md">

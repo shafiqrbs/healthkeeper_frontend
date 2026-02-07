@@ -1,4 +1,3 @@
-import React from "react";
 import { Drawer, Button, Box, Flex, Text, ScrollArea, ActionIcon, Group } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { setGlobalFetching } from "@/app/store/core/crudSlice.js";
@@ -9,15 +8,15 @@ import UserFilterForm from "@/modules/core/user_bk/UserFilterForm.jsx";
 import ProductFilterForm from "@modules/inventory/product/ProductFilterForm.jsx";
 import CategoryGroupFilterForm from "@modules/inventory/category-group/CategoryGroupFilterForm.jsx";
 import CategoryFilterForm from "@modules/inventory/category/CategoryFilterForm.jsx";
-import { useOutletContext } from "react-router-dom";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import __ProductionSettingFilterForm from "@modules/production/settings/__ProductionSettingFilterForm.jsx";
 import WarehouseFilterForm from "@modules/core/warehouse/WarehouseFilterForm.jsx";
 import FileUploadFilterForm from "@modules/core/file-upload-bk/FIleUploadFIlterForm.jsx";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 function FilterModel({ filterModel, setFilterModel, module }) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useMainAreaHeight();
 	const height = mainAreaHeight;
 
 	const dispatch = useDispatch();

@@ -7,15 +7,13 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
 import { MODULES } from "@/constants";
 import Form from "./form/Form.jsx";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
 import Navigation from "@components/layout/Navigation";
 
 const module = MODULES.USER;
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
-	const insertType = useSelector((state) => state.crud[module].insertType);
-	const { mainAreaHeight } = useOutletContext();
+	const insertType = useSelector((state) => state.crud[ module ].insertType);
 	const progress = useGetLoadingProgress();
 
 	return (
@@ -34,7 +32,7 @@ export default function Index({ mode = "create" }) {
 					<Box p={"8"}>
 						<Grid columns={24} gutter={{ base: 8 }}>
 							<Grid.Col span={4}>
-								<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
+								<Navigation menu="base" subMenu={"baseSubmenu"} />
 							</Grid.Col>
 							{insertType === "create" && (
 								<Grid.Col span={11}>

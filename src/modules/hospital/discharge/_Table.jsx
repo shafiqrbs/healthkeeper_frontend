@@ -1,53 +1,54 @@
-import { useNavigate, useOutletContext } from "react-router-dom";
-import {IconArrowRight, IconChevronUp, IconPrinter, IconSelector} from "@tabler/icons-react";
-import {Badge, Box, Button, Flex, FloatingIndicator, Group, Tabs, Text} from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { IconArrowRight, IconChevronUp, IconPrinter, IconSelector } from "@tabler/icons-react";
+import { Badge, Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useTranslation } from "react-i18next";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import {capitalizeWords, formatDate, formatDateTimeAmPm} from "@utils/index";
+import { capitalizeWords, formatDateTimeAmPm } from "@utils/index";
 import { useForm } from "@mantine/form";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import usePagination from "@hooks/usePagination";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import {getDataWithoutStore} from "@/services/apiService";
-import {useSelector} from "react-redux";
-import {modals} from "@mantine/modals";
+import { getDataWithoutStore } from "@/services/apiService";
+import { useSelector } from "react-redux";
+import { modals } from "@mantine/modals";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
-import {useEffect, useRef, useState} from "react";
-import {useReactToPrint} from "react-to-print";
+import { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 import DrobFormBN from "@hospital-components/print-formats/dorb/DorbFormBN";
+import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd","doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
-const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm"];
+const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator" ];
+const ALLOWED_NURSE_ROLES = [ "role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm" ];
 
-const tabs = [
+const TABS = [
 	{ label: "Current", value: "paid" },
 	{ label: "DORB", value: "DORB" },
 	{ label: "Discharged", value: "discharged" },
 ];
 
 export default function _Table() {
+	const { mainAreaHeight } = useMainAreaHeight();
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const { userRoles } = useAppLocalStore();
-	const filterData = useSelector((state) => state.crud[module].filterData);
-	const [rootRef, setRootRef] = useState(null);
-	const [processTab, setProcessTab] = useState("paid");
-	const [controlsRefs, setControlsRefs] = useState({});
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ processTab, setProcessTab ] = useState("paid");
+	const [ controlsRefs, setControlsRefs ] = useState({});
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
 	const invoicePrintRef = useRef(null);
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const [ invoicePrintData, setInvoicePrintData ] = useState(null);
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
 
@@ -59,7 +60,7 @@ export default function _Table() {
 		},
 	});
 
-	const { refetchAll,scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
 		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
@@ -75,7 +76,7 @@ export default function _Table() {
 			direction: "desc",
 		});
 
-	const handleProcessConfirmation  = (id) => {
+	const handleProcessConfirmation = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -88,7 +89,7 @@ export default function _Table() {
 
 	const handlePatientDischarge = async (id) => {
 		if (id) {
-			const { data } = await getDataWithoutStore({
+			await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DISCHARGE_PROCESS}/${id}`,
 			});
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`, {
@@ -99,7 +100,7 @@ export default function _Table() {
 		}
 	};
 
-	const handleProcessDorbConfirmation  = (id) => {
+	const handleProcessDorbConfirmation = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -115,7 +116,7 @@ export default function _Table() {
 			const { data } = await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DORB_PROCESS}/${id}`,
 			});
-			if (res.status === 200) {
+			if (data) {
 				refetchAll();
 			}
 		} else {
@@ -133,9 +134,9 @@ export default function _Table() {
 		if (invoicePrintData) {
 			invoicePrint();
 		}
-	}, [invoicePrintData]);
+	}, [ invoicePrintData ]);
 
-	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
+	const processColorMap = { paid: "red", discharged: "green", refund: "orange", empty: "blue" };
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -146,7 +147,7 @@ export default function _Table() {
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
-							{tabs.map((tab, index) => (
+							{TABS.map((tab, index) => (
 								<Tabs.Tab
 									value={tab.value}
 									ref={setControlRef(tab)}
@@ -157,7 +158,7 @@ export default function _Table() {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -221,7 +222,7 @@ export default function _Table() {
 							textAlign: "center",
 							title: t("Process"),
 							render: (item) => {
-								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								const color = processColorMap[ item.process ] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process}
@@ -241,29 +242,29 @@ export default function _Table() {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
-										<Button
-											variant="filled"
-											size="compact-xs"
-											color="var(--theme-primary-color-6)"
-											onClick={() => handleProcessConfirmation(item.uid)}
-											rightSection={<IconArrowRight size={14} />}
-										>
-											{t("Process")}
-										</Button>
-									)}
+										(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
+											<Button
+												variant="filled"
+												size="compact-xs"
+												color="var(--theme-primary-color-6)"
+												onClick={() => handleProcessConfirmation(item.uid)}
+												rightSection={<IconArrowRight size={14} />}
+											>
+												{t("Process")}
+											</Button>
+										)}
 									{userRoles.some((role) => ALLOWED_NURSE_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund") && (
-										<Button
-											variant="filled"
-											size="compact-xs"
-											color="red"
-											onClick={() => handleProcessDorbConfirmation(item.uid)}
-											rightSection={<IconArrowRight size={14} />}
-										>
-											{t("DORB")}
-										</Button>
-									)}
+										(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund") && (
+											<Button
+												variant="filled"
+												size="compact-xs"
+												color="red"
+												onClick={() => handleProcessDorbConfirmation(item.uid)}
+												rightSection={<IconArrowRight size={14} />}
+											>
+												{t("DORB")}
+											</Button>
+										)}
 									{item?.release_mode === 'DORB' && (
 										<Button
 											variant="filled"
