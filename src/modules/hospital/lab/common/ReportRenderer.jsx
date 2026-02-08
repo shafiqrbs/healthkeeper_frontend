@@ -103,7 +103,7 @@ const ReportRenderer = forwardRef(
 						);
 					case "gene-sputum":
 						return (
-							<GeneXpert
+							<GeneSputum
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -111,7 +111,7 @@ const ReportRenderer = forwardRef(
 						);
 					case "gene-pulmonary":
 						return (
-							<GeneXpert
+							<GenePulmonary
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -151,7 +151,7 @@ const ReportRenderer = forwardRef(
 						);*/
 					case "gene-extra-sputum":
 						return (
-							<GeneXpert
+							<PulmonaryStatus
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -168,7 +168,7 @@ const ReportRenderer = forwardRef(
 						);
 					case "gene-extra-pulmonary":
 						return (
-							<GeneXpert
+							<PulmonaryStatus
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
