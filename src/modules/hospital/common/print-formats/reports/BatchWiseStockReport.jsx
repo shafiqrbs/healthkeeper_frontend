@@ -131,6 +131,7 @@ const BatchWiseStockReport = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Thead>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
+								<Table.Th>{t("Warehouse Name")}</Table.Th>
 								<Table.Th>{t("Name")}</Table.Th>
 								<Table.Th w={'80'}>{t("Expired Date")}</Table.Th>
 								<Table.Th w={'80'}>{t("StockQuantity")}</Table.Th>
@@ -142,6 +143,7 @@ const BatchWiseStockReport = forwardRef(({ data, preview = false }, ref) => {
 							{data?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
+									<Table.Td>{getValue(item?.warehouse_name)}</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.expired_date)}</Table.Td>
 									<Table.Td>{getValue(item?.purchase_quantity, "0")}</Table.Td>

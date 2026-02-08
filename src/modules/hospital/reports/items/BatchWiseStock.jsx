@@ -33,6 +33,7 @@ const PER_PAGE = 200;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
+	{ label: "Warehouse Name", key: "warehouse_name" },
 	{ label: "Item Name", key: "name" },
 	{ label: "Expired Date", key: "expired_date" },
 	{ label: "Stock Quantity", key: "purchase_quantity" },
@@ -62,6 +63,7 @@ export default function BatchWiseStock() {
 			start_date: null,
 			end_date: null,
 			stock_item_id: null,
+			warehouse_id: null,
 		},
 	});
 
@@ -80,6 +82,7 @@ export default function BatchWiseStock() {
 			start_date: form.values.start_date,
 			end_date: form.values.end_date,
 			stock_item_id: form.values.stock_item_id,
+			warehouse_id: form.values.warehouse_id,
 		},
 		perPage: PER_PAGE,
 	});
@@ -90,6 +93,7 @@ export default function BatchWiseStock() {
 
 	const csvData = records.map((item, index) => ({
 		sn: index + 1,
+		warehouse_name: item?.warehouse_name ?? "",
 		name: item?.name ?? "",
 		expired_date: item?.expired_date ?? "",
 		purchase_quantity: item?.purchase_quantity ?? 0,
@@ -124,7 +128,8 @@ export default function BatchWiseStock() {
 							module={module}
 							form={form}
 							handleCSVDownload={handleCSVDownload}
-							showStockItems
+							showStockItems={true}
+							showWarehouse={true}
 						/>
 					</Grid.Col>
 
@@ -181,6 +186,7 @@ export default function BatchWiseStock() {
 							render: (_, index) => index + 1,
 							footer: `Total: ${records.length}`,
 						},
+						{ accessor: "warehouse_name", title: t("Warehouse") },
 						{ accessor: "name", title: t("Item Name") },
 						{ accessor: "expired_date", title: t("Expired Date") },
 						{

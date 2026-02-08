@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "@modules/auth/Login";
 import Layout from "@components/layout/Layout";
 
 import VendorIndex from "@modules/core/vendor/VendorIndex";
@@ -47,7 +46,6 @@ import PatientArchiveIndex from "@modules/hospital/patient-archive";
 import AdminPatientIndex from "@modules/hospital/admin-patient";
 import RefundConfirmIndex from "@modules/hospital/refund-confirm";
 import DORBIndex from "@modules/hospital/dorb-confirm";
-// import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
