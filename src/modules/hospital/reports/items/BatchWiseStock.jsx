@@ -19,17 +19,16 @@ import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
 import BatchWiseStockReport from "@hospital-components/print-formats/reports/BatchWiseStockReport";
 
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { formatDate } from "@/common/utils";
 import tableCss from "@assets/css/Table.module.css";
+import usePagination from "@hooks/usePagination.js";
 
-const PER_PAGE = 200;
+const PER_PAGE = 30;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -50,10 +49,6 @@ export default function BatchWiseStock() {
 	const csvLinkRef = useRef(null);
 	const reportPrintRef = useRef(null);
 
-	const listData = useSelector(
-		(state) => state?.crud[module]?.data
-	);
-
 	const printReport = useReactToPrint({
 		content: () => reportPrintRef.current,
 	});
@@ -67,25 +62,19 @@ export default function BatchWiseStock() {
 		},
 	});
 
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
-		module,
-		fetchUrl:
-		PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.BATCH_WISE_STOCK_REPORT,
-		filterParams: {
-			start_date: form.values.start_date,
-			end_date: form.values.end_date,
-			stock_item_id: form.values.stock_item_id,
-			warehouse_id: form.values.warehouse_id,
-		},
-		perPage: PER_PAGE,
-	});
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } =
+		usePagination({
+			module,
+			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.BATCH_WISE_STOCK_REPORT,
+			filterParams: {
+				start_date: form.values.start_date,
+				end_date: form.values.end_date,
+				stock_item_id: form.values.stock_item_id,
+				warehouse_id: form.values.warehouse_id,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	/* =========================
        CSV DATA
@@ -160,8 +149,10 @@ export default function BatchWiseStock() {
 					height={mainAreaHeight - 100}
 					loaderSize="xs"
 					loaderColor="grape"
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -184,7 +175,6 @@ export default function BatchWiseStock() {
 							title: t("S/N"),
 							ta: "right",
 							render: (_, index) => index + 1,
-							footer: `Total: ${records.length}`,
 						},
 						{ accessor: "warehouse_name", title: t("Warehouse") },
 						{ accessor: "name", title: t("Item Name") },
@@ -213,12 +203,6 @@ export default function BatchWiseStock() {
 					]}
 				/>
 			</Box>
-
-			{/* Footer */}
-			<DataTableFooter
-				indexData={listData}
-				module={module}
-			/>
 
 			{/* CSV Export */}
 			<CSVLink
