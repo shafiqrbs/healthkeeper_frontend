@@ -36,6 +36,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
+							marginTop: "80px",
 							border: "1px solid var(--theme-tertiary-color-8)",
 						}}
 						className="customTable"
@@ -117,7 +118,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Gender")}:
 										</Text>
-										<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
+										<Text size="sm">{capitalizeWords(patientInfo?.gender || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -125,7 +126,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Age")}:
 										</Text>
-										<Text size="xs">
+										<Text size="sm">
 											{patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
 											{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
 											{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
@@ -139,7 +140,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("F/M/H")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
+										<Text >{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -165,7 +166,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("DOB")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.dob, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -173,7 +174,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("NID/Birth")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.nid, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.nid, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -194,7 +195,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("GuardianName")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -202,7 +203,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Relation")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td colSpan={2}>
@@ -210,7 +211,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
 										</Text>
-										<Text size="xs">
+										<Text size="sm">
 											{getValue(patientInfo?.mobile, "")}
 											{patientInfo?.guardian_mobile && (
 												<> / {getValue(patientInfo?.guardian_mobile, "")}</>
@@ -252,7 +253,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Unit")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -260,25 +261,17 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Department")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.admit_department_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={2}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("ConsultantDoctor")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("UnitDoctor")}:
-										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -316,6 +309,12 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
+					<Box ta="right" mt={'80px'} mr={'xl'}>
+						<Text fz="md">
+							<strong>{patientInfo?.prescription_doctor_name}</strong>
+						</Text>
+						<Text fz="xs">Doctor Signature</Text>
+					</Box>
 				</Box>
 			</Stack>
 		</Box>

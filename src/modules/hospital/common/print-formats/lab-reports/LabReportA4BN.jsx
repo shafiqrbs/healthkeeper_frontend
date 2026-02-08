@@ -523,7 +523,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											</Table>
 										</Box>
 									) : data?.invoiceParticular?.particular?.slug === "gene-sputum" ? (
-										<Box>Gene Sputum Report</Box>
+										<GeneXpert report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "gene-pulmonary" ? (
 										<Box>Gene Pulmonary Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ultrasonography" ? (
