@@ -144,7 +144,7 @@ export default function _Table({ module, open }) {
 				data={warehouseDropdown}
 				value={selected ? String(selected) : null}
 				onChange={(value) => handleInlineChange(userId, value)}
-				placeholder="Select warehouse"
+				placeholder="Select Department"
 				searchable
 				clearable
 				size="xs"
@@ -172,7 +172,7 @@ export default function _Table({ module, open }) {
 			},
 			{
 				accessor: "warehouse",
-				title: t("Warehouse"),
+				title: t("Department"),
 				width: "240px",
 				render: renderWarehouses,
 			},

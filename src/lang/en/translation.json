@@ -1683,7 +1683,7 @@
 	"FileProcess": "File Process",
 	"PatientMedicineIssue": "Patient Medicine Issue",
 	"DoctorOPDInformation": "Doctor Prescription",
-	"RequestQuantity": "Request Quantity",
+	"StoreUser": "Store User",
 	"ApproveQuantity": "Approve Quantity",
 	"CustomReportType": "Custom Report Type",
 	"ReportFormat": "Report Format",
