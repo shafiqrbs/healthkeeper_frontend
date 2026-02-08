@@ -48,7 +48,7 @@ const sampleTypes = [
 	{ label: "FNAC Fluid", value: "FNAC Fluid" },
 	{ label: "Synovial Fluid", value: "Synovial Fluid" },
 	{ label: "Bronchoalvolar Lavage", value: "Bronchoalvolar Lavage" },
-	{ label: "Others", value: "Others" },
+	{ label: "Sputum", value: "Sputum" }
 ];
 
 // drug columns configuration - split into two rows

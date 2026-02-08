@@ -243,46 +243,46 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 									<Text fz={'xs'} c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'blue.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'green.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_rif === 'R' ? 'red.8' : reportData?.dst_rif === 'S'? 'blue.8':'black.6'}>{reportData?.dst_rif || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_rif === 'R' ? 'red.8' : reportData?.dst_rif === 'S'? 'green.8':'black.6'}>{reportData?.dst_rif || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_flq === 'R' ? 'red.8' : reportData?.dst_flq === 'S'? 'blue.8':'black.6'}>{reportData?.dst_flq || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_flq === 'R' ? 'red.8' : reportData?.dst_flq === 'S'? 'green.8':'black.6'}>{reportData?.dst_flq || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_lfx === 'R' ? 'red.8' : reportData?.dst_lfx === 'S'? 'blue.8':'black.6'}>{reportData?.dst_lfx || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_lfx === 'R' ? 'red.8' : reportData?.dst_lfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_lfx || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_mfx === 'R' ? 'red.8' : reportData?.dst_mfx === 'S'? 'blue.8':'black.6'}>{reportData?.dst_mfx || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_mfx === 'R' ? 'red.8' : reportData?.dst_mfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_mfx || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_eth === 'R' ? 'red.8' : reportData?.dst_eth === 'S'? 'blue.8':'black.6'}>{reportData?.dst_eth || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_eth === 'R' ? 'red.8' : reportData?.dst_eth === 'S'? 'green.8':'black.6'}>{reportData?.dst_eth || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_bdq === 'R' ? 'red.8' : reportData?.dst_bdq === 'S'? 'blue.8':'black.6'}>{reportData?.dst_bdq || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_bdq === 'R' ? 'red.8' : reportData?.dst_bdq === 'S'? 'green.8':'black.6'}>{reportData?.dst_bdq || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_dlm === 'R' ? 'red.8' : reportData?.dst_dlm === 'S'? 'blue.8':'black.6'} >{reportData?.dst_dlm || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_dlm === 'R' ? 'red.8' : reportData?.dst_dlm === 'S'? 'green.8':'black.6'} >{reportData?.dst_dlm || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_pa === 'R' ? 'red.8' : reportData?.dst_pa === 'S'? 'blue.8':'black.6'}>{reportData?.dst_pa || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_pa === 'R' ? 'red.8' : reportData?.dst_pa === 'S'? 'green.8':'black.6'}>{reportData?.dst_pa || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_lzd === 'R' ? 'red.8' : reportData?.dst_lzd === 'S'? 'blue.8':'black.6'} >{reportData?.dst_lzd || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_lzd === 'R' ? 'red.8' : reportData?.dst_lzd === 'S'? 'green.8':'black.6'} >{reportData?.dst_lzd || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}  ta="center" c={reportData?.dst_cfz === 'R' ? 'red.8' : reportData?.dst_cfz === 'S'? 'blue.8':'black.6'} >{reportData?.dst_cfz || '-'}</Text>
+									<Text fz={'xs'}  ta="center" c={reportData?.dst_cfz === 'R' ? 'red.8' : reportData?.dst_cfz === 'S'? 'green.8':'black.6'} >{reportData?.dst_cfz || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_amk === 'R' ? 'red.8' : reportData?.dst_amk === 'S'? 'blue.8':'black.6'} >{reportData?.dst_amk || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_amk === 'R' ? 'red.8' : reportData?.dst_amk === 'S'? 'green.8':'black.6'} >{reportData?.dst_amk || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_kan === 'R' ? 'red.8' : reportData?.dst_kan === 'S'? 'blue.8':'black.6'}>{reportData?.dst_kan || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_kan === 'R' ? 'red.8' : reportData?.dst_kan === 'S'? 'green.8':'black.6'}>{reportData?.dst_kan || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_cap === 'R' ? 'red.8' : reportData?.dst_cap === 'S'? 'blue.8':'black.6'}>{reportData?.dst_cap || '-'}</Text>
+									<Text fz={'xs'} ta="center" c={reportData?.dst_cap === 'R' ? 'red.8' : reportData?.dst_cap === 'S'? 'green.8':'black.6'}>{reportData?.dst_cap || '-'}</Text>
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Text fz={'xs'} ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
@@ -324,8 +324,7 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 			</Grid.Col>
 		</Grid>
 		<Grid pt={'mt'}>
-			<Grid.Col span={6} ta="right"><strong>{t("PrintedBy")}:</strong> {user?.name}</Grid.Col>
-			<Grid.Col span={6} ta="left"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
+			<Grid.Col ta="center"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
 		</Grid>
 	</Box>
 		</>

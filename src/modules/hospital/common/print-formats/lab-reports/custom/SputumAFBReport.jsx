@@ -145,8 +145,7 @@ const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
 					</Grid.Col>
 				</Grid>
 				<Grid pt={'mt'}>
-					<Grid.Col span={6} ta="right"><strong>{t("PrintedBy")}:</strong> {user?.name}</Grid.Col>
-					<Grid.Col span={6} ta="left"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
+					<Grid.Col ta="center"><strong>{t("Date & Time")}:</strong>{" "}{new Date().toLocaleString()}</Grid.Col>
 				</Grid>
 			</Box>
 		</>
