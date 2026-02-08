@@ -36,7 +36,7 @@ const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
 											<strong>Test: </strong>{formatDate(reportData?.test_date)}
 										</Grid.Col>
 										<Grid.Col span={3}>
-											<strong>Receive: </strong>{formatDate(reportData?.date_specimen_received)}
+											<strong>Reporting: </strong>{formatDate(reportData?.date_specimen_received)}
 										</Grid.Col>
 										<Grid.Col span={3}>
 											<strong>Sample ID: </strong>{reportData?.sample_id}

@@ -28,10 +28,10 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 				<Box mb='md'>
 					<Grid columns={12}>
 						<Grid.Col span={3}>
-							<strong>Test Date: </strong>{formatDate(reportData?.test_date)}
+							<strong>Test: </strong>{formatDate(reportData?.test_date)}
 						</Grid.Col>
 						<Grid.Col span={3}>
-							<strong>Receive: </strong>{formatDate(reportData?.date_specimen_received)}
+							<strong>Reporting: </strong>{formatDate(reportData?.date_specimen_received)}
 						</Grid.Col>
 						<Grid.Col span={3}>
 							<strong>Sample ID: </strong>{reportData?.sample_id}
