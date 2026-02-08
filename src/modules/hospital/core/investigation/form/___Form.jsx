@@ -262,6 +262,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												dropdownValue={[
 													{ value: 'system', label: 'System' },
 													{ value: 'gene-xpert', label: 'Gene-Xpert' },
+													{ value: 'gene-sputum', label: 'Sputum for GeneXpert' },
+													{ value: 'gene-pulmonary', label: 'Pulmonary for GeneXpert' },
 													{ value: 'sputum-afb', label: 'Sputum for AFB' },
 													{ value: 'ct-scan', label: 'CT scan' },
 													{ value: 'mt-test', label: 'MT Test' },
