@@ -165,7 +165,7 @@ export default function _Table({ module }) {
 						},
 						{
 							accessor: "to_warehouse",
-							title: t("Warehouse"),
+							title: t("Department"),
 							sortable: true,
 						},
 						{

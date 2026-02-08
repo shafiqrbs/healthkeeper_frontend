@@ -56,7 +56,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, module, height
 	return (
 		<Drawer.Root
 			opened={viewDrawer}
-			size="xl"
+			size="65%"
 			position="right"
 			onClose={closeDrawer}
 			offset={16}
@@ -138,6 +138,12 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, module, height
 									{
 										accessor: "name",
 										title: t("MedicineName"),
+										textAlignment: "right",
+										sortable: false,
+									},
+									{
+										accessor: "item_expired_date",
+										title: t("ExpiredDate"),
 										textAlignment: "right",
 										sortable: false,
 									},

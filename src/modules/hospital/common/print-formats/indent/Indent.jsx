@@ -151,9 +151,9 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
-									<Table.Td>{getValue(item?.expired_date)}</Table.Td>
+									<Table.Td>{getValue(item?.item_expired_date)}</Table.Td>
 									<Table.Td>{getValue(item?.request_quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>

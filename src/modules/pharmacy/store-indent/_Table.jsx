@@ -5,7 +5,7 @@ import {
 	IconEye,
 	IconChevronUp,
 	IconSelector,
-	IconDeviceFloppy,
+	IconDeviceFloppy, IconPrinter,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,10 +17,13 @@ import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { editEntityData, showEntityData } from "@/app/store/core/crudThunk";
-import { useState } from "react";
+import {useRef, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import { errorNotification } from "@components/notification/errorNotification.jsx";
 import { successNotification } from "@components/notification/successNotification.jsx";
+import {useReactToPrint} from "react-to-print";
+import {getDataWithoutStore} from "@/services/apiService";
+import Indent from "@hospital-components/print-formats/indent/Indent";
 
 const PER_PAGE = 50;
 
@@ -34,6 +37,8 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const height = mainAreaHeight - 48;
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoicePrintRef = useRef(null);
 	// for infinity table data scroll, call the hook
 	const {
 		scrollRef,
@@ -96,6 +101,16 @@ export default function _Table({ module }) {
 			errorNotification("Error updating indent config:" + error.message);
 		}
 	};
+
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+	const handleDataPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
+		});
+		setInvoicePrintData(res.data);
+		requestAnimationFrame(invoicePrint);
+	};
+
 	const processColorMap = { Created: "Red", Received: "green", Approved: "blue" };
 
 	return (
@@ -145,7 +160,7 @@ export default function _Table({ module }) {
 						},
 						{
 							accessor: "to_warehouse",
-							title: t("Warehouse"),
+							title: t("Department"),
 							sortable: true,
 						},
 						{
@@ -200,6 +215,20 @@ export default function _Table({ module }) {
 										>
 											{t("View")}
 										</Button>
+										{(values.process === "Approved" || values.process === "Received") &&
+										values.approved_by_id && (
+											<Button
+												onClick={() => handleDataPrint(values.uid)}
+												variant="filled"
+												c="white"
+												size="compact-xs"
+												radius="es"
+												leftSection={<IconPrinter size={16} />}
+												className="border-right-radius-none"
+											>
+												{t("Print")}
+											</Button>
+										)}
 									</Button.Group>
 								</Group>
 							),
@@ -220,7 +249,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-
+			<Indent data={invoicePrintData} ref={invoicePrintRef} />
 			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer
 				viewDrawer={viewDrawer}

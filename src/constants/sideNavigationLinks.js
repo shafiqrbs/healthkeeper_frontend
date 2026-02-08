@@ -430,7 +430,7 @@ export const sideNavigationLinks = {
 					allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_doctor", "admin_administrator"],
 				},
 				{
-					label: t("Requisition"),
+					label: t("Indent Issue"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
