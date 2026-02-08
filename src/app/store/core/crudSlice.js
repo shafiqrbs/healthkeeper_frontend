@@ -242,6 +242,16 @@ const initialState = {
 		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
+	report: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+	},
+
 	treatment: {
 		isLoading: true,
 		refetching: false,

@@ -14,6 +14,7 @@ import { useAuthStore } from "@/store/useAuthStore.js";
 import { errorNotification } from "@components/notification/errorNotification.jsx";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
+const reportModule = MODULES_CORE.REPORT;
 const units = [ "Unit 1", "Unit 2", "Unit 3" ];
 const invoiceModes = [
 	{ id: "all", name: "All" },
@@ -35,6 +36,7 @@ export default function ReportFilterSearch({
 	handleCSVDownload = () => { },
 	handleCSVDownloadForUpload = () => { },
 	showStockItems = false,
+	showPurchaseWiseCenterWarehouseStockItems = false,
 	showWarehouse = false,
 	showInvoiceMode = false,
 	downloadOpeningTemplate = false,
@@ -43,6 +45,7 @@ export default function ReportFilterSearch({
 	const [ fetching, setFetching ] = useState(false);
 	const [ records, setRecords ] = useState([]);
 	const [ stockItems, setStockItems ] = useState([]);
+	const [ purchaseWiseCenterWarehousestockItems, setPurchaseWiseCenterWarehouseStockItems ] = useState([]);
 	const [ warehouseData, setWarehouseData ] = useState([]);
 	const [ warehouse, setWarehouse ] = useState([]);
 	const [ keywordSearch, setKeywordSearch ] = useState(form.values.keywordSearch || "");
@@ -50,6 +53,7 @@ export default function ReportFilterSearch({
 	const [ startDate, setStartDate ] = useState(null);
 	const [ endDate, setEndDate ] = useState(null);
 	const rooms = useSelector((state) => state.crud[ roomModule ].data);
+	const reports = useSelector((state) => state.crud[ reportModule ].data);
 	const userWarehouse = useAuthStore(state => state.warehouse);
 
 	// =============== debounce keyword to control api calls via form state ================
@@ -74,9 +78,26 @@ export default function ReportFilterSearch({
 			setFetching(false);
 		}
 	};
+	const fetchPurchaseWiseCenterWarehouseStockItemData = async () => {
+		setFetching(true);
+		const value = {
+			url: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.MEDICINE_PURCHASE_CENTER_STOCK_DROPDOWN,
+			module: reportModule,
+		};
+		try {
+			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			const itemData = result?.data?.data || [];
+			setPurchaseWiseCenterWarehouseStockItems(itemData);
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
+	};
 
 	useEffect(() => {
 		fetchStockItemData()
+		fetchPurchaseWiseCenterWarehouseStockItemData()
 		setWarehouse(userWarehouse)
 	}, []);
 
@@ -219,6 +240,7 @@ export default function ReportFilterSearch({
 
 			{showWarehouse && (
 				<Select
+					searchable
 					placeholder="Department"
 					loading={fetching}
 					data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}
@@ -231,9 +253,23 @@ export default function ReportFilterSearch({
 			{showStockItems && (
 				<Select
 					clearable
+					searchable
 					placeholder="Items"
 					loading={fetching}
 					data={stockItems.map((item) => ({ label: item.name, value: item.id?.toString() }))}
+					value={form.values.stock_item_id}
+					onChange={(value) => handleStockItemChange(value)}
+					w={250}
+				/>
+			)}
+
+			{showPurchaseWiseCenterWarehouseStockItems && (
+				<Select
+					clearable
+					searchable
+					placeholder="Items"
+					loading={fetching}
+					data={purchaseWiseCenterWarehousestockItems.map((item) => ({ label: item.name, value: item.id?.toString() }))}
 					value={form.values.stock_item_id}
 					onChange={(value) => handleStockItemChange(value)}
 					w={250}

@@ -358,6 +358,7 @@ export const PHARMACY_DATA_ROUTES = {
 		},
 		STOCK: {
 			MEDICINE_STOCK_DROPDOWN: "medicine/select/stock",
+			MEDICINE_PURCHASE_CENTER_STOCK_DROPDOWN: "medicine/select/purchase-wise/center-warehouse/stock",
 			GENERIC_STOCK_DROPDOWN: "hospital/select/medicine-stock",
 			PHARMACY_STOCK_HISTORY: "pharmacy/stock-item/history",
 			INDEX: "pharmacy/stock",

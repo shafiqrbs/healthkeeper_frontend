@@ -41,6 +41,7 @@ export const MODULES = {
 
 export const MODULES_CORE = {
 	OPD_ROOM: "opd_room",
+	REPORT: "report",
 	INVESTIGATION: "investigation",
 	BED: "bed",
 	ADVICE: "advice",
