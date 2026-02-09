@@ -310,6 +310,7 @@ export const sideNavigationLinks = {
 				"doctor_rs_rp_confirm",
 				"doctor_emergency",
 				"doctor_opd",
+				"doctor_ipd",
 				"doctor_approve_opd",
 				"doctor_approve_ipd",
 			],

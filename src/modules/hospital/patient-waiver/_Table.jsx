@@ -29,7 +29,7 @@ const PER_PAGE = 25;
 const tabs = [
 	{ label: "OPD Investigation", value: "opd_investigation" },
 	{ label: "IPD Investigation", value: "ipd_investigation" },
-	{ label: "IPD Room/Bed", value: "ipd_room" },
+	/*{ label: "IPD Room/Bed", value: "ipd_room" },*/
 ];
 
 const ALLOWED_CONFIRMED_ROLES = [
@@ -170,6 +170,7 @@ export default function _Table({ module }) {
 							),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "invoice", title: t("InvoiceId") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", title: t("Gender") },
@@ -177,7 +178,7 @@ export default function _Table({ module }) {
 						{ accessor: "admit_unit_name", title: t("Unit") },
 						{ accessor: "admit_department_name", title: t("Department") },
 						{ accessor: "admit_doctor_name", title: t("Doctor") },
-						{ accessor: "visiting_room", title: t("Cabin/Bed") },
+						{ accessor: "room_name", title: t("Cabin/Bed") },
 						{
 							accessor: "total",
 							title: t("Amount"),
