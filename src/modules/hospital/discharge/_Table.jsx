@@ -24,7 +24,7 @@ import useMainAreaHeight from "@hooks/useMainAreaHeight";
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
 const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator" ];
-const ALLOWED_NURSE_ROLES = [ "role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm" ];
+const ALLOWED_NURSE_ROLES = [ "role_domain", "admin_administrator", "nurse_basic", "operator_emergency", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm" ];
 
 const TABS = [
 	{ label: "Current", value: "paid" },
