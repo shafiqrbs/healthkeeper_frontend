@@ -21,6 +21,8 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
+	console.log(patientInfo)
+
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
@@ -69,7 +71,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 				ff="Arial, sans-serif"
 				fz={12}
 			>
-				<Box  mb="lg" h={980} >
+				<Box  mb="lg" h={970} >
 					<Table
 						style={{
 							margin: 0,
@@ -112,14 +114,13 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-									colSpan={5}
-								>
+									colSpan={6}>
 									<Text fw="bold" fz={'xl'}  ta={'center'}>Nurse/Pharma Requisition Approval</Text>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-										  colSpan={5}
+										  colSpan={6}
 								>
 									<Flex gap="md" justify="center">
 										<Text fw="bold" ta="left" fz={'12'}>
@@ -138,10 +139,11 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colSpan={5} style={{ height: 16 }}>&nbsp;</Table.Td>
+								<Table.Td colSpan={6} style={{ height: 16 }}>&nbsp;</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
+								<Table.Th>{t("Category")}</Table.Th>
 								<Table.Th>{t("Generic")}</Table.Th>
 								<Table.Th>{t("Exp Date")}</Table.Th>
 								<Table.Th>{t("Requisition QTY")}</Table.Th>
@@ -150,10 +152,11 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							{patientInfo?.stock_transfer_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
-									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
-									<Table.Td>{getValue(item?.item_expired_date)}</Table.Td>
-									<Table.Td>{getValue(item?.request_quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
+									<Table.Td fz={'xs'}>{getValue(item?.category)}</Table.Td>
+									<Table.Td fz={'xs'}>{getValue(item?.name)}</Table.Td>
+									<Table.Td fz={'xs'}>{getValue(item?.item_expired_date)}</Table.Td>
+									<Table.Td fz={'xs'}>{getValue(item?.request_quantity, "0")}</Table.Td>
+									<Table.Td fz={'xs'}>{getValue(item?.quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>

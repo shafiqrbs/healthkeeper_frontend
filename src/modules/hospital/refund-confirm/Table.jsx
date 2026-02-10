@@ -34,8 +34,7 @@ const ALLOWED_ADMIN_DOCTOR_ROLES = [
 	"doctor_emergency",
 	"doctor_rs_rp_confirm",
 	"doctor_ipd",
-	"doctor_rs_rp_confirm",
-	"operator_emergency",
+	"doctor_rs_rp_confirm"
 ];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {

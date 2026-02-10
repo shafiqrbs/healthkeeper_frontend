@@ -38,26 +38,24 @@ export default function Index() {
 
 	const col1 = [
 		{ label: "Patient ID", value: safe(entity.patient_id) },
-		{ label: "Health ID", value: safe(entity.health_id) },
-		{ label: "Prescription ID", value: safe(entity.invoice) },
+		{ label: "Invoice ID", value: safe(entity.invoice) },
 	];
 
 	const col2 = [
 		{ label: "Name", value: safe(entity.name) },
-		{ label: "Mobile", value: safe(entity.mobile) },
-		{ label: "Gender", value: safe(entity.gender) },
+		{ label: "Age", value: safe(entity.year) },
 	];
 
 	const col3 = [
-		{ label: "Pres. Created", value: safe(entity.prescription_created) },
-		{ label: "Pres. ID", value: safe(entity.prescription_doctor_id) },
-		{ label: "Doctor", value: safe(entity.prescription_doctor_name) },
+		{ label: "Gender", value: safe(entity.gender) },
+		{ label: "Mobile", value: safe(entity.mobile) },
 	];
 
 	const col4 = [
-		{ label: "Process", value: safe(entity.process) },
-		{ label: "Created By", value: safe(entity.created_by_name ?? entity.created_by_user_name) },
+		{ label: "Pres. Created", value: safe(entity.prescription_created) },
+		{ label: "Doctor", value: safe(entity.prescription_doctor_name) },
 	];
+
 
 	const columns = [col1, col2, col3, col4];
 
