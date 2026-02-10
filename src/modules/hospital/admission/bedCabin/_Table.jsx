@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -18,7 +18,14 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import { IconChevronUp, IconDotsVertical, IconPencil, IconRepeatOff, IconSelector } from "@tabler/icons-react";
+import {
+	IconChevronUp,
+	IconDotsVertical, IconFileText,
+	IconPencil,
+	IconPrinter,
+	IconRepeatOff,
+	IconSelector
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -48,6 +55,7 @@ import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer
 import { CSVLink } from "react-csv";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import useMainAreaHeight from "@hooks/useMainAreaHeight";
+import {useReactToPrint} from "react-to-print";
 
 const PER_PAGE = 25;
 
@@ -102,6 +110,7 @@ export default function _Table({ module, height }) {
 	const [ singlePatientData, setSinglePatientData ] = useState({});
 	const [ selectedRoom, setSelectedRoom ] = useState({});
 	const listData = useSelector((state) => state.crud[ module ].data);
+
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -315,6 +324,16 @@ export default function _Table({ module, height }) {
 
 	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue", refund: "orange", empty: "blue" };
 	const statusColorMap = { Occupied: "Red", Empty: "blue" };
+	const printAdmissionForm = useReactToPrint({
+		content: () => admissionFormRef.current,
+	});
+	const handleAdmissionFormPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
+		});
+		setAdmissionFormPrintData(res.data);
+		requestAnimationFrame(printAdmissionForm);
+	};
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
@@ -519,6 +538,22 @@ export default function _Table({ module, height }) {
 														</Menu.Item>
 													</>
 												)}
+											<Menu.Item
+												leftSection={
+													<IconFileText
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={(e) => {
+													e.stopPropagation();
+													handleAdmissionFormPrint(item?.admission_id);
+												}}
+											>
+												{t("AdmissionForm")}
+											</Menu.Item>
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
@@ -639,11 +674,6 @@ export default function _Table({ module, height }) {
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
-			{selectedPrescriptionId && (
-				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
-			)}
-			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
 		</Box>
 	);

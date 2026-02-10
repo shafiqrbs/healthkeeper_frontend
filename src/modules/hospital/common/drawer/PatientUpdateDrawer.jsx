@@ -1,9 +1,9 @@
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import {Box, Button, Flex, Grid, Stack, Text, TextInput} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -17,12 +17,16 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { formatDOB } from "@utils/index";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import useMainAreaHeight from "@hooks/useMainAreaHeight";
+import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const module = MODULES.VISIT;
 
 export default function PatientUpdateDrawer({ opened, close, type, data }) {
+
 	const [ records, setRecords ] = useState([]);
+	const { hospitalSettingData } = useHospitalSettingData();
 	const dispatch = useDispatch();
 
 	const form = useForm({
@@ -81,29 +85,13 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		form.setFieldValue("month", data?.month || "");
 		form.setFieldValue("day", data?.day || "");
 		form.setFieldValue("gender", data?.gender || "");
-
-		if (type === "opd") {
+		form.setFieldValue("admit_unit_id", data?.admit_unit_id || "");
+		form.setFieldValue("admit_department_id", data?.admit_department_id || "");
+		form.setFieldValue("room_id", data?.room_id || "");
+		/*if (type === "opd") {
 			form.setFieldValue("room_id", data?.room_id || "");
-		}
+		}*/
 	}, [ data ]);
-
-	/*const handleDobChange = () => {
-		const type = form.values.ageType || "year";
-		const formattedDOB = formatDOB(form.values.dob);
-		const formattedAge = calculateAge(formattedDOB, type);
-		form.setFieldValue("age", formattedAge);
-
-		// Calculate detailed age from date of birth
-		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(formattedDOB);
-			form.setFieldValue("year", detailedAge.years);
-			form.setFieldValue("month", detailedAge.months);
-			form.setFieldValue("day", detailedAge.days);
-		}
-	};
-	useEffect(() => {
-		handleDobChange();
-	}, [JSON.stringify(form.values.dob)]);*/
 
 	async function handleSubmit(values) {
 		try {
@@ -151,7 +139,6 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setTimeout(() => {
-					useVendorDataStoreIntoLocalStorage();
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module }));
 					close(); // close the drawer
@@ -249,6 +236,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 							</>
 						) : (
 							<>
+								<input type="hidden" {...form.getInputProps('room_id')} />
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("Name")}</Text>
 								</Grid.Col>
@@ -351,6 +339,48 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 										name="nid"
 										id="nid"
 										value={form.values.identity}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("UnitName")}
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										label=""
+										tooltip={t("EnterUnitName")}
+										placeholder="UnitName"
+										name="admit_unit_id"
+										id="admit_unit_id"
+										value={form.values.admit_unit_id?.toString()}
+										dropdownValue={hospitalSettingData?.[ "unit-group" ]?.modes.map(
+											(mode) => ({
+												label: mode.name,
+												value: mode.id?.toString(),
+											})
+										)}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("Department")}
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										label=""
+										tooltip={t("EnterDepartmentName")}
+										placeholder="Department"
+										name="admit_department_id"
+										id="admit_department_id"
+										value={form.values.admit_department_id?.toString()}
+										dropdownValue={hospitalSettingData?.department?.modes.map((mode) => ({
+											label: mode.name,
+											value: mode.id?.toString(),
+										}))}
 									/>
 								</Grid.Col>
 							</>

@@ -76,9 +76,9 @@ export default function _Table({ module }) {
 	const navigate = useNavigate();
 	const [ processTab, setProcessTab ] = useState("admission");
 	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
-	const admissionFormRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
 	const [ billingPrintData, setBillingPrintData ] = useState(null);
+	const admissionFormRef = useRef(null);
 	const [ admissionFormPrintData, setAdmissionFormPrintData ] = useState(null);
 	const [ actionType, setActionType ] = useState("change");
 	const [ drawerPatientId, setDrawerPatientId ] = useState(null);
