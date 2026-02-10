@@ -1691,6 +1691,17 @@
 	"BatchWiseStock": "Batch Wise Stock",
 	"IndentQuantity": "Indent Quantity",
 	"RemainingQuantity": "Remaining Quantity",
+	"PoliceCase": "Police Case",
+	"PatientUpdate": "Patient Update",
+	"PatientArchive": "Patient Archive",
+	"ManageGeneric": "Manage Generic",
 	"DeathCertificate": "Death Certificate",
+	"MedicineDosage": "Medicine Dosage",
+	"MedicineByMeal": "Medicine by Meal",
+	"OutDoor": "Out Door",
+	"InDoor": "In Door",
+	"OPDQuantity": "OPD Quantity",
+	"OPDQty": "OPD QTY",
+	"DeliveredBy": "Delivered By",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }
