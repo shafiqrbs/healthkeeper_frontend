@@ -139,6 +139,7 @@ export const sideNavigationLinks = {
 			color: "#009688", // Teal
 			allowedRoles: [
 				"role_domain",
+				"admin_administrator",
 				"doctor_ipd",
 				"doctor_rs_rp_confirm",
 				"doctor_ipd_admission",
@@ -281,9 +282,6 @@ export const sideNavigationLinks = {
 				"pharmacy_operator",
 			],
 		},
-
-
-
 		{
 			label: t("DORB"),
 			path: "/hospital/dorb-confirm",

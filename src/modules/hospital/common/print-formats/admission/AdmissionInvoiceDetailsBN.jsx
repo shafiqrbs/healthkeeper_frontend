@@ -25,7 +25,7 @@ const AdmissionInvoiceDetailsBN = forwardRef(({ data, preview = false }, ref) =>
 					table, table th, table td { border: 1px solid #807e7e !important; }
 				}`}
 				{`@media  {
-					table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
+					table { border-collapse: collapse !important;}
 					table, table th, table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
 				}`}
 			</style>

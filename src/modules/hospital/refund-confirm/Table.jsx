@@ -202,34 +202,38 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							sortable: true,
 							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>,
 						},
+						{
+							accessor: "refund_date",
+							title: t("Refund Date"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.refund_date)}</Text>,
+						},
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", sortable: true, title: t("Gender") },
-
 						{
-							accessor: "refund_day",
+							accessor: "remaining_day",
 							title: t("Days"),
+							render: (item) => Math.abs(item?.remaining_day),
 						},
-
 						{
 							accessor: "refund_amount",
 							title: t("Amount"),
+							render: (item) => Math.abs(item?.remaining_day * item.room_rate),
 						},
-
 						{
 							accessor: "process",
 							title: t("Process"),
 						},
-
 						{
 							accessor: "mode",
 							title: t("Mode"),
 							render: (item) => capitalizeWords(item?.mode),
 						},
-
 						{
 							accessor: "approve_by",
 							title: t("Approved By"),

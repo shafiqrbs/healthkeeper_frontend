@@ -80,6 +80,7 @@ const CSV_HEADERS = [
 ];
 
 const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "operator_emergency", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator" ];
+const ALLOWED_ADMIN_ROLES = [ "admin_administrator" ];
 
 export default function _Table({ module, height }) {
 	const csvLinkRef = useRef(null);
@@ -250,6 +251,25 @@ export default function _Table({ module, height }) {
 		e.stopPropagation();
 		const { data } = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.FREE_DISCHARGE}/${id}`,
+		});
+		refetchAll()
+	};
+
+	const handlePatientAbsconded = (e, id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmAbscondedModal(e, id),
+		});
+	};
+
+	const handleConfirmAbscondedModal = async (e, id) => {
+		e.stopPropagation();
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_ABSCONDED}/${id}`,
 		});
 		refetchAll()
 	};
@@ -538,22 +558,48 @@ export default function _Table({ module, height }) {
 														</Menu.Item>
 													</>
 												)}
-											<Menu.Item
-												leftSection={
-													<IconFileText
-														style={{
-															width: rem(14),
-															height: rem(14),
+											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) &&
+											(item.process?.toLowerCase() === "admitted") && (
+												<>
+													<Menu.Item
+														bg={'black'}
+														c='white'
+														leftSection={
+															<IconRepeatOff
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={(e) =>
+															handlePatientAbsconded(e, item?.admission_id)
+														}>
+														{t("Absconded")}
+													</Menu.Item>
+												</>
+											)}
+											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+											(item.process?.toLowerCase() === "admitted") && (
+												<>
+													<Menu.Item
+														leftSection={
+															<IconFileText
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={(e) => {
+															e.stopPropagation();
+															handleAdmissionFormPrint(item?.admission_id);
 														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleAdmissionFormPrint(item?.admission_id);
-												}}
-											>
-												{t("AdmissionForm")}
-											</Menu.Item>
+													>
+														{t("AdmissionForm")}
+													</Menu.Item>
+												</>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

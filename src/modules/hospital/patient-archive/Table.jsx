@@ -160,6 +160,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		released: "gray",
 		closed: "purple"
 	};
+	const releaseColorMap = {
+		'DORB': "yellow",
+		're-admission': "purple",
+		'death': "orange",
+		'referred': "orange",
+		'discharge': "green",
+		'absconded': "red",
+	};
 	const handleConfirmClose = () => {
 		closeConfirm();
 		setSelectedId(null);
@@ -250,12 +258,30 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (item) => {
 								const color = processColorMap[item.process] || ""; // fallback for unknown status
 								return (
+									<>
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process || 'empty'}
 									</Badge>
+									</>
+
 								);
 							},
 							cellsClassName: tableCss.statusBackground,
+						},
+						{
+							accessor: "release_mode",
+							textAlign: "center",
+							title: t("Release"),
+							render: (item) => {
+								const color = releaseColorMap[item.release_mode] || "";
+								return (
+									item?.release_mode && (
+										<Badge size="xs" radius="sm" color={color}>
+											{item.release_mode}
+										</Badge>
+									)
+								);
+							},
 						},
 
 						{
