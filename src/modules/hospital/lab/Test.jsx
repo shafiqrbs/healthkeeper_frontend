@@ -107,8 +107,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 												ALLOWED_LAB_ROLES.includes(role)
 											) && (
 													<>
-														{item?.process === "Tagged" &&
-															userRoles.some((role) =>
+														{userRoles.some((role) =>
 																ALLOWED_LAB_ROLES.includes(role)
 															) && (
 																<Button
@@ -182,24 +181,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 																</Button>
 															</>
 														)}
-														{item?.process == "New" && (
-															<Button
-																leftSection={
-																	<IconTag stroke={1.2} size={12} />
-																}
-																onClick={() =>
-																	handleBarcodeTag(
-																		item?.barcode,
-																		item?.invoice_particular_id
-																	)
-																}
-																size="compact-xs"
-																bg="var(--theme-secondary-color-6)"
-																color="white"
-															>
-																{t("Tag")}
-															</Button>
-														)}
+
 													</>
 												)}
 										</Flex>

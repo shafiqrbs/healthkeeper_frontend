@@ -38,7 +38,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport, refreshKey }
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h={mainAreaHeight - 96}>
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
-					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}
+					{t("Report Prepared")}: {diagnosticReport?.name}
 				</Text>
 			</Box>
 			{reportId && userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) ? (
