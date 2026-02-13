@@ -42,7 +42,7 @@ export default function Index({ mode = "create" }) {
 						<Box bg="var(--mantine-color-white)" p="xs" w={"100%"} className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="pharmacy"
-								pageTitle={t("ManageGeneric")}
+								pageTitle={t("ManageMedicine")}
 								roles={t("Roles")}
 								allowZeroPercentage=""
 								currencySymbol=""
@@ -53,7 +53,7 @@ export default function Index({ mode = "create" }) {
 					<GlobalDrawer
 						opened={opened}
 						close={close}
-						title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}
+						title={mode === "create" ? t("CreateMedicine") : t("UpdateMedicine")}
 					>
 						<IndexForm module={module} form={form} mode={mode} close={close} />
 					</GlobalDrawer>

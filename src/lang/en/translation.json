@@ -1703,5 +1703,8 @@
 	"OPDQuantity": "OPD Quantity",
 	"OPDQty": "OPD QTY",
 	"DeliveredBy": "Delivered By",
+	"ManageMedicine": "Manage Medicine",
+	"CreateGeneric": "Create Generic",
+	"CreateMedicine": "Create Medicine",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }
