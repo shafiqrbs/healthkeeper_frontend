@@ -221,9 +221,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (item) => Math.abs(item?.remaining_day),
 						},
 						{
-							accessor: "refund_amount",
+							accessor: "amount",
 							title: t("Amount"),
-							render: (item) => Math.abs(item?.remaining_day * item.room_rate),
 						},
 						{
 							accessor: "process",

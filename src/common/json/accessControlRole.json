@@ -27,6 +27,7 @@
       { "id": "pharmacy_operator", "label": "Operator" },
       { "id": "pharmacy_pharmacist", "label": "Pharmacist" },
       { "id": "pharmacy_manager", "label": "Manager" },
+      { "id": "stock_indent", "label": "Stock Indent" },
       { "id": "pharmacy_doctor", "label": "Approve Doctor" }
     ]
   },

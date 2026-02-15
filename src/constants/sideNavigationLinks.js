@@ -264,6 +264,7 @@ export const sideNavigationLinks = {
 				"admin_nurse",
 				"nurse_incharge",
 				"pharmacy_operator",
+				"stock_indent",
 			],
 		},
 		{
@@ -280,6 +281,7 @@ export const sideNavigationLinks = {
 				"pharmacy_manager",
 				"pharmacy_doctor",
 				"pharmacy_operator",
+				"stock_indent",
 			],
 		},
 		{

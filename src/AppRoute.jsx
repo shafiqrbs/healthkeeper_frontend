@@ -112,7 +112,6 @@ function AppRoute() {
 					<Route path="config/:id" element={<DomainConfigurationIndex />} />
 					<Route path="user" element={<DomainUserIndex />} />
 				</Route>
-
 				<Route path="/pharmacy/core/">
 					<Route
 						path="medicine"
