@@ -15,7 +15,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import InputForm from "@components/form-builders/InputForm";
-import {formatDateForMySQL} from "@utils/index";
+import { formatDateForMySQL } from "@utils/index";
 
 const module = MODULES.LAB_TEST;
 
@@ -85,7 +85,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					console.error("Field Error occurred!", errorObject);
 					form.setErrors(errorObject);
@@ -97,7 +97,9 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 					refetchLabReport();
 				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				return resultAction.payload?.data;
 			}
+			return false;
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -306,7 +308,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 					</Box>
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />
 		</Box>
 	);
 }

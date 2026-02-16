@@ -11,11 +11,12 @@ import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import InputForm from "@components/form-builders/InputForm";
 import { useHotkeys } from "@mantine/hooks";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const ALLOWED_LAB_DOCTOR_ROLES = [ "doctor_lab" ];
 const ALLOWED_LAB_USER_ROLES = [ "lab_assistant" ];
 
-export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
+export default function ReportSubmission({ form, handleSubmit, diagnosticReport, submissionFunc }) {
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [ labReportData, setLabReportData ] = useState(null);
@@ -34,10 +35,19 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 	}, [ diagnosticReport?.comment ]);
 
 	const handleLabReport = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
-		});
-		setLabReportData(res?.data);
+		if (submissionFunc) {
+			const res2 = await submissionFunc(form.values);
+			setLabReportData(res2?.data);
+			console.log("Save Response: ", res2?.data)
+
+		} else {
+			const res = await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
+			});
+			console.log("Print API: ", res?.data)
+			setLabReportData(res?.data);
+		}
+
 		requestAnimationFrame(printLabReport);
 	};
 
@@ -97,27 +107,27 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 									</Grid.Col>
 									<Grid.Col span={7} className="animate-ease-out" mt={'xs'}>
 										<Group justify="center">
-											{diagnosticReport?.process === "Done" && (
-												<Button
-													onClick={() => handleLabReport(reportId)}
-													size="md"
-													color="var(--theme-warn-color-5)"
-													type="button"
-													id="EntityFormSubmit"
-													className="shortcut-helper"
-												>
-													<Flex direction="column" gap={0}>
-														<Text fz="md">{t("Print")}</Text>
-														<Flex
-															direction="column"
-															align="center"
-															fz="2xs"
-															c="white">
-															alt+p
-														</Flex>
+											{/* {diagnosticReport?.process === "Done" && ( */}
+											<Button
+												onClick={() => handleLabReport(reportId)}
+												size="md"
+												color="var(--theme-warn-color-5)"
+												type="button"
+												id="EntityFormSubmit"
+												className="shortcut-helper"
+											>
+												<Flex direction="column" gap={0}>
+													<Text fz="md">{t("Print")}</Text>
+													<Flex
+														direction="column"
+														align="center"
+														fz="2xs"
+														c="white">
+														alt+p
 													</Flex>
-												</Button>
-											)}
+												</Flex>
+											</Button>
+											{/* )} */}
 											<Button
 												size="md"
 												fz={"xs"}
