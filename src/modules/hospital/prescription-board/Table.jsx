@@ -384,7 +384,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							sortable: true,
 							title: t("Patient"),
 						},
-						{ accessor: "total", title: t("Total") },
+						{ accessor: "process", title: t("Process") },
 						{
 							accessor: "doctor_name",
 							title: t("Doctor"),
@@ -406,7 +406,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && (
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && values?.process !== 'Closed' && (
 											<ActionIcon
 												variant="transparent"
 												onClick={(e) => patientUpdate(e, values?.id)}
@@ -414,7 +414,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
+										{(userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && values?.process !== 'Closed') && (
 											<Button
 												variant="filled"
 												bg="var(--theme-primary-color-6)"
