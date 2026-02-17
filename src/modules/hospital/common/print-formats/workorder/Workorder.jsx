@@ -139,21 +139,19 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Th>{t("MedicineName")}</Table.Th>
 								<Table.Th>{t("Quantity")}</Table.Th>
 								<Table.Th>{t("Expiry Date")}</Table.Th>
-								<Table.Th>{t("End Date")}</Table.Th>
 							</Table.Tr>
 							{patientInfo?.purchase_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.production_date)}</Table.Td>
 									<Table.Td>{getValue(item?.expired_date, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
 					</Table>
 				</Box>
-				<Box  bottom={'20'}  ta="center">
+				<Box  bottom={'20'} mt={'xl'}  ta="center">
 					<Box p="md" pt={0} pb={0}>
 						<Grid columns={12} gutter="xs">
 							<Grid.Col span={4}>
