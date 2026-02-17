@@ -22,7 +22,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport,
 	const [ labReportData, setLabReportData ] = useState(null);
 	const { reportId } = useParams();
 	const { userRoles } = useAppLocalStore();
-
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
 	});
@@ -39,8 +38,8 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport,
 			// use the submission return data as print data
 			const res2 = await submissionFunc(form.values);
 			setLabReportData(res2?.data);
+		//	requestAnimationFrame(printLabReport);
 			console.log("Save Response: ", res2?.data)
-
 		} else {
 			// fallback: will be removed after fixing the print issue
 			const res = await getDataWithoutStore({
@@ -50,8 +49,13 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport,
 			setLabReportData(res?.data);
 		}
 
-		requestAnimationFrame(printLabReport);
 	};
+
+	useEffect(() => {
+		if(labReportData){
+			printLabReport();
+		}
+	}, [labReportData]);
 
 	useHotkeys(
 		[

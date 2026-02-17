@@ -77,7 +77,9 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					refetchLabReport();
 				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				return resultAction.payload?.data;
 			}
+			return false;
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -258,7 +260,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					</Grid>
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />
 		</Box>
 	);
 }

@@ -142,7 +142,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 															)}
 														{item?.process === "Done" && (
 															<>
-																<Button
+																{/*<Button
 																	onClick={() =>
 																		handleTest(
 																			item.invoice_particular_id
@@ -159,7 +159,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 																	}
 																>
 																	{t("Show")}
-																</Button>
+																</Button>*/}
 																<Button
 																	size="compact-xs"
 																	bg="var(--theme-secondary-color-6)"

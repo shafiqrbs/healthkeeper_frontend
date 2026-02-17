@@ -141,14 +141,6 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
-					/*case "sars-cov2":
-						return (
-							<SarsCov2
-								diagnosticReport={diagnosticReport}
-								refetchDiagnosticReport={refetchDiagnosticReport}
-								refetchLabReport={refetchLabReport}
-							/>
-						);*/
 					case "gene-extra-sputum":
 						return (
 							<PulmonaryStatus
@@ -303,12 +295,13 @@ const ReportRenderer = forwardRef(
 				} else if (updateEntityData.fulfilled.match(resultAction)) {
 					dispatch(setRefetchData({ module, refetching: true }));
 					refetchDiagnosticReport();
-					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-
 					if (refetchLabReport && typeof refetchLabReport === "function") {
 						refetchLabReport();
 					}
+					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+					return resultAction.payload?.data;
 				}
+				return false;
 			} catch (error) {
 				console.error(error);
 				errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -397,7 +390,7 @@ const ReportRenderer = forwardRef(
 						}}
 					/>
 				</Box>
-				<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+				<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />
 			</>
 		);
 	}
