@@ -17,7 +17,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, module, height
 	const entityObject = useSelector((state) => state.crud[module].editData);
 	const dispatch = useDispatch();
 	// console.log(user.id)
-	const ALLOWED_OPD_ROLES = ["nurse_incharge", "admin_nurse", "pharmacy_manager"];
+	const ALLOWED_OPD_ROLES = ["nurse_incharge", "admin_nurse",  "stock_indent", "pharmacy_manager"];
 	const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
 	const closeDrawer = () => {
 		setViewDrawer(false);

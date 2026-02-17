@@ -17,7 +17,7 @@ export default function __ViewDrawer({ viewDrawer, height, setViewDrawer, module
 	const entityObject = useSelector((state) => state.crud[module].editData);
 	const dispatch = useDispatch();
 
-	const ALLOWED_OPD_ROLES = ["pharmacy_pharmacist", "pharmacy_doctor", "admin_administrator"];
+	const ALLOWED_OPD_ROLES = ["pharmacy_pharmacist", "pharmacy_doctor", "stock_indent","admin_administrator"];
 	const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
 
 	const stockItems = entityObject?.stock_transfer_items || [];
