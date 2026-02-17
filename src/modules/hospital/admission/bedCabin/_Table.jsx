@@ -236,10 +236,10 @@ export default function _Table({ module, height }) {
 		}
 	}
 
-	const handlePatientDischarge = (e, id) => {
+	const handlePatientDischarge = (e, id,discharge) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			children: <Text size="sm">{discharge}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
@@ -530,9 +530,9 @@ export default function _Table({ module, height }) {
 																	/>
 																}
 																onClick={(e) =>
-																	handlePatientDischarge(e, item?.admission_id)
+																	handlePatientDischarge(e, item?.admission_id,item?.display_name)
 																}>
-																{t("Discharge")}
+																{t("Clearance")}
 															</Menu.Item>
 														)}
 													</>
