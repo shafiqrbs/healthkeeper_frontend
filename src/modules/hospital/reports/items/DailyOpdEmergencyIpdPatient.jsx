@@ -235,13 +235,11 @@ export default function DailyOpdEmergencyIpdPatient({height:mainAreaHeight}) {
 							</tbody>
 						</Table>
 					</ScrollArea>
-
 				</Box>
 			</Box>
 			{records?.data && (
 				<DailyOpdEmergencyIpdReports ref={summaryReportsRef} records={records?.data || []} />
 			)}
-
 		</Box>
 	);
 }

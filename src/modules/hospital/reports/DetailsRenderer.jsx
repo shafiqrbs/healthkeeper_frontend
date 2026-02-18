@@ -12,6 +12,7 @@ import DailyOpdEmergencyIpdPatient from "@modules/hospital/reports/items/DailyOp
 import UserDailyInvoiceSummary from "@modules/hospital/reports/items/UserDailyInvoiceSummary";
 import PatientMedicineIssue from "@modules/hospital/reports/items/PatientMedicineIssue.jsx";
 import BatchWiseStock from "@modules/hospital/reports/items/BatchWiseStock.jsx";
+import DepartmentStockItem from "@modules/hospital/reports/items/DepartmentStockItem";
 
 
 export default function DetailsRenderer() {
@@ -39,8 +40,10 @@ export default function DetailsRenderer() {
 				<MedicineIssue />
 			) : tab === "stock-summery" ? (
 				<StockSummery />
-			) : tab === "batch-wise-stock" ? (
+			) : tab === "workorder-wise-stock" ? (
 				<BatchWiseStock />
+			) : tab === "department-wise-stock" ? (
+				<DepartmentStockItem />
 			) : null}
 		</Box>
 	);

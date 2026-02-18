@@ -588,7 +588,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 										tooltip={t("EnterYears")}
 										name="year"
 										id="year"
-										nextField="address"
+										nextField="upazilla_id"
 										min={0}
 										max={150}
 										readOnly={form.values.dob}
@@ -643,25 +643,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 							</Grid.Col>
 						</Grid>
 
-						<Grid align="center" columns={20}>
-							<Grid.Col span={6}>
-								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Address")}</Text>
-								</Flex>
-							</Grid.Col>
-							<Grid.Col span={14}>
-								<TextAreaForm
-									form={form}
-									label=""
-									tooltip={t("EnterPatientMobile")}
-									placeholder="Address"
-									name="address"
-									id="address"
-									nextField="upazilla_id"
-									value={form.values.address}
-								/>
-							</Grid.Col>
-						</Grid>
+
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
@@ -676,13 +658,32 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 									placeholder="District - Upazilla"
 									name="upazilla_id"
 									id="upazilla_id"
-									nextField="mobile"
+									nextField="address"
 									value={form.values.upazilla_id}
 									dropdownValue={locations?.data?.map((location) => ({
 										label: `${location.district || "District"} - ${location.name}`,
 										value: location.id?.toString(),
 									}))}
 									searchable
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Address")}</Text>
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<TextAreaForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientMobile")}
+									placeholder="Address"
+									name="address"
+									id="address"
+									nextField="mobile"
+									value={form.values.address}
 								/>
 							</Grid.Col>
 						</Grid>

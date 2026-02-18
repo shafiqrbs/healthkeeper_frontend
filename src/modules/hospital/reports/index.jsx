@@ -75,9 +75,14 @@ const REPORT_TABS = [
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
 	},
 	{
-		label: "Batch wise stock",
-		value: "batch-wise-stock",
+		label: "Workorder wise stock",
+		value: "workorder-wise-stock",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+	},
+	{
+		label: "Department stock details",
+		value: "department-wise-stock",
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator","operator_emergency","stock_indent"],
 	},
 
 ];

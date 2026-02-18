@@ -11,7 +11,7 @@ import {capitalizeWords, formatDate} from "@utils/index";
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const DepartmnentStockItemReport = forwardRef(({ data, preview = false }, ref) => {
+const BatchWiseStockReport = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 
 //	const data = data || {};
@@ -134,9 +134,9 @@ const DepartmnentStockItemReport = forwardRef(({ data, preview = false }, ref) =
 								<Table.Th>{t("Warehouse Name")}</Table.Th>
 								<Table.Th>{t("Name")}</Table.Th>
 								<Table.Th w={'80'}>{t("Expired Date")}</Table.Th>
-								<Table.Th w={'80'}>{t("Stock")}</Table.Th>
-								<Table.Th w={'80'}>{t("Issue")}</Table.Th>
-								<Table.Th w={'80'}>{t("Remaining")}</Table.Th>
+								<Table.Th w={'80'}>{t("StockQuantity")}</Table.Th>
+								<Table.Th w={'80'}>{t("IndentQuantity")}</Table.Th>
+								<Table.Th w={'80'}>{t("RemainingQuantity")}</Table.Th>
 							</Table.Tr>
 						</Table.Thead>
 						<Table.Tbody>
@@ -146,16 +146,47 @@ const DepartmnentStockItemReport = forwardRef(({ data, preview = false }, ref) =
 									<Table.Td>{getValue(item?.warehouse_name)}</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.expired_date)}</Table.Td>
-									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.issue_quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.quantity-item?.issue_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.purchase_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.indent_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.purchase_quantity-item?.indent_quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
 					</Table>
 				</Box>
 				<Box  bottom={'20'}  ta="center">
-
+					{/*<Box p="md" pt={'50'} pb={0}>
+						<Grid columns={12} gutter="xs">
+							<Grid.Col span={3}>
+								--------------------------------
+								<Text fw="bold" mb="sm" ta="center">
+									Requisition By
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={3}>
+								--------------------------------
+								<Text fw="bold" mb="sm" ta="center">
+									Department Head
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={3}>
+								<Box>
+									--------------------------------
+									<Text fw="bold" mb="sm" ta="center">
+										Store In-charge
+									</Text>
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={3}>
+								<Box>
+									--------------------------------
+									<Text fw="bold" mb="sm" ta="center">
+										Store Officer
+									</Text>
+								</Box>
+							</Grid.Col>
+						</Grid>
+					</Box>*/}
 					<Text size="xs" c="gray" mt="xs">
 						<strong>{t("প্রিন্ট")}: </strong>
 						{user?.name}
@@ -169,6 +200,6 @@ const DepartmnentStockItemReport = forwardRef(({ data, preview = false }, ref) =
 	);
 });
 
-DepartmnentStockItemReport.displayName = "DepartmnentStockItemReport";
+BatchWiseStockReport.displayName = "BatchWiseStockReport";
 
-export default DepartmnentStockItemReport;
+export default BatchWiseStockReport;

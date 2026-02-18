@@ -230,14 +230,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button
+					{/*<Button
 						variant="light"
 						onClick={openOpdRoom}
 						size={"xs"}
 						leftSection={<IconAdjustmentsCog size="16px" />}
 					>
 						Room Overview
-					</Button>
+					</Button>*/}
 					{availableClose ? (
 						<Flex gap="xs" align="center">
 							<Button

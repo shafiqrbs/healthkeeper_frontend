@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Button, Checkbox } from "@mantine/core";
+import {Box, Text, Flex, Button, Checkbox, Grid} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -50,10 +50,10 @@ export default function OpdRoomStatusModal({ closeOpdRoom, height }) {
 	}, []);
 
 	useEffect(() => {
-		if (!records?.length) return;
+		if (!records?.entities?.length) return;
 		setSubmitFormData((prev) => {
 			const newData = { ...prev };
-			records.forEach((item, idx) => {
+			records?.entities?.forEach((item, idx) => {
 				if (!newData[item.id]) {
 					newData[item.id] = {
 						name: item.name ?? "",
@@ -92,7 +92,7 @@ export default function OpdRoomStatusModal({ closeOpdRoom, height }) {
 		<Box>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("ManageOPDRoom")}
+					{t("Doctor Status")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Button
@@ -107,66 +107,167 @@ export default function OpdRoomStatusModal({ closeOpdRoom, height }) {
 					</Button>
 				</Flex>
 			</Flex>
+			<Grid align="center" columns={20}>
 
-			<Box>
-				<DataTable
-					classNames={{
-						root: tableCss.root,
-						table: tableCss.table,
-						body: tableCss.body,
-						header: tableCss.header,
-						footer: tableCss.footer,
-					}}
-					records={records}
-					columns={[
-						{
-							accessor: "index",
-							title: t("S/N"),
-							textAlignment: "right",
-							render: (item) => records?.indexOf(item) + 1,
-						},
-						{
-							accessor: "name",
-							title: t("Name"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.name,
-						},
-						{
-							accessor: "invoice_count",
-							title: t("Patients"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.invoice_count,
-						},
-						{
-							accessor: "opd_referred",
-							title: t("ReferredRoom"),
-							render: (item) => (item.opd_referred === 1 ? "Yes" : "No"),
-						},
-						{
-							accessor: "git",
-							title: t("OPDActive"),
-							render: (item) => (
-								<>
-								{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.is_opd ?? false}
-									onChange={(val) => handleFieldChange(item.id, "is_opd", val.currentTarget.checked)}
-								/>
-								)}
-								</>
-							),
-						},
-					]}
-					fetching={fetching}
-					height={height}
-					loaderSize="xs"
-					loaderColor="grape"
-				/>
-			</Box>
+				<Grid.Col span={8}>
+					<Text fw={600} fz="sm" py="xs">
+						{t("ManageOPDRoom")}
+					</Text>
+					<Box>
+						<DataTable
+							classNames={{
+								root: tableCss.root,
+								table: tableCss.table,
+								body: tableCss.body,
+								header: tableCss.header,
+								footer: tableCss.footer,
+							}}
+							records={records?.entities}
+							columns={[
+								{
+									accessor: "index",
+									title: t("S/N"),
+									textAlignment: "right",
+									render: (item) => records?.entities?.indexOf(item) + 1,
+								},
+								{
+									accessor: "name",
+									title: t("Name"),
+									textAlignment: "right",
+									sortable: true,
+									render: (item) => item.name,
+								},
+								{
+									accessor: "invoice_count",
+									title: t("Patients"),
+									textAlignment: "right",
+									sortable: true,
+									render: (item) => item.invoice_count,
+								},
+								{
+									accessor: "opd_referred",
+									title: t("ReferredRoom"),
+									render: (item) => (item.opd_referred === 1 ? "Yes" : "No"),
+								},
+								{
+									accessor: "git",
+									title: t("OPDActive"),
+									render: (item) => (
+										<>
+											{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
+												<Checkbox
+													key={item.id}
+													size="sm"
+													checked={submitFormData[item.id]?.is_opd ?? false}
+													onChange={(val) => handleFieldChange(item.id, "is_opd", val.currentTarget.checked)}
+												/>
+											)}
+										</>
+									),
+								},
+							]}
+							fetching={fetching}
+							height={height}
+							loaderSize="xs"
+							loaderColor="grape"
+						/>
+					</Box>
+				</Grid.Col>
+				<Grid.Col span={6}>
+						<Box>
+							<Text fw={600} fz="sm" py="xs">
+								{t("Doctor Prescription")}
+							</Text>
+						</Box>
+						<Box>
+							<DataTable
+								classNames={{
+									root: tableCss.root,
+									table: tableCss.table,
+									body: tableCss.body,
+									header: tableCss.header,
+									footer: tableCss.footer,
+								}}
+								records={records?.doctorVisits}
+								columns={[
+									{
+										accessor: "index",
+										title: t("S/N"),
+										textAlignment: "right",
+										render: (item) => records?.doctorVisits?.indexOf(item) + 1,
+									},
+									{
+										accessor: "name",
+										title: t("Name"),
+										textAlignment: "right",
+										sortable: true,
+										render: (item) => item.name,
+									},
+									{
+										accessor: "invoice_count",
+										title: t("Patients"),
+										textAlignment: "right",
+										sortable: true,
+										render: (item) => item.invoice_count,
+									},
+
+								]}
+								fetching={fetching}
+								height={height}
+								loaderSize="xs"
+								loaderColor="grape"
+							/>
+
+					</Box>
+				</Grid.Col>
+				<Grid.Col span={6}>
+					<Box>
+						<Text fw={600} fz="sm" py="xs">
+							{t("Admission Confirm")}
+						</Text>
+					</Box>
+					<Box>
+						<DataTable
+							classNames={{
+								root: tableCss.root,
+								table: tableCss.table,
+								body: tableCss.body,
+								header: tableCss.header,
+								footer: tableCss.footer,
+							}}
+							records={records?.doctorIpds}
+							columns={[
+								{
+									accessor: "index",
+									title: t("S/N"),
+									textAlignment: "right",
+									render: (item) => records?.doctorIpds?.indexOf(item) + 1,
+								},
+								{
+									accessor: "name",
+									title: t("Name"),
+									textAlignment: "right",
+									sortable: true,
+									render: (item) => item.name,
+								},
+								{
+									accessor: "invoice_count",
+									title: t("Patients"),
+									textAlignment: "right",
+									sortable: true,
+									render: (item) => item.invoice_count,
+								},
+
+							]}
+							fetching={fetching}
+							height={height}
+							loaderSize="xs"
+							loaderColor="grape"
+						/>
+
+					</Box>
+				</Grid.Col>
+			</Grid>
 		</Box>
 	);
 }

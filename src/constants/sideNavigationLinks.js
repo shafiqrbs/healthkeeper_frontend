@@ -526,6 +526,7 @@ export const sideNavigationLinks = {
 				"operator_opd",
 				"pharmacy_manager",
 				"pharmacy_pharmacist",
+				"stock_indent",
 			],
 			// subMenu: [
 			// 	{
