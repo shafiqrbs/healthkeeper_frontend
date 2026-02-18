@@ -182,7 +182,7 @@ const DailyOpdEmergencyIpdReports = forwardRef(({ records, preview = false }, re
 						</tfoot>
 					</Table>
 					<Title order={4} mb="xs" mt="xs">
-						Death Report by Age Group
+						Death by Age Group
 					</Title>
 					<Table withBorder withColumnBorders striped highlightOnHover>
 						<thead>
