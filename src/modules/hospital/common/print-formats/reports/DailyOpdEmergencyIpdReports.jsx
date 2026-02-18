@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Image, Table, Flex, Stack, Center, Card} from "@mantine/core";
+import {Box, Text, Grid, Group, Image, Table, Flex, Stack, Center, Card, Title, ScrollArea} from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -22,6 +22,7 @@ const DailyOpdEmergencyIpdReports = forwardRef(({ records, preview = false }, re
 
 	const getValue = (row, type, gender) => row?.[type]?.[gender] ?? 0;
 	const reportData = records?.entities ?? [];
+	const deathData = records?.deathData ?? [];
 	const invoiceFilter = records?.filter || [];
 
 	const thStyle = {
@@ -68,6 +69,7 @@ const DailyOpdEmergencyIpdReports = forwardRef(({ records, preview = false }, re
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
+							padding:"16px"
 						}}>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -178,6 +180,30 @@ const DailyOpdEmergencyIpdReports = forwardRef(({ records, preview = false }, re
 							</td>
 						</tr>
 						</tfoot>
+					</Table>
+					<Title order={4} mb="xs" mt="xs">
+						Death Report by Age Group
+					</Title>
+					<Table withBorder withColumnBorders striped highlightOnHover>
+						<thead>
+						<tr style={{ backgroundColor: "var(--mantine-color-gray-1)" }}>
+							<th style={tdCenter}>Age Group</th>
+							<th style={tdCenter}>Male</th>
+							<th style={tdCenter}>Female</th>
+							<th style={tdCenter}>Total</th>
+						</tr>
+						</thead>
+
+						<tbody>
+						{Object.entries(deathData).map(([ageKey, row,index]) => (
+							<tr key={index}>
+								<td style={tdAgeStyle}>{ageKey.replaceAll("_", " ").toUpperCase()}</td>
+								<td style={tdCenter}>{row.male}</td>
+								<td style={tdCenter}>{row.female}</td>
+								<td style={tdCenter}>{(row.male ?? 0) + (row.female ?? 0)}</td>
+							</tr>
+						))}
+						</tbody>
 					</Table>
 				</Box>
 			</Stack>

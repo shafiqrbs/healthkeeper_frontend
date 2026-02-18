@@ -14,7 +14,7 @@ import {
 	Table,
 	Tabs,
 	Text,
-	Button
+	Button, Title
 } from "@mantine/core";
 import {
 	IconBed,
@@ -79,6 +79,7 @@ export default function DailyOpdEmergencyIpdPatient({height:mainAreaHeight}) {
 
 	const getValue = (row, type, gender) => row?.[type]?.[gender] ?? 0;
 	const reportData = records?.data?.entities ?? [];
+	const deathData = records?.data?.deathData ?? [];
 
 	const thStyle = {
 		border: "1px solid var(--theme-tertiary-color-8)",
@@ -96,6 +97,7 @@ export default function DailyOpdEmergencyIpdPatient({height:mainAreaHeight}) {
 		fontWeight: 600,
 		whiteSpace: "nowrap",
 	};
+
 
 
 
@@ -208,8 +210,32 @@ export default function DailyOpdEmergencyIpdPatient({height:mainAreaHeight}) {
 							</tr>
 							</tfoot>
 						</Table>
+						<Title order={4} mb="xs" mt="xs">
+							Death Report by Age Group
+						</Title>
+						<Table withBorder withColumnBorders striped highlightOnHover>
+							<thead>
+							<tr style={{ backgroundColor: "var(--mantine-color-gray-1)" }}>
+								<th style={tdCenter}>Age Group</th>
+								<th style={tdCenter}>Male</th>
+								<th style={tdCenter}>Female</th>
+								<th style={tdCenter}>Total</th>
+							</tr>
+							</thead>
 
+							<tbody>
+							{Object.entries(deathData).map(([ageKey, row,index]) => (
+								<tr key={index}>
+									<td style={tdAgeStyle}>{ageKey.replaceAll("_", " ").toUpperCase()}</td>
+									<td style={tdCenter}>{row.male}</td>
+									<td style={tdCenter}>{row.female}</td>
+									<td style={tdCenter}>{(row.male ?? 0) + (row.female ?? 0)}</td>
+								</tr>
+							))}
+							</tbody>
+						</Table>
 					</ScrollArea>
+
 				</Box>
 			</Box>
 			{records?.data && (
