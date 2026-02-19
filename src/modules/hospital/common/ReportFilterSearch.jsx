@@ -1,5 +1,5 @@
-import { ActionIcon, Flex, Select } from "@mantine/core";
-import { IconFile, IconFileTypeXls, IconRestore, IconSearch } from "@tabler/icons-react";
+import {ActionIcon, Flex, Select, TextInput} from "@mantine/core";
+import {IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX} from "@tabler/icons-react";
 import AdvancedFilter from "@components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
@@ -30,9 +30,12 @@ export default function ReportFilterSearch({
 	showDatePicker = true,
 	showAdvancedFilter = true,
 	showReset = true,
+	showKeywordSearch = false,
 	showOpdRoom = false,
 	showUnits = false,
-	className = "keyword-search-box",
+    placeholder = "Keyword Search",
+    className = "keyword-search-box",
+	tooltip = "Search by patient name, mobile, email, etc.",
 	handleCSVDownload = () => { },
 	handleCSVDownloadForUpload = () => { },
 	showStockItems = false,
@@ -60,6 +63,11 @@ export default function ReportFilterSearch({
 	const debouncedSetKeywordInForm = useDebouncedCallback((value) => {
 		form.setFieldValue("keywordSearch", value);
 	}, 500);
+
+	const handleKeywordChange = (value) => {
+		setKeywordSearch(value);
+		debouncedSetKeywordInForm(value);
+	};
 
 
 	const fetchStockItemData = async () => {
@@ -287,6 +295,7 @@ export default function ReportFilterSearch({
 				/>
 			)}
 
+
 			{showInvoiceMode && (
 				<Select
 					clearable
@@ -298,6 +307,28 @@ export default function ReportFilterSearch({
 					}))}
 					value={form.values?.invoice_mode}
 					onChange={(value) => form.setFieldValue("invoice_mode", value)}
+				/>
+			)}
+			{showKeywordSearch && (
+				<TextInput
+					placeholder={placeholder}
+					tooltip={tooltip}
+					name="keywordSearch"
+					value={keywordSearch}
+					rightSection={
+						keywordSearch ? (
+							<IconX size={16} stroke={1.5} color="var(--theme-error-color)" onClick={handleReset} />
+						) : (
+							<IconSearch size={16} stroke={1.5} />
+						)
+					}
+					styles={{ root: { width: "100%" } }}
+					onChange={(event) => handleKeywordChange(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.key === "Enter") {
+							handleSearch();
+						}
+					}}
 				/>
 			)}
 

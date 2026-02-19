@@ -37,6 +37,15 @@ const REPORT_TABS = [
 		],
 	},
 	{
+		label: "Discharged Patient",
+		value: "patient-admission",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
+			"reports_basic",
+			"reports_advanced",
+			"reports_hospital"
+		],
+	},
+	{
 		label: "Daily Collection Service",
 		value: "daily-collection-service",
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
