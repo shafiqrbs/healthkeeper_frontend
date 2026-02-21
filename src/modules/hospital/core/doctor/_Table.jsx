@@ -17,7 +17,7 @@ import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
@@ -32,6 +32,9 @@ import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 // ✅ drag and drop
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import usePagination from "@hooks/usePagination";
+import CreateButton from "@components/buttons/CreateButton";
+import UserSyncButton from "@components/buttons/UserSyncButton";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const PER_PAGE = 50;
 
@@ -228,6 +231,12 @@ export default function _Table({ module, open }) {
 		}
 	};
 
+	const handleSyncUser = async () => {
+		const res = await getDataWithoutStore({
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.USER_SYNC}?user_group=doctor`,
+		});
+	};
+
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 	const [opdRoomState, setOpdRoomState] = useState({});
 	useEffect(() => {
@@ -251,6 +260,7 @@ export default function _Table({ module, open }) {
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module={module} />
+					<UserSyncButton handleModal={handleSyncUser} text="DoctorSync" />
 				</Flex>
 			</Box>
 
@@ -302,31 +312,6 @@ export default function _Table({ module, open }) {
 										{
 											accessor: "name",
 											title: t("Name"),
-											render: (item) => (
-												<TextInput
-													size="xs"
-													className={inlineInputCss.inputText}
-													placeholder={t("Name")}
-													value={submitFormData[item.id]?.name ?? ""}
-													onChange={(e) =>
-														setSubmitFormData((prev) => ({
-															...prev,
-															[item.id]: {
-																...prev[item.id],
-																name: e.currentTarget.value,
-															},
-														}))
-													}
-													onBlur={() =>
-														handleFieldChange(
-															item.id,
-															"name",
-															submitFormData[item.id]?.name ?? ""
-														)
-													}
-													rightSection={updatingRows[item.id]}
-												/>
-											),
 										},
 										{
 											accessor: "unit_id",
@@ -362,34 +347,6 @@ export default function _Table({ module, open }) {
 											render: (values) => (
 												<Group gap={4} justify="right" wrap="nowrap">
 													<Button.Group>
-														<Button
-															onClick={() => {
-																handleEntityEdit(values.id);
-																open();
-															}}
-															variant="filled"
-															c="white"
-															fw={400}
-															size="compact-xs"
-															radius="es"
-															leftSection={<IconEdit size={12} />}
-															className="border-right-radius-none btnPrimaryBg"
-														>
-															{t("Edit")}
-														</Button>
-														<Button
-															onClick={() => handleDataShow(values.id)}
-															variant="filled"
-															c="white"
-															bg="var(--theme-primary-color-6)"
-															size="compact-xs"
-															radius="es"
-															fw={400}
-															leftSection={<IconEye size={12} />}
-															className="border-left-radius-none"
-														>
-															{t("View")}
-														</Button>
 														<ActionIcon
 															size="xs"
 															onClick={() => handleDelete(values.id)}

@@ -123,7 +123,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport,
 												className="shortcut-helper"
 											>
 												<Flex direction="column" gap={0}>
-													<Text fz="md">{t("Print")}</Text>
+													<Text fz="xs">{t("Print & Save")}</Text>
 													<Flex
 														direction="column"
 														align="center"
@@ -142,7 +142,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport,
 												id="handleSubmit"
 											>
 												<Flex direction="column" gap={0}>
-													<Text fz="md">{t("Save")}</Text>
+													<Text fz="xs">{t("Save")}</Text>
 													<Flex
 														direction="column"
 														align="center"

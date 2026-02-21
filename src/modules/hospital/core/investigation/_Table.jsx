@@ -418,6 +418,8 @@ export default function _Table({ module, open }) {
 										>
 											{t("View")}
 										</Button>
+										<>
+										{ values?.is_report_format == 1 && (
 										<Button
 											onClick={() => handleReportFormatTable(values.id)}
 											variant="filled"
@@ -429,6 +431,8 @@ export default function _Table({ module, open }) {
 										>
 											{t("Format")}
 										</Button>
+										)}
+											</>
 										<ActionIcon
 											size="xs"
 											onClick={() => handleDelete(values.id)}

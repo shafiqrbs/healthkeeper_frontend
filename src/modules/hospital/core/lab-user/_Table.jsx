@@ -22,6 +22,8 @@ import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {getDataWithoutStore} from "@/services/apiService";
+import UserSyncButton from "@components/buttons/UserSyncButton";
 
 const PER_PAGE = 25;
 
@@ -49,6 +51,12 @@ export default function _Table({ module, open }) {
 		perPage: PER_PAGE,
 		sortByKey: "name",
 	});
+
+	const handleSyncUser = async () => {
+		const res = await getDataWithoutStore({
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.USER_SYNC}?user_group=lab-user`,
+		});
+	};
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -238,6 +246,7 @@ export default function _Table({ module, open }) {
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module={module} />
+					<UserSyncButton handleModal={handleSyncUser} text="LabSync" />
 				</Flex>
 			</Box>
 
@@ -264,18 +273,6 @@ export default function _Table({ module, open }) {
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
-							render: (item) => (
-								<TextInput
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("Name")}
-									value={submitFormData[item.id]?.name || ""}
-									onChange={(event) =>
-										handleDataTypeChange(item.id, "name", event.currentTarget.value)
-									}
-									onBlur={() => handleRowSubmit(item.id)}
-								/>
-							),
 						},
 						{
 							accessor: "diagnostic_room_ids",
@@ -297,34 +294,6 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										<Button
-											onClick={() => {
-												handleEntityEdit(values.id);
-												open();
-											}}
-											variant="filled"
-											c="white"
-											fw={400}
-											size="compact-xs"
-											radius="es"
-											leftSection={<IconEdit size={12} />}
-											className="border-right-radius-none btnPrimaryBg"
-										>
-											{t("Edit")}
-										</Button>
-										<Button
-											onClick={() => handleDataShow(values.id)}
-											variant="filled"
-											c="white"
-											bg="var(--theme-primary-color-6)"
-											size="compact-xs"
-											radius="es"
-											fw={400}
-											leftSection={<IconEye size={12} />}
-											className="border-left-radius-none"
-										>
-											{t("View")}
-										</Button>
 										<ActionIcon
 											size="xs"
 											onClick={() => handleDelete(values.id)}

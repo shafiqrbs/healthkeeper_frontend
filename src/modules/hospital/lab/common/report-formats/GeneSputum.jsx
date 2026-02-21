@@ -165,7 +165,9 @@ export default function GeneSputum({ diagnosticReport, refetchDiagnosticReport, 
 					refetchLabReport();
 				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				return resultAction.payload?.data;
 			}
+			return false;
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -457,7 +459,8 @@ export default function GeneSputum({ diagnosticReport, refetchDiagnosticReport, 
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />
+
 		</Box>
 	);
 }

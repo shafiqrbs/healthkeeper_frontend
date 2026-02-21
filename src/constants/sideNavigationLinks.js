@@ -476,6 +476,18 @@ export const sideNavigationLinks = {
 					],
 				},
 				{
+					label: t("Generic"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"admin_administrator",
+					],
+				},
+				{
 					label: t("ManageFile"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MANAGE_FILE.INDEX,
 					icon: IconMedicineSyrup,
@@ -485,18 +497,6 @@ export const sideNavigationLinks = {
 						"pharmacy_pharmacist",
 						"pharmacy_manager",
 						"pharmacy_doctor",
-						"admin_administrator",
-					],
-				},
-				{
-					label: t("Generic"),
-					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC.INDEX,
-					icon: IconMedicineSyrup,
-					color: "#009688", // Teal
-					allowedRoles: [
-						"pharmacy_operator",
-						"pharmacy_pharmacist",
-						"pharmacy_manager",
 						"admin_administrator",
 					],
 				},

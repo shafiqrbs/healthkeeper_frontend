@@ -1706,5 +1706,10 @@
 	"ManageMedicine": "Manage Medicine",
 	"CreateGeneric": "Create Generic",
 	"CreateMedicine": "Create Medicine",
+	"UserGroup": "User Group",
+	"NurseSync": "Nurse Sync",
+	"LabSync": "Lab Sync",
+	"DoctorSync": "Doctor Sync",
+	"UpdateDoctor": "Update Doctor",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }

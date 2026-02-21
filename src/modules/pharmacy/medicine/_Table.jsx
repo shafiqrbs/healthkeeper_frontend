@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { errorNotification } from "@components/notification/errorNotification";
 import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 25;
+const PER_PAGE = 50;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -245,7 +245,7 @@ export default function _Table({ module, open }) {
 										>
 											{t("Edit")}
 										</Button>
-										<Button
+										{/*<Button
 											variant="filled"
 											c="white"
 											bg="var(--theme-primary-color-6)"
@@ -263,7 +263,7 @@ export default function _Table({ module, open }) {
 											onClick={() => handleDelete(values.id)}
 											size={"sm"}
 											c={"red"}
-										/>
+										/>*/}
 									</Button.Group>
 								</Group>
 							),

@@ -403,7 +403,7 @@ export default function _Table({ module, open }) {
 							>
 								{t("Edit")}
 							</Button>
-							<Button
+							{/*<Button
 								onClick={() => handleDataShow(values.id)}
 								variant="filled"
 								c="white"
@@ -421,7 +421,7 @@ export default function _Table({ module, open }) {
 								onClick={() => handleDelete(values.id)}
 								size={"sm"}
 								c={"red"}
-							/>
+							/>*/}
 						</Button.Group>
 					</Group>
 				),

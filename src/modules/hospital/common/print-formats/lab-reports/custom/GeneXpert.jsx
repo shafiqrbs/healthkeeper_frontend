@@ -207,7 +207,7 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 								<Text fz={'xs'}>MFX</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text fz={'xs'}>RTH</Text>
+								<Text fz={'xs'}>ETH</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Text fz={'xs'}>BDQ</Text>
@@ -239,7 +239,7 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text fz={'xs'} c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
+								<Text fz={'xs'} c={reportData?.dst_mtb === 'Detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'green.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>

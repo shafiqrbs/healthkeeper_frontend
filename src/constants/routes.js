@@ -112,6 +112,7 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular/inline-update",
 			ORDERING: "hospital/core/particular/ordering",
+			USER_SYNC: "hospital/core/particular/sync-users",
 		},
 
 		BED: {
