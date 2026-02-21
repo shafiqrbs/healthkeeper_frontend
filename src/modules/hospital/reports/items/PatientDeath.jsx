@@ -31,10 +31,7 @@ const CSV_HEADERS = [
 	{ label: "Name", key: "name" },
 	{ label: "Age", key: "age" },
 	{ label: "Gender", key: "gender" },
-	{ label: "Release Mode", key: "release_mode" },
 	{ label: "Disease Profile", key: "disease_profile" },
-	{ label: "Cause of Death", key: "cause_death" },
-	{ label: "About of Death", key: "about_death" },
 ];
 
 const module = MODULES.VISIT;
@@ -50,7 +47,6 @@ export default function PatientAdmission() {
 		initialValues: {
 			keywordSearch: "",
 			created: formatDate(new Date()),
-			room_id: "",
 		},
 	});
 
@@ -66,7 +62,7 @@ export default function PatientAdmission() {
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_ADMISSION,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_DEATH,
 			filterParams: {
 				term: form.values.keywordSearch,
 				start_date: form.values.start_date,
@@ -89,10 +85,7 @@ export default function PatientAdmission() {
 			name: item?.name ?? "",
 			age: item?.age ?? "",
 			gender: item?.gender ?? "",
-			release_mode: item?.release_mode ?? "",
 			disease_profile: item?.disease_profile ?? "",
-			cause_death: item?.cause_death ?? "",
-			about_death: item?.about_death ?? "",
 		})) || [];
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
@@ -144,16 +137,12 @@ export default function PatientAdmission() {
 							textAlignment: "right",
 							render: (item) => formatDate(item?.created_at),
 						},
+						{ accessor: "invoice", title: t("InvoiceID") },
 						{ accessor: "patient_id", title: t("PatientID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "age", title: t("Age") },
 						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "release_mode", title: t("Release Mode"),
-							render: (item) => capitalizeWords(item?.release_mode),
-						},
 						{ accessor: "disease_profile", title: t("Disease Profile") },
-						{ accessor: "cause_death", title: t("Cause Death") },
-						{ accessor: "about_death", title: t("About Death") },
 					]}
 					fetching={fetching}
 					loaderSize="xs"

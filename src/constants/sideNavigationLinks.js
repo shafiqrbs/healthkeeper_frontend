@@ -528,6 +528,7 @@ export const sideNavigationLinks = {
 				"operator_emergency",
 				"stock_indent",
 				"nurse_basic",
+				"admin_doctor",
 				"nurse_incharge",
 			],
 			subMenu: [
@@ -535,7 +536,7 @@ export const sideNavigationLinks = {
 			 		label: t("Summary"),
 			 		path: "/hospital/reports",
 			 		icon: IconDashboard,
-			 		allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+			 		allowedRoles: ["role_domain","admin_doctor", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 			 	},
 			 	{
 			 		label: t("Stock"),
@@ -544,10 +545,10 @@ export const sideNavigationLinks = {
 			 		allowedRoles: ["role_domain", "admin_administrator", "pharmacy_manager","pharmacy_pharmacist","operator_emergency","stock_indent","nurse_basic", "nurse_incharge",],
 			 	},
 			 	{
-			 		label: t("Ticket"),
+			 		label: t("Admin"),
 			 		path: "/hospital/reports",
 			 		icon: IconSettings,
-			 		allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+			 		allowedRoles: ["role_domain","reports_basic","admin_doctor", "admin_administrator"],
 			 	},
 			],
 		},
