@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -16,8 +16,9 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES } from "@/constants";
 import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 200;
+const PER_PAGE = 50;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -46,17 +47,19 @@ export default function PatientMedicineIssue() {
 		},
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_MEDICINE_ISSUE_REPORT,
-            filterParams: {
-                start_date: form.values.start_date ?? null,
-                end_date: form.values.end_date ?? null,
-				warehouse_id: form.values.warehouse_id ?? null,
-            },
-            perPage: PER_PAGE,
-		});
+
+
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
+		module,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_MEDICINE_ISSUE_REPORT,
+		filterParams: {
+			start_date: form.values.start_date ?? null,
+			end_date: form.values.end_date ?? null,
+			warehouse_id: form.values.warehouse_id ?? null,
+		},
+		perPage: PER_PAGE,
+	});
+
 
 	const csvData =
 		records?.map((item, index) => ({
@@ -112,7 +115,6 @@ export default function PatientMedicineIssue() {
 							title: t("S/N"),
 							ta: "right",
 							render: (_, index) => index + 1,
-							footer: `Total: ${records.length}`,
 						},
 						{
 							accessor: "created_date",
@@ -123,7 +125,7 @@ export default function PatientMedicineIssue() {
 						{ accessor: "name", title: t("Item Name") },
 						{ accessor: "quantity", title: t("Quantity") },
 						{ accessor: "process", title: t("Status") },
-						{ accessor: "warehouse_name", title: t("Warehouse") },
+						{ accessor: "warehouse_name", title: t("Department") },
 						{ accessor: "customer_name", title: t("CustomerName") },
 						{ accessor: "invoice", title: t("InvoiceNo") },
 					]}
@@ -131,9 +133,11 @@ export default function PatientMedicineIssue() {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={mainAreaHeight - 100}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
+					totalRecords={total}
+					page={page}
+					recordsPerPage={perPage}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
@@ -141,7 +145,6 @@ export default function PatientMedicineIssue() {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink
 				data={csvData}

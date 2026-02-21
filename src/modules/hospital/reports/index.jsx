@@ -71,7 +71,9 @@ const REPORT_TABS = [
 	{
 		label: "Patient Medicine Issue",
 		value: "patient-medicine-issue",
-		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator","stock_indent",
+			"nurse_basic",
+			"nurse_incharge"],
 	},
 	{
 		label: "Medicine Issue",
@@ -81,7 +83,10 @@ const REPORT_TABS = [
 	{
 		label: "Stock Summary",
 		value: "stock-summery",
-		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator","operator_emergency",
+			"stock_indent",
+			"nurse_basic",
+			"nurse_incharge"],
 	},
 	{
 		label: "Workorder wise stock",
@@ -91,7 +96,10 @@ const REPORT_TABS = [
 	{
 		label: "Department stock details",
 		value: "department-wise-stock",
-		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator","operator_emergency","stock_indent"],
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator","operator_emergency","stock_indent","operator_emergency",
+			"stock_indent",
+			"nurse_basic",
+			"nurse_incharge",],
 	},
 
 ];

@@ -3,7 +3,7 @@ import {IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX} from "@tabler
 import AdvancedFilter from "@components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { DateInput } from "@mantine/dates";
 import { formatDate } from "@/common/utils";
 import { useDebouncedCallback } from "@mantine/hooks";
@@ -12,6 +12,8 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { ERROR_NOTIFICATION_COLOR, MODULES_CORE } from "@/constants";
 import { useAuthStore } from "@/store/useAuthStore.js";
 import { errorNotification } from "@components/notification/errorNotification.jsx";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const reportModule = MODULES_CORE.REPORT;
@@ -33,6 +35,7 @@ export default function ReportFilterSearch({
 	showKeywordSearch = false,
 	showOpdRoom = false,
 	showUnits = false,
+	showCategory = false,
     placeholder = "Keyword Search",
     className = "keyword-search-box",
 	tooltip = "Search by patient name, mobile, email, etc.",
@@ -50,6 +53,7 @@ export default function ReportFilterSearch({
 	const [ stockItems, setStockItems ] = useState([]);
 	const [ purchaseWiseCenterWarehousestockItems, setPurchaseWiseCenterWarehouseStockItems ] = useState([]);
 	const [ warehouseData, setWarehouseData ] = useState([]);
+	const [ categoryData, setCategoryData ] = useState([]);
 	const [ warehouse, setWarehouse ] = useState([]);
 	const [ keywordSearch, setKeywordSearch ] = useState(form.values.keywordSearch || "");
 	const [ date, setDate ] = useState(null);
@@ -160,6 +164,7 @@ export default function ReportFilterSearch({
 				errorNotification('Warehouse is required.', ERROR_NOTIFICATION_COLOR)
 				return;
 			}
+
 		}
 
 		const data = searchData || {
@@ -168,6 +173,7 @@ export default function ReportFilterSearch({
 			room_id: form.values.room_id,
 			stock_item_id: form.values.stock_item_id,
 			warehouse_id: form.values.warehouse_id,
+			category_id: form.values.category_id,
 			start_date: startDate ? formatDate(startDate) : "",
 			end_date: endDate ? formatDate(endDate) : "",
 		};
@@ -208,6 +214,18 @@ export default function ReportFilterSearch({
 		setWarehouseData(value);
 		handleSearch({ keywordSearch, created: date, warehouse_id: value });
 	};
+
+	const handleCategoryChange = (value) => {
+		form.setFieldValue("category_id", value);
+		setCategoryData(value);
+		handleSearch({ keywordSearch, created: date, category_id: value });
+	};
+
+	const { data: categoryDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.CATEGORY.PATH,
+		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
+		params: { type: "stockable" },
+	});
 
 	return (
 		<Flex justify="flex-end"
@@ -256,6 +274,19 @@ export default function ReportFilterSearch({
 					onChange={(value) => handleWarehouseChange(value)}
 					w={250}
 				/>
+			)}
+
+			{showCategory && (
+				<Select
+					searchable
+					placeholder="Category"
+					loading={fetching}
+					data={categoryDropdown}
+					value={form.values.category_id}
+					onChange={(value) => handleCategoryChange(value)}
+					w={250}
+				/>
+
 			)}
 
 			{showStockItems && (

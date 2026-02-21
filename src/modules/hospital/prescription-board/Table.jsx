@@ -414,7 +414,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
-										{(userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && values?.process !== 'Closed') && (
+										{(userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && values?.is_admission !== 1) && (
 											<Button
 												variant="filled"
 												bg="var(--theme-primary-color-6)"

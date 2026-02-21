@@ -18,6 +18,8 @@ import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
 import { useReactToPrint } from "react-to-print";
 import StockReport from "@hospital-components/print-formats/stock-summary/stockReport";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 200;
 
@@ -114,6 +116,8 @@ export default function StockSummery() {
 	};
 
 
+	// console.log(warehouseData)
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
@@ -130,6 +134,7 @@ export default function StockSummery() {
 							handleCSVDownload={handleCSVDownload}
 							handleCSVDownloadForUpload={handleCSVDownloadForUpload}
 							showWarehouse={true}
+							showCategory={true}
 							downloadOpeningTemplate={true}
 						/>
 					</Grid.Col>

@@ -16,7 +16,6 @@ const StockReport = forwardRef(({ data, preview = false }, ref) => {
 
 //	const data = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log(data)
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
