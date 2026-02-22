@@ -114,22 +114,22 @@ const PRINT_SECTION_ITEMS = [
 	{
 		label: "E-Fresh Print",
 		value: "e-fresh-print",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["doctor_ipd","doctor_emergency", "admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Discharge Print",
 		value: "discharge-print",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["doctor_ipd","doctor_emergency", "admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Death Certificate Print",
 		value: "death-certificate-print",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["doctor_ipd","doctor_emergency", "admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Referred Print",
 		value: "referred-print",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["doctor_ipd","doctor_emergency", "admin_administrator", "nurse_incharge"],
 	},
 ];
 
