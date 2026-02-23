@@ -205,7 +205,12 @@ export default function _Table({ height }) {
 						</Table.Thead>
 						<Table.Tbody>
 							{selectedInvoice?.sales_items?.map((item, index) => (
-								<Table.Tr key={index}>
+								<Table.Tr
+									key={index}
+									style={{
+										backgroundColor: item?.is_delete === 1 ? '#ffe5e5' : undefined,
+									}}
+								>
 									<Table.Td>{index + 1}</Table.Td>
 									<Table.Td>{item.name}</Table.Td>
 									<Table.Td>{item?.quantity}</Table.Td>

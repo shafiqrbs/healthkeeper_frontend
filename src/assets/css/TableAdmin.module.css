@@ -92,9 +92,9 @@
 }
 
 .statusBackground {
-    background-color: var(--mantine-color-gray-2) !important;
+    background-color: #ffe5e5 !important;
 }
 
 .lowStockRow {
-    background-color: #cd4545 !important;
+    background-color: var(--theme-warn-color-3) !important;
 }
