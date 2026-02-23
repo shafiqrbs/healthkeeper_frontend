@@ -23,8 +23,21 @@ import useMainAreaHeight from "@hooks/useMainAreaHeight";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
-const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator" ];
-const ALLOWED_NURSE_ROLES = [ "role_domain", "admin_administrator", "nurse_basic", "operator_emergency", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm" ];
+const ALLOWED_CONFIRMED_ROLES = [
+	"doctor_ipd",
+	"doctor_rs_rp_confirm",
+	"doctor_emergency",
+	"admin_administrator",
+];
+const ALLOWED_NURSE_ROLES = [
+	"role_domain",
+	"admin_administrator",
+	"nurse_basic",
+	"operator_emergency",
+	"nurse_incharge",
+	"admin_nurse",
+	"doctor_rs_rp_confirm",
+];
 
 const TABS = [
 	{ label: "Current", value: "paid" },
@@ -37,20 +50,19 @@ export default function _Table() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { userRoles } = useAppLocalStore();
-	const filterData = useSelector((state) => state.crud[ module ].filterData);
-	const [ rootRef, setRootRef ] = useState(null);
-	const [ processTab, setProcessTab ] = useState("paid");
-	const [ controlsRefs, setControlsRefs ] = useState({});
+	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [rootRef, setRootRef] = useState(null);
+	const [processTab, setProcessTab] = useState("paid");
+	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[ val ] = node;
+		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
 
 	const invoicePrintRef = useRef(null);
-	const [ invoicePrintData, setInvoicePrintData ] = useState(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
-
 
 	const form = useForm({
 		initialValues: {
@@ -60,41 +72,54 @@ export default function _Table() {
 		},
 	});
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
-		usePagination({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
-			filterParams: {
-				name: filterData?.name,
-				patient_mode: "ipd",
-				process: processTab,
-				created: form.values.created,
-				term: form.values.keywordSearch,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const {
+		refetchAll,
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		page,
+		total,
+		perPage,
+		handlePageChange,
+	} = usePagination({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: "ipd",
+			process: processTab,
+			created: form.values.created,
+			term: form.values.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
-	const handleProcessConfirmation = (id) => {
+	const handleProcessConfirmation = (id, release_mode) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handlePatientDischarge(id),
+			onConfirm: () => handlePatientDischarge(id, release_mode),
 		});
 	};
 
-	const handlePatientDischarge = async (id) => {
+	const handlePatientDischarge = async (id, release_mode) => {
 		if (id) {
 			await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DISCHARGE_PROCESS}/${id}`,
 			});
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`, {
-				replace: true,
-			});
+			navigate(
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=${capitalizeWords(release_mode)}`,
+				{
+					replace: true,
+				},
+			);
 		} else {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
@@ -134,7 +159,7 @@ export default function _Table() {
 		if (invoicePrintData) {
 			invoicePrint();
 		}
-	}, [ invoicePrintData ]);
+	}, [invoicePrintData]);
 
 	const processColorMap = { paid: "red", discharged: "green", refund: "orange", empty: "blue" };
 
@@ -158,13 +183,12 @@ export default function _Table() {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[ processTab ] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
 						</Tabs.List>
 					</Tabs>
-
 				</Flex>
 			</Flex>
 			<Box>
@@ -222,7 +246,7 @@ export default function _Table() {
 							textAlign: "center",
 							title: t("Process"),
 							render: (item) => {
-								const color = processColorMap[ item.process ] || ""; // fallback for unknown status
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process}
@@ -240,21 +264,31 @@ export default function _Table() {
 							accessor: "",
 							title: t("Action"),
 							render: (item) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+								<Group
+									onClick={(e) => e.stopPropagation()}
+									gap={4}
+									justify="right"
+									wrap="nowrap"
+								>
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
+										(item.process?.toLowerCase() === "paid" ||
+											item.process?.toLowerCase() === "refund" ||
+											item.process?.toLowerCase() === "discharged") && (
 											<Button
 												variant="filled"
 												size="compact-xs"
 												color="var(--theme-primary-color-6)"
-												onClick={() => handleProcessConfirmation(item.uid)}
+												onClick={() =>
+													handleProcessConfirmation(item.uid, item.release_mode)
+												}
 												rightSection={<IconArrowRight size={14} />}
 											>
 												{t("Process")}
 											</Button>
 										)}
 									{userRoles.some((role) => ALLOWED_NURSE_ROLES.includes(role)) &&
-										(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund") && (
+										(item.process?.toLowerCase() === "paid" ||
+											item.process?.toLowerCase() === "refund") && (
 											<Button
 												variant="filled"
 												size="compact-xs"
@@ -265,7 +299,7 @@ export default function _Table() {
 												{t("DORB")}
 											</Button>
 										)}
-									{item?.release_mode === 'DORB' && (
+									{item?.release_mode === "DORB" && (
 										<Button
 											variant="filled"
 											size="compact-xs"
@@ -277,8 +311,8 @@ export default function _Table() {
 										</Button>
 									)}
 								</Group>
-							)
-						}
+							),
+						},
 					]}
 					fetching={fetching}
 					loaderSize="xs"
