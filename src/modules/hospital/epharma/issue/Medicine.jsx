@@ -44,6 +44,8 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 			};
 			const resultAction = await dispatch(updateEntityData(value));
 			if (updateEntityData.rejected.match(resultAction)) {
+				console.log("ERROR", resultAction);
+
 				const fieldErrors = resultAction.payload?.errors;
 
 				if (fieldErrors) {
@@ -55,7 +57,6 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 				} else {
 					const errorMessage =
 						resultAction.payload?.message ||
-						resultAction.payload?.error ||
 						resultAction.error?.message ||
 						"Something went wrong";
 
