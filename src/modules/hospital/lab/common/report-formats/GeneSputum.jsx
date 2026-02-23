@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Group, Text, ScrollArea, Radio, Switch } from "@mantine/core";
+import {Box, Stack, Table, Group, Text, ScrollArea, Radio, Switch, Flex} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -32,6 +32,13 @@ const notions = [
 	{ label: "C", value: "C" },
 	{ label: "I", value: "I" },
 	{ label: "NA", value: "NA" },
+];
+
+const dstMethods = [
+	{ label: "Proportion method (LJ)", value: "Proportion method (LJ)" },
+	{ label: "Liquid (MGIT)", value: "Liquid (MGIT)" },
+	{ label: "Line Probe Assay (LPA)", value: "Line Probe Assay (LPA)" },
+	{ label: "Xpert XDR", value: "Xpert XDR" }
 ];
 
 const sampleTypes = [
@@ -317,31 +324,22 @@ export default function GeneSputum({ diagnosticReport, refetchDiagnosticReport, 
 						{form.values.is_dst_genexpert && <>
 
 							<Box my="md">
-								<Text size="sm" fw={500} mb="xs">
-									Method Used:
-								</Text>
-								<Radio.Group
-									value={form.values?.dst_method}
-									onChange={(value) => form.setFieldValue("dst_method", value)}
-									style={{ width: "100%" }}
-								>
-									<Table withColumnBorders withTableBorder w="100%">
-										<Table.Tr>
-											<Table.Th>
-												<Radio value="lj" label="Proportion method (LJ)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="mgit" label="Liquid (MGIT)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="lpa" label="Line Probe Assay (LPA)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="xdr" label="Xpert XDR" />
-											</Table.Th>
-										</Table.Tr>
-									</Table>
-								</Radio.Group>
+								<Flex gap="md">
+									<Text size="sm" fw={500} mt="xs">
+										Method Used:
+									</Text>
+									<SelectForm
+										name='dst_method'
+										id='dst_method'
+										form={form}
+										dropdownValue={dstMethods}
+										placeholder="Select"
+										clearable={true}
+										allowDeselect={true}
+										searchable={false}
+										withCheckIcon={false}
+									/>
+								</Flex>
 							</Box>
 							{/* =============== notation legend =============== */}
 							<Box my="xs">

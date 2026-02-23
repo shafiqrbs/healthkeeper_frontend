@@ -1711,5 +1711,7 @@
 	"LabSync": "Lab Sync",
 	"DoctorSync": "Doctor Sync",
 	"UpdateDoctor": "Update Doctor",
+	"AddGeneric": "Add Generic",
+	"ConfirmAdmission": "Confirm Admission",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }
