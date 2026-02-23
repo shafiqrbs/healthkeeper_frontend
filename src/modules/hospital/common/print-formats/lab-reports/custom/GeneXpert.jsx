@@ -116,56 +116,8 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 				<Box mb="md"  fz={'md'} >
 					<Box my="md">
 						<Text size="sm" fw={500} mb="xs">
-							<strong>Method Used:</strong>
+							<strong>Method Used: {reportData?.dst_method}</strong>
 						</Text>
-						<Table
-							withColumnBorders
-							verticalSpacing={6}
-							horizontalSpacing={6}
-							striped={false}
-							highlightOnHover={false}
-							style={{
-								borderCollapse: "collapse",
-								width: "100%",
-								border: "1px solid var(--theme-tertiary-color-8)",
-							}}  w="100%">
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									Proportion method (LJ)
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									Liquid (MGIT)
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									Line Probe Assay (LPA)
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									Xpert XDR
-								</Table.Th>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dst_method === 'lj')  && (
-										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dst_method === 'mgit')  && (
-										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dst_method === 'lpa')  && (
-										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dst_method === 'xdr')  && (
-										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-									)}
-								</Table.Th>
-							</Table.Tr>
-						</Table>
 					</Box>
 					<Table
 						withColumnBorders
