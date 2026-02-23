@@ -44,13 +44,21 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 			};
 			const resultAction = await dispatch(updateEntityData(value));
 			if (updateEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
+				const fieldErrors = resultAction.payload?.errors;
+
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
 						errorObject[key] = fieldErrors[key][0];
 					});
 					form.setErrors(errorObject);
+				} else {
+					const errorMessage =
+						resultAction.payload?.message ||   // Laravel custom exception
+						resultAction.error?.message ||     // fallback
+						"Something went wrong";
+
+					errorNotification(errorMessage, ERROR_NOTIFICATION_COLOR);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				barcodeForm.reset();
