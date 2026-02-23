@@ -1,22 +1,22 @@
 import { Box, Text, Grid, Flex, Button, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {IconChevronUp, IconSelector} from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { modals } from "@mantine/modals";
-import { updateEntityData } from "@/app/store/core/crudThunk";
-import { setRefetchData } from "@/app/store/core/crudSlice";
+import {deleteEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import {setRefetchData} from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 
 const module = MODULES_CORE.LAB_USER;
 
@@ -75,6 +75,33 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit")?.click()]]);
 
+	const [localItems, setLocalItems] = useState(entity?.sales_items || []);
+
+	useEffect(() => {
+		setLocalItems(entity?.sales_items || []);
+	}, [entity]);
+
+	const salesItems = localItems;
+
+	const hasInsufficientStock = salesItems.some(
+		(item) =>
+			(item?.current_warehouse_stock?.quantity || 0) < item.quantity
+	);
+
+	const handleCloseItem = async (item) => {
+		const res = await dispatch(
+			deleteEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.ITEM_DELETE}/${item.id}`,
+				module,
+				id,
+			})
+		);
+
+		if (deleteEntityData.fulfilled.match(res)) {
+			setLocalItems((prev) => prev.filter((i) => i.id !== item.id));
+		}
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -99,7 +126,12 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 									footer: tableCss.footer,
 									pagination: tableCss.pagination,
 								}}
-								records={entity?.sales_items || []}
+								records={localItems || []}
+								rowClassName={(item) =>
+									(item?.current_warehouse_stock?.quantity || 0) < item.quantity
+										? tableCss.lowStockRow
+										: ""
+								}
 								columns={[
 									{
 										accessor: "index",
@@ -118,6 +150,26 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 										title: t("Quantity"),
 									},
 									{ accessor: "uom", title: t("Unit") },
+									{
+										accessor: "action",
+										title: t("Action"),
+										render: (item) => {
+											const stock = item?.current_warehouse_stock?.quantity || 0;
+											const insufficient = stock < item.quantity;
+
+											if (!insufficient) return null;
+
+											return (
+												<Button
+													size="xs"
+													color="red"
+													onClick={() => handleCloseItem(item)}
+												>
+													{t("Close")}
+												</Button>
+											);
+										},
+									}
 								]}
 								loaderSize="xs"
 								loaderColor="grape"
@@ -129,7 +181,6 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 							/>
 						</Box>
 
-						{/* 🔥 Form */}
 						<form onSubmit={form.onSubmit(handleSubmit)}>
 							<Box bg="var(--theme-tertiary-color-0)" mt="xl" p="sm">
 								<Grid columns={24}>
@@ -146,12 +197,12 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 
 									<Grid.Col span={6}>
 										<Flex gap="xs" justify="flex-end" align="flex-end" h={54}>
-											{/* No double submit */}
 											<Button
 												id="EntityFormSubmit"
 												type="submit"
 												bg="var(--theme-primary-color-6)"
 												color="white"
+												disabled={hasInsufficientStock}
 											>
 												{t("Confirm")}
 											</Button>

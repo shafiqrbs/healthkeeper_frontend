@@ -733,6 +733,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/epharma",
 			VIEW: "hospital/epharma",
 			DELETE: "hospital/epharma",
+			ITEM_DELETE: "hospital/epharma/item-delete",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
 		REPORT_MASTERDATA: {

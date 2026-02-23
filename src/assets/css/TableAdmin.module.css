@@ -94,3 +94,7 @@
 .statusBackground {
     background-color: var(--mantine-color-gray-2) !important;
 }
+
+.lowStockRow {
+    background-color: #cd4545 !important;
+}
