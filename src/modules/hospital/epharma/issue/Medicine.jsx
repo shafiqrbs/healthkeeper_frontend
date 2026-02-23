@@ -54,8 +54,9 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 					form.setErrors(errorObject);
 				} else {
 					const errorMessage =
-						resultAction.payload?.message ||   // Laravel custom exception
-						resultAction.error?.message ||     // fallback
+						resultAction.payload?.message ||
+						resultAction.payload?.error ||
+						resultAction.error?.message ||
 						"Something went wrong";
 
 					errorNotification(errorMessage, ERROR_NOTIFICATION_COLOR);
