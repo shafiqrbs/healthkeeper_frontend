@@ -44,23 +44,21 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 			};
 			const resultAction = await dispatch(updateEntityData(value));
 			if (updateEntityData.rejected.match(resultAction)) {
-				console.log("ERROR", resultAction);
+				const errorMessage =
+					resultAction.payload?.message ||
+					Object.values(resultAction.payload?.errors || {})?.[0]?.[0] ||
+					resultAction.error?.message ||
+					"Something went wrong";
 
-				const fieldErrors = resultAction.payload?.errors;
+				errorNotification(errorMessage, ERROR_NOTIFICATION_COLOR);
 
-				if (fieldErrors) {
+				// optional: still set form errors
+				if (resultAction.payload?.errors) {
 					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+					Object.keys(resultAction.payload.errors).forEach((key) => {
+						errorObject[key] = resultAction.payload.errors[key][0];
 					});
 					form.setErrors(errorObject);
-				} else {
-					const errorMessage =
-						resultAction.payload?.message ||
-						resultAction.error?.message ||
-						"Something went wrong";
-
-					errorNotification(errorMessage, ERROR_NOTIFICATION_COLOR);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				barcodeForm.reset();
