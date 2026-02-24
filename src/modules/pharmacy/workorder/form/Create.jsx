@@ -61,6 +61,7 @@ export default function Create({ form }) {
 					expired_date: formatDateForMySQL(r.expired_date),
 				})),
 				workorder_date: formatDateForMySQL(values.workorder_date),
+				received_date: formatDateForMySQL(values.received_date),
 				created_by_id: user?.id,
 			};
 

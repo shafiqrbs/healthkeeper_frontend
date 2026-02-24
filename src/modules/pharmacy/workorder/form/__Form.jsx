@@ -533,27 +533,28 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										/>
 									</Grid.Col>
 								</Grid>
+								<Grid align="center" columns={20} mt="0">
+									<Grid.Col span={6}>
+										<Text fz="sm" align="right">{t("WorkorderNo")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={workOrderForm}
+											tooltip={t("WorkorderNo")}
+											placeholder={t("WorkorderNo")}
+											name="grn"
+											id="grn"
+											nextField="EntityFormSubmit"
+											value={workOrderForm.values.grn}
+											required={true}
+										/>
+									</Grid.Col>
+								</Grid>
 							</Grid.Col>
 							<Grid.Col span={8}>
 								<Box gap="1" bg="var(--theme-tertiary-color-0)" px="sm">
 									<Box>
-										<Grid align="center" columns={20} mt="0">
-											<Grid.Col span={6}>
-												<Text fz="sm">{t("WorkorderNo")}</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													form={workOrderForm}
-													tooltip={t("WorkorderNo")}
-													placeholder={t("WorkorderNo")}
-													name="grn"
-													id="grn"
-													nextField="EntityFormSubmit"
-													value={workOrderForm.values.grn}
-													required={true}
-												/>
-											</Grid.Col>
-										</Grid>
+
 										<Grid align="center" columns={20} mt="0">
 											<Grid.Col span={6}>
 												<Text fz="sm">{t("Workorder Date")}</Text>
@@ -565,6 +566,24 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													placeholder={t("Workorder Date")}
 													name="workorder_date"
 													id="workorder_date"
+													nextField="EntityFormSubmit"
+													value={workOrderForm.values.workorder_date}
+													required={false}
+												/>
+											</Grid.Col>
+										</Grid>
+
+										<Grid align="center" columns={20} mt="0">
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("Received Date")}</Text>
+											</Grid.Col>
+											<Grid.Col span={14}>
+												<DatePickerForm
+													form={workOrderForm}
+													tooltip={t("Received Date")}
+													placeholder={t("Received Date")}
+													name="received_date"
+													id="received_date"
 													nextField="EntityFormSubmit"
 													value={workOrderForm.values.received_date}
 													required={false}

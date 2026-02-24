@@ -119,11 +119,11 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									{entityObject && entityObject.created && entityObject.created}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("Process")}
+									{t("Invoice No")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
-									{entityObject && entityObject.process && entityObject.process}
+									{entityObject && entityObject.invoice && entityObject.invoice}
 								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
@@ -135,25 +135,25 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									{entityObject && entityObject.grn && entityObject.grn}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("Vendor")}
-								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>
-									{entityObject &&
-										entityObject.vendor_name &&
-										entityObject.vendor_name}
-								</Grid.Col>
-							</Grid>
-
-							<Grid columns={24}>
-								<Grid.Col span={"4"} className="drawer-form-input-label">
 									{t("Created By")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.cb_username &&
-										entityObject.cb_username}
+									entityObject.cb_username &&
+									entityObject.cb_username}
+								</Grid.Col>
+							</Grid>
+
+							<Grid columns={24}>
+								<Grid.Col span={"4"} className="drawer-form-input-label">
+									{t("Vendor")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>
+									{entityObject &&
+									entityObject.vendor_name &&
+									entityObject.vendor_name}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
 									{t("Approved By")}
@@ -167,13 +167,13 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("ReceivedBy")}
+									{t("Workorder Date")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.re_username &&
-										entityObject.re_username}
+										entityObject.workorder_date &&
+										entityObject.workorder_date}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
 									{t("ReceivedDate")}
