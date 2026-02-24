@@ -23,7 +23,7 @@ import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import Indent from "@hospital-components/print-formats/indent/Indent";
@@ -109,8 +109,13 @@ export default function _Table({ module }) {
 			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
 		});
 		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
 	};
+
+	useEffect(() => {
+		if (invoicePrintData) {
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	const handleCreateFormNavigate = () => {
 		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.CREATE}`);

@@ -31,6 +31,7 @@ import { MODULES_PHARMACY } from "@/constants";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { useSelector } from "react-redux";
 import { notifications } from "@mantine/notifications";
+import DatePickerForm from "@components/form-builders/DatePicker";
 
 const module = MODULES_PHARMACY.STOCK;
 
@@ -509,51 +510,33 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						component="form"
 						onSubmit={workOrderForm.onSubmit(onSave)}
 						bg="var(--theme-tertiary-color-0)"
-						justify="space-between"
 						align="left"
 						pt={"xs"}
 					>
 						<Grid align="center" gatter={"2"} columns={20} mt="0">
 							<Grid.Col span={12}>
-								<Box bg="var(--theme-primary-color-0)" fz="sm" c="white">
-									<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
-										{t("Remark")}
-									</Text>
-									<Box p="sm">
-										<TextAreaForm
+								<Grid align="center" gatter={"2"} columns={20} mt="0">
+									<Grid.Col span={6}>
+										<Text fz="sm" align="right">{t("Vendor")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SelectForm
 											form={workOrderForm}
-											label=""
-											value={workOrderForm.values.remark}
-											name="remark"
-											placeholder="Write a remark..."
-											showRightSection={false}
-											style={{ input: { height: "60px" } }}
-											tooltip={t("EnterRemark")}
+											tooltip={t("ChooseVendor")}
+											placeholder={t("ChooseVendor")}
+											name="vendor_id"
+											id="vendor_id"
+											nextField="grn"
+											required={true}
+											value={workOrderForm.values.vendor_id}
+											dropdownValue={vendorDropdown}
 										/>
-									</Box>
-								</Box>
+									</Grid.Col>
+								</Grid>
 							</Grid.Col>
 							<Grid.Col span={8}>
 								<Box gap="1" bg="var(--theme-tertiary-color-0)" px="sm">
 									<Box>
-										<Grid align="center" gatter={"2"} columns={20} mt="0">
-											<Grid.Col span={6}>
-												<Text fz="sm">{t("Vendor")}</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<SelectForm
-													form={workOrderForm}
-													tooltip={t("ChooseVendor")}
-													placeholder={t("ChooseVendor")}
-													name="vendor_id"
-													id="vendor_id"
-													nextField="grn"
-													required={true}
-													value={workOrderForm.values.vendor_id}
-													dropdownValue={vendorDropdown}
-												/>
-											</Grid.Col>
-										</Grid>
 										<Grid align="center" columns={20} mt="0">
 											<Grid.Col span={6}>
 												<Text fz="sm">{t("WorkorderNo")}</Text>
@@ -568,6 +551,23 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													nextField="EntityFormSubmit"
 													value={workOrderForm.values.grn}
 													required={true}
+												/>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20} mt="0">
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("Workorder Date")}</Text>
+											</Grid.Col>
+											<Grid.Col span={14}>
+												<DatePickerForm
+													form={workOrderForm}
+													tooltip={t("Workorder Date")}
+													placeholder={t("Workorder Date")}
+													name="workorder_date"
+													id="workorder_date"
+													nextField="EntityFormSubmit"
+													value={workOrderForm.values.received_date}
+													required={false}
 												/>
 											</Grid.Col>
 										</Grid>

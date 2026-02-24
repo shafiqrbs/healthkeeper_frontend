@@ -34,6 +34,7 @@ export default function Update({form, data}) {
             grn: entity?.grn || "",
             remark: entity?.remark || "",
             vendor_id: entity?.vendor_id ? String(entity.vendor_id) : "",
+            workorder_date: entity?.workorder_date ? new Date(entity.workorder_date) : "",
         });
 
         // bind line items into records
@@ -75,6 +76,7 @@ export default function Update({form, data}) {
                     production_date: formatDateForMySQL(recordItem.production_date),
                     expired_date: formatDateForMySQL(recordItem.expired_date),
                 })),
+                workorder_date: formatDateForMySQL(values.workorder_date)
             };
 
             const requestData = {
@@ -82,6 +84,7 @@ export default function Update({form, data}) {
                 data: payload,
                 module,
             };
+            // console.log(requestData)
 
             const result = await dispatch(updateEntityData(requestData));
 

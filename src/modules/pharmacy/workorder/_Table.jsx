@@ -28,7 +28,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import { successNotification } from "@components/notification/successNotification.jsx";
 import { errorNotification } from "@components/notification/errorNotification.jsx";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import { useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import Workorder from "@hospital-components/print-formats/workorder/Workorder";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
@@ -123,8 +123,12 @@ export default function _Table({ module }) {
 			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
 		});
 		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
 	};
+	useEffect(() => {
+		if (invoicePrintData) {
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	const handleCreateFormNavigate = () => {
 		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.CREATE}`);
@@ -167,8 +171,26 @@ export default function _Table({ module }) {
 							sortable: true,
 						},
 						{
+							accessor: "workorder_date",
+							title: t("Workorder Date"),
+							textAlignment: "right",
+							sortable: true,
+						},
+						{
+							accessor: "received_date",
+							title: t("ReceivedDate"),
+							textAlignment: "right",
+							sortable: true,
+						},
+						{
 							accessor: "invoice",
 							title: t("InvoiceID"),
+							textAlignment: "right",
+							sortable: true,
+						},
+						{
+							accessor: "grn",
+							title: t("Wororder No"),
 							textAlignment: "right",
 							sortable: true,
 						},
