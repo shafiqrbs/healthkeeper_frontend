@@ -1,16 +1,18 @@
-import { Box, Text, ScrollArea, Stack, Button, Flex, LoadingOverlay } from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, LoadingOverlay, ActionIcon, Modal } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { IconEye, IconPrinter, IconTag } from "@tabler/icons-react";
+import { IconEye, IconPlus, IconPrinter, IconTag } from "@tabler/icons-react";
 import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useRef, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { getDataWithoutStore } from "@/services/apiService";
+import InvestigationModal from "./InvestigationModal";
 
 const ALLOWED_LAB_ROLES = [ "doctor_lab", "lab_assistant", "admin_administrator" ];
 const ALLOWED_LAB_DOCTOR_ROLES = [ "doctor_lab", "admin_administrator" ];
@@ -22,11 +24,13 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 	const test = entity;
 	const { id, reportId } = useParams();
 	const navigate = useNavigate();
+	const [ isInvestigationModalOpen, { open: openInvestigationModal, close: closeInvestigationModal } ] =
+		useDisclosure(false);
 	const barCodeRef = useRef(null);
 	const [ barcodeValue, setBarcodeValue ] = useState("");
 	const labReportRef = useRef(null);
 	const [ labReportData, setLabReportData ] = useState(null);
-	const [ customReportName, setCustomeReportName ] = useState(null);
+	const [ customReportName, setCustomReportName ] = useState(null);
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -38,19 +42,19 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 
 	const handleTest = (report_id) => {
 		refetchDiagnosticReport();
-		navigate(
-			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`,
-			{ replace: true }
-		);
-		setTimeout(() => { setRefreshKey(((prev) => prev + 1)) }, 0)
-
+		// navigate(
+		// 	`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`,
+		// 	{ replace: true }
+		// );
+		window.location.href = `${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`;
+		// setTimeout(() => { setRefreshKey(((prev) => prev + 1)) }, 0)
 	};
 
 	const handleLabReport = async (id, reportSlug) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
-		setCustomeReportName(reportSlug);
+		setCustomReportName(reportSlug);
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
@@ -86,9 +90,19 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 								className="borderRadiusAll"
 								bg="var(--mantine-color-white)"
 							>
-								<Box fz={"xs"} fw={"600"} p="sm">
-									{t("Date")} : {formatDate(transaction?.created_at)}
-								</Box>
+								<Flex justify="space-between" align="center">
+									<Box fz={"xs"} fw={"600"} p="sm">
+										{t("Date")} : {formatDate(transaction?.created_at)}
+									</Box>
+									<ActionIcon
+										mr="3xs"
+										bg="var(--theme-primary-color-6)"
+										color="white"
+										onClick={openInvestigationModal}
+									>
+										<IconPlus color="white" size={16} />
+									</ActionIcon>
+								</Flex>
 								<CustomDivider />
 								{transaction?.items?.map((item, index) => (
 									<Box
@@ -108,8 +122,8 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 											) && (
 													<>
 														{userRoles.some((role) =>
-																ALLOWED_LAB_ROLES.includes(role)
-															) && (
+															ALLOWED_LAB_ROLES.includes(role)
+														) && (
 																<Button
 																	onClick={() =>
 																		handleTest(
@@ -214,6 +228,16 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 					/>
 				</Box>
 			</Box>
+			<Modal
+				opened={isInvestigationModalOpen}
+				onClose={closeInvestigationModal}
+				size="2xl"
+				title={t("Investigation")}
+				centered
+				withinPortal
+			>
+				<InvestigationModal />
+			</Modal>
 			{customReportName === "covid-19" ? (
 				<LabReportA4BN data={labReportData} ref={labReportRef} />
 			) : customReportName === "gene-sputum" ? (

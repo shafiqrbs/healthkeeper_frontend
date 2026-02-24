@@ -10,7 +10,7 @@ import Table from "./_Table";
 import Test from "./Test";
 import DiagnosticReport from "./DiagnosticReport";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import useGetDataWithoutStore from "@/common/hooks/useDataWithoutStore";
+import useGetDataWithoutStore from "@hooks/useDataWithoutStore";
 import { MODULES } from "@/constants";
 
 const module = MODULES.LAB_TEST;
@@ -22,9 +22,9 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
-	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [processTab, setProcessTab] = useState("Current");
-	const [refreshKey, setRefreshKey] = useState(0);
+	const [ isOpenPatientInfo, setIsOpenPatientInfo ] = useState(true);
+	const [ processTab, setProcessTab ] = useState("Current");
+	const [ refreshKey, setRefreshKey ] = useState(0);
 
 	const {
 		data: reportInformation,
@@ -57,7 +57,7 @@ export default function Index() {
 	];
 
 
-	const columns = [col1, col2, col3, col4];
+	const columns = [ col1, col2, col3, col4 ];
 
 	return (
 		<>
@@ -82,13 +82,13 @@ export default function Index() {
 									<SegmentedControl
 										size="sm"
 										color="var(--theme-primary-color-6)"
-										data={["Current", "Archive"]}
+										data={[ "Current", "Archive" ]}
 										value={processTab}
 										onChange={(value) => setProcessTab(value)}
 									/>
 								</Flex>
 								<TabsWithSearch
-									tabList={["list"]}
+									tabList={[ "list" ]}
 									module={module}
 									tabPanels={[
 										{
