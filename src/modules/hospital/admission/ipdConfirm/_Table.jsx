@@ -85,7 +85,7 @@ export default function _Table({ module, height }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: "",
+			created: formatDate(new Date()),
 			room_id: "",
 		},
 	});

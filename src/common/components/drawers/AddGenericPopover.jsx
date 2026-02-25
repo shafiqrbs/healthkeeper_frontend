@@ -52,11 +52,10 @@ export default function AddGenericPopover({ bd = "auto", dbMedicines, setDbMedic
 		try {
 			setIsLoading(true);
 			const value = {
-				url: MASTER_DATA_ROUTES.API_ROUTES.DOSAGE.CREATE,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.GENERIC_MEDICINE_CREATE}/${prescription_id}`,
 				data: values,
 				module,
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
@@ -68,6 +67,7 @@ export default function AddGenericPopover({ bd = "auto", dbMedicines, setDbMedic
 					advanceSearchForm.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
+
 				advanceSearchForm.reset();
 				setAdvanceSearchFormOpened(false);
 				setKey(key + 1);

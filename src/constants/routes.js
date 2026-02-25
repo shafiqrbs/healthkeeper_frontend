@@ -678,6 +678,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			DORB_CONFIRM_PROCESS: "hospital/ipd/dorb-confirm",
 			INTERNAL_TRANSFER_PROCESS: "hospital/ipd/internal-transfer-process",
 			MEDICINE_UPDATE: "hospital/ipdprescription",
+			GENERIC_MEDICINE_CREATE: "hospital/ipdprescription/create-generic-medicine",
 			MEDICINE_TEMPLATE: "hospital/ipdprescription/template",
 			INLINE_UPDATE: "hospital/ipdprescription/inline-update",
 			MEDICINE_REORDER: "hospital/ipdprescription/ordering",
