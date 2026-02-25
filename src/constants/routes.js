@@ -709,6 +709,8 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/lab-investigation",
 			VIEW: "hospital/lab-investigation",
 			DELETE: "hospital/lab-investigation",
+			FREE_INVESTIGATIONS: "hospital/lab-investigation/free-investigation",
+			FREE_INVESTIGATIONS_CREATE: "hospital/lab-investigation/free-investigation-create",
 			PRINT: "hospital/lab-investigation/print",
 			TAG_PRINT: "hospital/lab-investigation/sample-confirm",
 			CATEGORY_GROUP: "hospital/lab-investigation/category-group",

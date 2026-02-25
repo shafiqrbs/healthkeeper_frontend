@@ -94,14 +94,16 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport, setRe
 									<Box fz={"xs"} fw={"600"} p="sm">
 										{t("Date")} : {formatDate(transaction?.created_at)}
 									</Box>
-									<ActionIcon
-										mr="3xs"
-										bg="var(--theme-primary-color-6)"
-										color="white"
-										onClick={openInvestigationModal}
-									>
-										<IconPlus color="white" size={16} />
-									</ActionIcon>
+									{transaction?.is_free === 1 &&(
+										<ActionIcon
+											mr="3xs"
+											bg="var(--theme-primary-color-6)"
+											color="white"
+											onClick={openInvestigationModal}
+										>
+											<IconPlus color="white" size={16} />
+										</ActionIcon>
+									)}
 								</Flex>
 								<CustomDivider />
 								{transaction?.items?.map((item, index) => (
