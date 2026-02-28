@@ -372,8 +372,6 @@ export default function AddMedicineForm({
 						? medicineGenericData?.find((item) => item.generic === value)
 						: genericData?.find((item) => item.generic_id?.toString() === value);
 
-			console.log("Selected-Medicine", selectedMedicine);
-
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
