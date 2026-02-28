@@ -410,6 +410,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 											</Table.Td>
 										))}
 									</Table.Tr>
+									
 									<Table.Tr>
 										{drugColumnsRow2.map((drug) => (
 											<Table.Td key={drug.key} ta="center">
