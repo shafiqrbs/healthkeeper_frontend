@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Group, Text, ScrollArea } from "@mantine/core";
+import {Box, Stack, Table, Group, Text, ScrollArea, Radio, Switch, Flex} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -16,6 +16,8 @@ import { successNotification } from "@components/notification/successNotificatio
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import InputForm from "@components/form-builders/InputForm";
 import { formatDateForMySQL } from "@utils/index";
+import SelectForm from "@components/form-builders/SelectForm";
+import { IconCheck, IconX } from "@tabler/icons-react";
 
 const module = MODULES.LAB_TEST;
 
@@ -26,6 +28,58 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
+
+	const xdr = [
+		{ label: "Detected", value: "Detected" },
+		{ label: "Not detected", value: "Not detected" },
+	];
+
+	const dstMethods = [
+		{ label: "Proportion method (LJ)", value: "Proportion method (LJ)" },
+		{ label: "Liquid (MGIT)", value: "Liquid (MGIT)" },
+		{ label: "Line Probe Assay (LPA)", value: "Line Probe Assay (LPA)" },
+		{ label: "Xpert XDR", value: "Xpert XDR" }
+	];
+
+
+	const notions = [
+		{ label: "R", value: "R" },
+		{ label: "S", value: "S" },
+		{ label: "C", value: "C" },
+		{ label: "I", value: "I" },
+		{ label: "NA", value: "NA" },
+	];
+
+
+
+// drug columns configuration - split into two rows
+
+const drugColumnsRow1XDR = [
+	{ key: "dst_mtb", label: "MTB" },
+];
+
+const drugColumnsRow1 = [
+	{ key: "dst_inh", label: "INH" },
+	{ key: "dst_rif", label: "RIF" },
+	{ key: "dst_flq", label: "FLQ" },
+	{ key: "dst_lfx", label: "LFX" },
+];
+
+const drugColumnsRow2 = [
+	{ key: "dst_mfx", label: "MFX" },
+	{ key: "dst_eth", label: "ETH" },
+	{ key: "dst_bdq", label: "BDQ" },
+	{ key: "dst_dlm", label: "DLM" },
+	{ key: "dst_pa", label: "PA" },
+];
+
+const drugColumnsRow3 = [
+	{ key: "dst_lzd", label: "LZD" },
+	{ key: "dst_cfz", label: "CFZ" },
+	{ key: "dst_amk", label: "AMK" },
+	{ key: "dst_kan", label: "KAN" },
+	{ key: "dst_cap", label: "CAP" },
+];
 
 	const form = useForm({
 		initialValues: {
@@ -51,6 +105,25 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 			afb_sample_scanty_one: custom_report?.afb_sample_scanty_one || 0,
 			afb_sample_scanty_two: custom_report?.afb_sample_scanty_two || 0,
 			afb_sample_scanty_three: custom_report?.afb_sample_scanty_three || 0,
+			is_dst_genexpert: custom_report?.is_dst_genexpert || false,
+			dst_method: custom_report?.dst_method || "",
+			dst_id: custom_report?.dst_id || "",
+			dst_mtb: custom_report?.dst_mtb || "",
+			dst_inh: custom_report?.dst_inh || "",
+			dst_rif: custom_report?.dst_rif || "",
+			dst_flq: custom_report?.dst_flq || "",
+			dst_lfx: custom_report?.dst_lfx || "",
+			dst_mfx: custom_report?.dst_mfx || "",
+			dst_eth: custom_report?.dst_eth || "",
+			dst_bdq: custom_report?.dst_bdq || "",
+			dst_dlm: custom_report?.dst_dlm || "",
+			dst_pa: custom_report?.dst_pa || "",
+			dst_lzd: custom_report?.dst_lzd || "",
+			dst_cfz: custom_report?.dst_cfz || "",
+			dst_amk: custom_report?.dst_amk || "",
+			dst_kan: custom_report?.dst_kan || "",
+			dst_cap: custom_report?.dst_cap || "",
+			dst_others: custom_report?.dst_others || "",
 		},
 	});
 
@@ -149,6 +222,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 					</Group>
 					{/* =============== results table =============== */}
 					<Box my="md">
+
 						<Table withColumnBorders withTableBorder withRowBorders>
 							<Table.Thead>
 								<Table.Tr>
@@ -306,6 +380,156 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							</Table.Thead>
 						</Table>
 					</Box>
+					<Box>
+											<Switch
+												name="is_dst_genexpert"
+												id="is_dst_genexpert"
+												onChange={(event) => form.setFieldValue("is_dst_genexpert", event.currentTarget.checked)}
+												checked={form.values.is_dst_genexpert}
+												label="DST Genexpert"
+												size="md"
+												thumbIcon={
+													form.values.is_dst_genexpert ? (
+														<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
+													) : (
+														<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
+													)
+												}
+												className="cursor-pointer"
+												styles={{ track: { cursor: 'pointer', border: "1px solid var(--mantine-color-gray-4)" } }}
+											/>
+					
+					
+										{/* =============== notation legend =============== */}
+					
+											{form.values.is_dst_genexpert && <>
+												<Box my="md">
+													<Flex gap="md">
+														<Text size="sm" fw={500} mt="xs">
+															Method Used:
+														</Text>
+														<SelectForm
+															name='dst_method'
+															id='dst_method'
+															form={form}
+															dropdownValue={dstMethods}
+															placeholder="Select"
+															clearable={true}
+															allowDeselect={true}
+															searchable={false}
+															withCheckIcon={false}
+														/>
+													</Flex>
+												</Box>
+												{/* =============== notation legend =============== */}
+												<Box my="xs">
+													<Text size="sm" fw={500}>
+														Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
+														Indeterminate/Non-interpretable; NA= Not Done)
+													</Text>
+												</Box>
+												<Box mb="md">
+													<Table withColumnBorders withTableBorder withRowBorders>
+														<Table.Tbody>
+															{/* Row 1: Headings and Selects for row1 */}
+															<Table.Tr>
+																{drugColumnsRow1XDR.map((drug) => (
+																	<Table.Td key={drug.key} ta="center">
+																		<Text fw={600} size="sm" mb="xs">
+																			{drug.label}
+																		</Text>
+																		<SelectForm
+																			name={drug.key}
+																			id={drug.key}
+																			form={form}
+																			dropdownValue={xdr}
+																			placeholder="Select"
+																			clearable={true}
+																			allowDeselect={true}
+																			searchable={false}
+																			withCheckIcon={false}
+																		/>
+																	</Table.Td>
+																))}
+																{drugColumnsRow1.map((drug) => (
+																	<Table.Td key={drug.key} ta="center">
+																		<Text fw={600} size="sm" mb="xs">
+																			{drug.label}
+																		</Text>
+																		<SelectForm
+																			name={drug.key}
+																			id={drug.key}
+																			form={form}
+																			dropdownValue={notions}
+																			placeholder="Select"
+																			clearable={true}
+																			allowDeselect={true}
+																			searchable={false}
+																			withCheckIcon={false}
+																		/>
+																	</Table.Td>
+																))}
+															</Table.Tr>
+															<Table.Tr>
+																{drugColumnsRow2.map((drug) => (
+																	<Table.Td key={drug.key} ta="center">
+																		<Text fw={600} size="sm" mb="xs">
+																			{drug.label}
+																		</Text>
+																		<SelectForm
+																			name={drug.key}
+																			id={drug.key}
+																			form={form}
+																			dropdownValue={notions}
+																			placeholder="Select"
+																			clearable={true}
+																			allowDeselect={true}
+																			searchable={false}
+																			withCheckIcon={false}
+																		/>
+																	</Table.Td>
+																))}
+															</Table.Tr>
+															{/* Row 2: Headings and Selects for row2 */}
+															<Table.Tr>
+																{drugColumnsRow3.map((drug) => (
+																	<Table.Td key={drug.key} ta="center">
+																		<Text fw={600} size="sm" mb="xs">
+																			{drug.label}
+																		</Text>
+																		<SelectForm
+																			name={drug.key}
+																			id={drug.key}
+																			form={form}
+																			dropdownValue={notions}
+																			placeholder="Select"
+																			clearable={true}
+																			allowDeselect={true}
+																			searchable={false}
+																			withCheckIcon={false}
+																		/>
+																	</Table.Td>
+																))}
+															</Table.Tr>
+															<Table.Tr>
+																<Table.Td ta="center">
+																	<Text fw={600}>OTHERS</Text>
+																</Table.Td>
+																<Table.Td ta="center" colSpan={4}>
+																	<InputForm
+																		name="dts_others"
+																		id="dts_others"
+																		form={form}
+																		placeholder="Enter Others"
+																	/>
+																</Table.Td>
+															</Table.Tr>
+														</Table.Tbody>
+													</Table>
+												</Box>
+											</>
+											}
+										</Box>
 				</Stack>
 			</ScrollArea>
 			<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />

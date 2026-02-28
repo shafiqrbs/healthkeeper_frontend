@@ -1,4 +1,4 @@
-import {Box, Stack, Table, Text, ScrollArea, Grid, Group, Radio, Switch} from "@mantine/core";
+import {Box, Stack, Table, Text, ScrollArea, Grid, Group, Radio, Flex,Switch} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -22,17 +22,25 @@ import {IconCheck, IconX} from "@tabler/icons-react";
 const module = MODULES.LAB_TEST;
 
 const xdr = [
-	{ label: "Detected", value: "Detected" },
-	{ label: "Not detected", value: "Not detected" },
-];
+		{ label: "Detected", value: "Detected" },
+		{ label: "Not detected", value: "Not detected" },
+	];
 
-const notions = [
-	{ label: "R", value: "R" },
-	{ label: "S", value: "S" },
-	{ label: "C", value: "C" },
-	{ label: "I", value: "I" },
-	{ label: "NA", value: "NA" },
-];
+	const dstMethods = [
+		{ label: "Proportion method (LJ)", value: "Proportion method (LJ)" },
+		{ label: "Liquid (MGIT)", value: "Liquid (MGIT)" },
+		{ label: "Line Probe Assay (LPA)", value: "Line Probe Assay (LPA)" },
+		{ label: "Xpert XDR", value: "Xpert XDR" }
+	];
+
+
+	const notions = [
+		{ label: "R", value: "R" },
+		{ label: "S", value: "S" },
+		{ label: "C", value: "C" },
+		{ label: "I", value: "I" },
+		{ label: "NA", value: "NA" },
+	];
 
 // drug columns configuration - split into two rows
 
@@ -131,10 +139,8 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
 						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
-						follow_up_month: formatDateForMySQL(values.follow_up_month),
 					},
 					comment: values.comment,
-					lab_no: values.lab_no,
 				},
 				module,
 			};
@@ -144,7 +150,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					console.error("Field Error occurred!", errorObject);
 					form.setErrors(errorObject);
@@ -156,7 +162,9 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 					refetchLabReport();
 				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				return resultAction.payload?.data;
 			}
+			return false;
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -336,32 +344,23 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 					{form.values.is_dst_genexpert && <>
 
 						<Box my="md">
-							<Text size="sm" fw={500} mb="xs">
-								Method Used:
-							</Text>
-							<Radio.Group
-								value={form.values?.dst_method}
-								onChange={(value) => form.setFieldValue("dst_method", value)}
-								style={{ width: "100%" }}
-							>
-								<Table withColumnBorders withTableBorder w="100%">
-									<Table.Tr>
-										<Table.Th>
-											<Radio value="lj" label="Proportion method (LJ)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="mgit" label="Liquid (MGIT)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="lpa" label="Line Probe Assay (LPA)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="xdr" label="Xpert XDR" />
-										</Table.Th>
-									</Table.Tr>
-								</Table>
-							</Radio.Group>
-						</Box>
+																			<Flex gap="md">
+																				<Text size="sm" fw={500} mt="xs">
+																					Method Used:
+																				</Text>
+																				<SelectForm
+																					name='dst_method'
+																					id='dst_method'
+																					form={form}
+																					dropdownValue={dstMethods}
+																					placeholder="Select"
+																					clearable={true}
+																					allowDeselect={true}
+																					searchable={false}
+																					withCheckIcon={false}
+																				/>
+																			</Flex>
+																		</Box>
 						{/* =============== notation legend =============== */}
 						<Box my="xs">
 							<Text size="sm" fw={500}>
@@ -475,7 +474,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} submissionFunc={handleConfirmModal} handleSubmit={handleSubmit} />
 		</Box>
 	);
 }

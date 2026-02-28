@@ -114,183 +114,135 @@ const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 					</Table.Thead>
 				</Table>
 				{reportData?.is_dst_genexpert == 1 &&  (
-					<Box mb="md"  fz={'md'} >
-						<Box my="md">
-							<Text size="sm" fw={500} mb="xs">
-								<strong>Method Used:</strong>
-							</Text>
-							<Table
-								withColumnBorders
-								verticalSpacing={6}
-								horizontalSpacing={6}
-								striped={false}
-								highlightOnHover={false}
-								style={{
-									borderCollapse: "collapse",
-									width: "100%",
-									border: "1px solid var(--theme-tertiary-color-8)",
-								}}  w="100%">
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Proportion method (LJ)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Liquid (MGIT)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Line Probe Assay (LPA)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Xpert XDR
-									</Table.Th>
-								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dst_method === 'lj')  && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dst_method === 'mgit')  && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dst_method === 'lpa')  && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dst_method === 'xdr')  && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-								</Table.Tr>
-							</Table>
-						</Box>
-						<Table
-							withColumnBorders
-							verticalSpacing={6}
-							horizontalSpacing={6}
-							striped={false}
-							highlightOnHover={false}
-							style={{
-								borderCollapse: "collapse",
-								width: "100%",
-								border: "1px solid var(--theme-tertiary-color-8)",
-							}}  w="100%">
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={'16'}><Box my="xs">
-									<Text size="sm" fw={500}>
-										Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
-										Indeterminate/Non-interpretable; NA= Not Done)
-									</Text>
+								<Box mb="md"  fz={'md'} >
+									<Box my="md">
+										<Text size="sm" fw={500} mb="xs">
+											<strong>Method Used: {reportData?.dst_method}</strong>
+										</Text>
+									</Box>
+									<Table
+										withColumnBorders
+										verticalSpacing={6}
+										horizontalSpacing={6}
+										striped={false}
+										highlightOnHover={false}
+										style={{
+											borderCollapse: "collapse",
+											width: "100%",
+											border: "1px solid var(--theme-tertiary-color-8)",
+										}}  w="100%">
+										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+											<Table.Td colSpan={'16'}><Box my="xs">
+												<Text size="sm" fw={500}>
+													Notation: (R= Resistance Detected; S= Resistance Not Detected/Susceptible; C= Contaminated; IN=
+													Indeterminate/Non-interpretable; NA= Not Done)
+												</Text>
+											</Box>
+											</Table.Td>
+										</Table.Tr>
+										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>MTB</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>INH</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>RIF</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>FLQ</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>LFX</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>MFX</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>ETH</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>BDQ</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>DLM</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>PA</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>LZD</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>CFZ</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>AMK</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>KAN</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>CAP</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}>Others</Text>
+											</Table.Th>
+										</Table.Tr>
+										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} c={reportData?.dst_mtb === 'Detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'green.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_rif === 'R' ? 'red.8' : reportData?.dst_rif === 'S'? 'green.8':'black.6'}>{reportData?.dst_rif || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_flq === 'R' ? 'red.8' : reportData?.dst_flq === 'S'? 'green.8':'black.6'}>{reportData?.dst_flq || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_lfx === 'R' ? 'red.8' : reportData?.dst_lfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_lfx || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_mfx === 'R' ? 'red.8' : reportData?.dst_mfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_mfx || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_eth === 'R' ? 'red.8' : reportData?.dst_eth === 'S'? 'green.8':'black.6'}>{reportData?.dst_eth || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_bdq === 'R' ? 'red.8' : reportData?.dst_bdq === 'S'? 'green.8':'black.6'}>{reportData?.dst_bdq || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_dlm === 'R' ? 'red.8' : reportData?.dst_dlm === 'S'? 'green.8':'black.6'} >{reportData?.dst_dlm || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_pa === 'R' ? 'red.8' : reportData?.dst_pa === 'S'? 'green.8':'black.6'}>{reportData?.dst_pa || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_lzd === 'R' ? 'red.8' : reportData?.dst_lzd === 'S'? 'green.8':'black.6'} >{reportData?.dst_lzd || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'}  ta="center" c={reportData?.dst_cfz === 'R' ? 'red.8' : reportData?.dst_cfz === 'S'? 'green.8':'black.6'} >{reportData?.dst_cfz || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_amk === 'R' ? 'red.8' : reportData?.dst_amk === 'S'? 'green.8':'black.6'} >{reportData?.dst_amk || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_kan === 'R' ? 'red.8' : reportData?.dst_kan === 'S'? 'green.8':'black.6'}>{reportData?.dst_kan || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_cap === 'R' ? 'red.8' : reportData?.dst_cap === 'S'? 'green.8':'black.6'}>{reportData?.dst_cap || '-'}</Text>
+											</Table.Th>
+											<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Text fz={'xs'} ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
+											</Table.Th>
+										</Table.Tr>
+									</Table>
 								</Box>
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>MTB</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>INH</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>RIF</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>FLQ</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>LFX</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>MFX</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>RTH</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>BDQ</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>DLM</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>PA</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>LZD</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>CFZ</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>AMK</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>KAN</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>CAP</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}>Others</Text>
-								</Table.Th>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_inh === 'R' ? 'red.8' : reportData?.dst_inh === 'S'? 'green.8':'black.6'} >{reportData?.dst_inh || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_rif === 'R' ? 'red.8' : reportData?.dst_rif === 'S'? 'green.8':'black.6'}>{reportData?.dst_rif || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_flq === 'R' ? 'red.8' : reportData?.dst_flq === 'S'? 'green.8':'black.6'}>{reportData?.dst_flq || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_lfx === 'R' ? 'red.8' : reportData?.dst_lfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_lfx || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_mfx === 'R' ? 'red.8' : reportData?.dst_mfx === 'S'? 'green.8':'black.6'}>{reportData?.dst_mfx || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_eth === 'R' ? 'red.8' : reportData?.dst_eth === 'S'? 'green.8':'black.6'}>{reportData?.dst_eth || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_bdq === 'R' ? 'red.8' : reportData?.dst_bdq === 'S'? 'green.8':'black.6'}>{reportData?.dst_bdq || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_dlm === 'R' ? 'red.8' : reportData?.dst_dlm === 'S'? 'green.8':'black.6'} >{reportData?.dst_dlm || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_pa === 'R' ? 'red.8' : reportData?.dst_pa === 'S'? 'green.8':'black.6'}>{reportData?.dst_pa || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_lzd === 'R' ? 'red.8' : reportData?.dst_lzd === 'S'? 'green.8':'black.6'} >{reportData?.dst_lzd || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'}  ta="center" c={reportData?.dst_cfz === 'R' ? 'red.8' : reportData?.dst_cfz === 'S'? 'green.8':'black.6'} >{reportData?.dst_cfz || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_amk === 'R' ? 'red.8' : reportData?.dst_amk === 'S'? 'green.8':'black.6'} >{reportData?.dst_amk || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_kan === 'R' ? 'red.8' : reportData?.dst_kan === 'S'? 'green.8':'black.6'}>{reportData?.dst_kan || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_cap === 'R' ? 'red.8' : reportData?.dst_cap === 'S'? 'green.8':'black.6'}>{reportData?.dst_cap || '-'}</Text>
-								</Table.Th>
-								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Text fz={'xs'} ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
-								</Table.Th>
-							</Table.Tr>
-						</Table>
-					</Box>
-				)}
+								)}
 				<Box  pt={0}>
 					<Text fw="bold" size="xs" mb="xs" mt={'md'}>
 						{t("Comment")}
