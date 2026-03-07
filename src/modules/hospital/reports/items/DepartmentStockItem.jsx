@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { CSVLink } from "react-csv";
 import {
 	Box,
@@ -52,7 +52,7 @@ export default function DepartmentStockItem() {
 	const reportPrintRef = useRef(null);
 
 	const listData = useSelector(
-		(state) => state?.crud[module]?.data
+		(state) => state?.crud[ module ]?.data
 	);
 
 	const printReport = useReactToPrint({
@@ -78,7 +78,7 @@ export default function DepartmentStockItem() {
 	} = useInfiniteTableScroll({
 		module,
 		fetchUrl:
-		PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.DEPARTMENT_STOCK_REPORT,
+			PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.DEPARTMENT_STOCK_REPORT,
 		filterParams: {
 			start_date: form.values.start_date,
 			end_date: form.values.end_date,
@@ -88,9 +88,15 @@ export default function DepartmentStockItem() {
 		perPage: PER_PAGE,
 	});
 
+	/* =============== records with unique keys so DataTable does not warn on duplicate id =============== */
+	const recordsWithUniqueKey = useMemo(
+		() => records.map((record, index) => ({ ...record, _rowKey: index })),
+		[ records ]
+	);
+
 	/* =========================
-       CSV DATA
-    ========================== */
+	   CSV DATA
+	========================== */
 
 	const csvData = records.map((item, index) => ({
 		sn: index + 1,
@@ -108,9 +114,7 @@ export default function DepartmentStockItem() {
 		csvLinkRef.current?.link?.click();
 	};
 
-	/* =========================
-       RENDER
-    ========================== */
+	console.log(records);
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -156,7 +160,8 @@ export default function DepartmentStockItem() {
 					pinLastColumn
 					stripedColor="var(--theme-tertiary-color-1)"
 					classNames={tableCss}
-					records={records}
+					records={recordsWithUniqueKey}
+					idAccessor="_rowKey"
 					fetching={fetching}
 					height={mainAreaHeight - 100}
 					loaderSize="xs"
@@ -207,9 +212,9 @@ export default function DepartmentStockItem() {
 							title: t("Remaining"),
 							ta: "right",
 							render: ({
-										 quantity = 0,
-										 issue_quantity = 0,
-									 }) => quantity - issue_quantity,
+								quantity = 0,
+								issue_quantity = 0,
+							}) => quantity - issue_quantity,
 						},
 					]}
 				/>
