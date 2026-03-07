@@ -114,8 +114,6 @@ export default function DepartmentStockItem() {
 		csvLinkRef.current?.link?.click();
 	};
 
-	console.log(records);
-
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
 			{/* Header */}
