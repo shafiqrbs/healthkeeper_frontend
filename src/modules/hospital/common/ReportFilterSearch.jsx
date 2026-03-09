@@ -325,8 +325,6 @@ export default function ReportFilterSearch({
 					w={250}
 				/>
 			)}
-
-
 			{showInvoiceMode && (
 				<Select
 					clearable
