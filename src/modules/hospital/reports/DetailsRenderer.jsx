@@ -13,7 +13,8 @@ import UserDailyInvoiceSummary from "@modules/hospital/reports/items/UserDailyIn
 import PatientMedicineIssue from "@modules/hospital/reports/items/PatientMedicineIssue.jsx";
 import BatchWiseStock from "@modules/hospital/reports/items/BatchWiseStock.jsx";
 import DepartmentStockItem from "@modules/hospital/reports/items/DepartmentStockItem";
-import PatientAdmission from "@modules/hospital/reports/items/PatientAdmission";
+import AdmissionPatient from "@modules/hospital/reports/items/AdmissionPatient";
+import DischargePatient from "@modules/hospital/reports/items/DischargePatient";
 
 
 export default function DetailsRenderer() {
@@ -31,8 +32,10 @@ export default function DetailsRenderer() {
 				<UserDailyInvoiceSummary mainAreaHeight={mainAreaHeight} />
 			) : tab === "patient-ticket" ? (
 				<PatientTicket />
-			) : tab === "patient-admission" ? (
-				<PatientAdmission />
+			) : tab === "discharge-patient" ? (
+				<DischargePatient />
+			) : tab === "admission-patient" ? (
+				<AdmissionPatient />
 			) : tab === "daily-collection-service" ? (
 				<DailyCollectionService height={mainAreaHeight} />
 			) : tab === "daily-opd-emergency-ipd" ? (

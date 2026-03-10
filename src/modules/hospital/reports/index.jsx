@@ -37,8 +37,18 @@ const REPORT_TABS = [
 		],
 	},
 	{
+		label: "Admission Patient",
+		value: "admission-patient",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
+			"reports_basic",
+			"reports_advanced",
+			"reports_hospital"
+		],
+	},
+
+	{
 		label: "Discharged Patient",
-		value: "patient-admission",
+		value: "discharge-patient",
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
 			"reports_basic",
 			"reports_advanced",
