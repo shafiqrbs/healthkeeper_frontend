@@ -64,6 +64,9 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											<Title order={4} fw={700} mb="es">
 												{ipd?.name || "-"}
 											</Title>
+											<Text  c="var(--theme-tertiary-color-7)">
+												Created: {ipd?.created || "-"}
+											</Text>
 											<Text mt="les"  c="var(--theme-tertiary-color-7)">
 												Patient ID: {ipd?.patient_id || "-"}
 											</Text>
@@ -95,11 +98,15 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											<Text  c="var(--theme-tertiary-color-7)">
 												Guardian: {ipd?.guardian_name || "-"} ({ipd?.guardian_mobile || "-"})
 											</Text>
-											<Text  c="var(--theme-tertiary-color-7)">
-												Date: {ipd?.created || "-"}
-											</Text>
+
 											<Text  c="var(--theme-tertiary-color-7)">
 												DOB: {ipd?.dob || "-"}
+											</Text>
+											<Text  c="var(--theme-tertiary-color-7)">
+												Upazilla: {ipd?.upazila || "-"}
+											</Text>
+											<Text  c="var(--theme-tertiary-color-7)">
+												District: {ipd?.district || "-"}
 											</Text>
 											<Text  c="var(--theme-tertiary-color-7)">
 												Address: {ipd?.address || "-"}
@@ -307,7 +314,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											mt="xs"
 											label={
 												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Medical Details
+													Patient Details
 												</Text>
 											}
 											labelPosition="left"
@@ -317,6 +324,12 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 												Release Mode:{" "}
 												<Text span fw={400}>
 													{capitalizeWords(ipd?.release_mode) || "-"}
+												</Text>
+											</Text>
+											<Text fw={500} size="sm">
+												Admission Date:{" "}
+												<Text span fw={400}>
+													{ipd?.admission_date || "-"}
 												</Text>
 											</Text>
 											<Text fw={500} size="sm">

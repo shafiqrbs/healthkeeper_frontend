@@ -29,15 +29,20 @@ const PER_PAGE = 100;
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
 	{ label: "Created", key: "created" },
+	{ label: "Admission Date", key: "admission_date" },
 	{ label: "InvoiceID", key: "invoice" },
 	{ label: "PatientID", key: "patient_id" },
 	{ label: "Name", key: "name" },
 	{ label: "Age", key: "age" },
 	{ label: "Gender", key: "gender" },
+	{ label: "Bed/Cabin", key: "room" },
+	{ label: "Upazilla", key: "upazila" },
+	{ label: "District", key: "district" },
+	{ label: "Address", key: "address" },
+	{ label: "Mode", key: "invoice_mode" },
+	{ label: "Process", key: "process" },
+	{ label: "Release Date", key: "release_date" },
 	{ label: "Release Mode", key: "release_mode" },
-	{ label: "Disease Profile", key: "disease_profile" },
-	{ label: "Cause of Death", key: "cause_death" },
-	{ label: "About of Death", key: "about_death" },
 ];
 
 const module = MODULES.VISIT;
@@ -93,15 +98,19 @@ export default function AdmissionPatient() {
 		records?.map((item, index) => ({
 			sn: index + 1,
 			created: formatDate(item?.created_at),
+			admission_date: formatDate(item?.admission_date),
 			invoice: item?.invoice ?? "",
+			invoice_mode: capitalizeWords(item?.invoice_mode) ?? "",
 			patient_id: item?.patient_id ?? "",
 			name: item?.name ?? "",
 			age: item?.age ?? "",
 			gender: item?.gender ?? "",
-			release_mode: item?.release_mode ?? "",
-			disease_profile: item?.disease_profile ?? "",
-			cause_death: item?.cause_death ?? "",
-			about_death: item?.about_death ?? "",
+			room: item?.room ?? "",
+			upazila: item?.upazila ?? "",
+			district: item?.district ?? "",
+			process: capitalizeWords(item?.process) ?? "",
+			release_date: item?.release_date ?? "",
+			release_mode: capitalizeWords(item?.release_mode) ?? "",
 		})) || [];
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
@@ -162,6 +171,9 @@ export default function AdmissionPatient() {
 						{ accessor: "age", title: t("Age") },
 						{ accessor: "gender", title: t("Gender") },
 						{ accessor: "room", title: t("Bed/Cabin") },
+						{ accessor: "invoice_mode", title: t("Mode"),
+							render: (item) => capitalizeWords(item?.invoice_mode),
+						},
 						{ accessor: "process", title: t("Process"),
 							render: (item) => capitalizeWords(item?.process),
 						},
@@ -190,7 +202,7 @@ export default function AdmissionPatient() {
 			<CSVLink
 				data={csvData}
 				headers={CSV_HEADERS}
-				filename={`discharge_patient-${formatDate(new Date())}.csv`}
+				filename={`admission_patient-${formatDate(new Date())}.csv`}
 				style={{ display: "none" }}
 				ref={csvLinkRef}
 			/>
