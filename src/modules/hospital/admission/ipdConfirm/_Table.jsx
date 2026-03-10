@@ -255,7 +255,7 @@ export default function _Table({ module, height }) {
 						},
 						{ accessor: "patient_mode_name", title: t("PatientMode") },
 						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "invoice", title: t("IPD ID") },
+						{ accessor: "invoice", title: t("INV ID") },
 						{ accessor: "parent_invoice_id", title: t("OPD/EMY ID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
