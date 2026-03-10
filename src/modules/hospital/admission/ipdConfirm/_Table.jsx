@@ -96,7 +96,7 @@ export default function _Table({ module, height }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+	const { refetchAll,scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
 		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
@@ -159,6 +159,7 @@ export default function _Table({ module, height }) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_RESET}/${id}`,
 		});
+		refetchAll();
 	};
 
 	const handleReset = async (id) => {
@@ -232,9 +233,9 @@ export default function _Table({ module, height }) {
 						pagination: tableCss.pagination,
 					}}
 					records={records}
-					onRowClick={({ record }) => {
+					/*onRowClick={({ record }) => {
 						handleView(record?.prescription_id);
-					}}
+					}}*/
 					columns={[
 						{
 							accessor: "index",
@@ -255,6 +256,7 @@ export default function _Table({ module, height }) {
 						{ accessor: "patient_mode_name", title: t("PatientMode") },
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "invoice", title: t("IPD ID") },
+						{ accessor: "parent_invoice_id", title: t("OPD/EMY ID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						...(processTab === "admitted"
@@ -401,7 +403,6 @@ export default function _Table({ module, height }) {
 														bg={'red.1'}
 														c={'red'}
 														onClick={(e) => {
-															e.stopPropagation();
 															handleConfirmReset(values.id);
 														}}
 													>
