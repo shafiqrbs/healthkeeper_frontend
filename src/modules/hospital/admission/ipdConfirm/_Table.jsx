@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import { ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -34,6 +34,7 @@ import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ManageModal from "../confirm/ManageModal";
 import { setFilterData } from "@/app/store/core/crudSlice";
 import usePagination from "@hooks/usePagination";
+import {modals} from "@mantine/modals";
 
 const PER_PAGE = 25;
 
@@ -142,7 +143,25 @@ export default function _Table({ module, height }) {
 		requestAnimationFrame(printPrescription);
 	};
 
-	const handleAdmissionFormPrint = async (id) => {
+	const handleConfirmReset = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmResetModal(id),
+		});
+	};
+
+
+	async function handleConfirmResetModal(id) {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_RESET}/${id}`,
+		});
+	};
+
+	const handleReset = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 		});
@@ -277,9 +296,10 @@ export default function _Table({ module, height }) {
 								const canConfirm =
 									userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 									isAdmission &&
-									[ "ipd", "closed" ].includes(process);
+									[ "ipd", "closed"].includes(process);
 
-								const canManage = [ "revised", "confirmed", "billing" ].includes(process);
+								const canManage = [ "revised", "confirmed", "billing"].includes(process);
+								const canManageReset = ["canceled","revised", "confirmed", "billing"].includes(process);
 								const canPrintBilling = [ "paid", "discharged" ].includes(process);
 								const canPrintAdmission = [ "billing", "admitted" ].includes(process);
 
@@ -373,6 +393,19 @@ export default function _Table({ module, height }) {
 														}}
 													>
 														{t("AdmissionForm")}
+													</Menu.Item>
+												)}
+												{canManageReset && (
+													<Menu.Item
+														leftSection={<IconFileText size={14} />}
+														bg={'red.1'}
+														c={'red'}
+														onClick={(e) => {
+															e.stopPropagation();
+															handleConfirmReset(values.id);
+														}}
+													>
+														{t("Patient Reset")}
 													</Menu.Item>
 												)}
 											</Menu.Dropdown>
